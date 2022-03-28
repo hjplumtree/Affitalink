@@ -1,7 +1,11 @@
-import React from "react";
-
-function Layouts() {
-  return <div>Layouts</div>;
+function Layouts({ children }) {
+  return (
+    <div>
+      <h1>Header</h1>
+      {children}
+      <h3>Footer</h3>
+    </div>
+  );
 }
 
 export default Layouts;
