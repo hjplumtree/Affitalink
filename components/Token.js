@@ -1,22 +1,33 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
-export default function Token({ networkName, storageName }) {
-  const [input, setInput] = useState("");
-
+export default function Token({ tokens, setTokens, networkName, storageName }) {
   useEffect(() => {
     if (localStorage.getItem(storageName)) {
-      setInput(localStorage.getItem(storageName));
+      setTokens((prevState) => {
+        const newState = { ...prevState };
+        newState[storageName] = localStorage.getItem(storageName);
+        return newState;
+      });
+      console.log(tokens);
     }
   }, []);
 
   const handleOnChange = (e) => {
-    console.log(e.target.value);
-    setInput(e.target.value);
+    setTokens((prevState) => {
+      const newState = { ...prevState };
+      newState[storageName] = e.target.value;
+      return newState;
+    });
   };
 
   const handleOnClick = () => {
-    if (input) {
-      localStorage.setItem(storageName, input);
+    if (tokens[storageName]) {
+      setTokens((prevState) => {
+        const newState = { ...prevState };
+        newState[storageName] = tokens[storageName];
+        return newState;
+      });
+      localStorage.setItem(storageName, tokens[storageName]);
     }
   };
 
@@ -28,7 +39,7 @@ export default function Token({ networkName, storageName }) {
           onChange={handleOnChange}
           type="text"
           placeholder="Enter your token"
-          value={input}
+          value={tokens[storageName]}
         />
         <input onClick={handleOnClick} type="button" value="Save" />
       </form>

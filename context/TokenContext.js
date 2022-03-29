@@ -1,4 +1,4 @@
-import { createContext, useReducer } from "react";
+import { createContext, useReducer, useState } from "react";
 
 export const TokenContext = createContext();
 
@@ -8,16 +8,23 @@ const initialState = {
 };
 
 const reducer = (state, action) => {
-  if (action.type === "SET_CJ_TOKEN") {
-    return {
-      ...state,
-      cj: action.value,
-    };
-  } else if (action.type === "SET_RAKUTEN_TOKEN") {
-    return {
-      ...state,
-      rakuten: action.value,
-    };
+  switch (action.type) {
+    case "SET_CJ_TOKEN":
+      return {
+        ...state,
+        cj: action.value,
+      };
+    case "SET_RAKUTEN_TOKEN":
+      return {
+        ...state,
+        rakuten: action.value,
+      };
+    case "CLEAR_TOKENS":
+      return {
+        ...initialState,
+      };
+    default:
+      throw new Error("Check action type");
   }
 };
 

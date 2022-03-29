@@ -1,9 +1,9 @@
 import { TokenContext } from "../context/TokenContext";
+import { useContext } from "react";
 
-function DeleteTokens() {
-  const { tokens, setTokens } = useContext(TokenContext);
+function DeleteTokens({ setTokens }) {
   const handleOnClick = () => {
-    console.log(tokens);
+    setTokens({ cj: "", rakuten: "" });
     localStorage.clear();
   };
 

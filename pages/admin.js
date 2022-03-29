@@ -1,14 +1,30 @@
+import { useState } from "react";
 import Token from "../components/Token";
 import DeleteTokens from "../components/DeleteTokens";
 
-function admin() {
+export default function Admin() {
+  const initialState = {
+    cj: "",
+    rakuten: "",
+  };
+
+  const [tokens, setTokens] = useState(initialState);
+
   return (
     <main>
-      <Token networkName="CJ" storageName="cjToken" />
-      <Token networkName="Rakuten" storageName="rakutenToken" />
-      <DeleteTokens />
+      <Token
+        tokens={tokens}
+        setTokens={setTokens}
+        networkName="CJ"
+        storageName="cj"
+      />
+      <Token
+        tokens={tokens}
+        setTokens={setTokens}
+        networkName="Rakuten"
+        storageName="rakuten"
+      />
+      <DeleteTokens setTokens={setTokens} />
     </main>
   );
 }
-
-export default admin;
