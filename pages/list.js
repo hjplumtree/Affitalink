@@ -1,27 +1,14 @@
 import { fetchCjAdvertisers } from "../lib/fetch";
+import { useEffect, useState } from "react";
+import ListHeader from "../components/ListHeader";
 
-function list() {
-  const handleOnClick = () => {
-    fetchCjAdvertisers().then((data) => {
-      console.log(data);
-    });
-  };
+export default function List() {
+  const [data, setData] = useState({});
+
   return (
     <div>
-      <header>
-        <div>
-          <h1>Rakuten</h1>
-          <p>last update : 2022-03-27</p>
-        </div>
-        <div>
-          <button onClick={handleOnClick}>Retrieve</button>
-          <select>
-            <option>CJ</option>
-            <option>Rakuten</option>
-            <option>pepperjam</option>
-          </select>
-        </div>
-      </header>
+      <ListHeader />
+
       <main>
         <div>
           <h3>Ashford</h3>
@@ -31,5 +18,3 @@ function list() {
     </div>
   );
 }
-
-export default list;
