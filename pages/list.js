@@ -1,20 +1,14 @@
-import { fetchCjAdvertisers } from "../lib/fetch";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ListHeader from "../components/ListHeader";
+import AdvertiserLists from "../components/AdvertiserLists";
 
 export default function List() {
-  const [data, setData] = useState({});
+  const [data, setData] = useState([]);
 
   return (
     <div>
-      <ListHeader />
-
-      <main>
-        <div>
-          <h3>Ashford</h3>
-          <p>13 Offers</p>
-        </div>
-      </main>
+      <ListHeader setData={setData} />
+      <AdvertiserLists data={data} />
     </div>
   );
 }

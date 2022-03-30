@@ -4,7 +4,6 @@ import { fetchCjAdvertisers } from "../lib/fetch";
 export default function ListHeader({ data, setData }) {
   const [advertisers, setAdvertisers] = useState([]);
   const [selectedAdvertiser, setSelectedAdvertiser] = useState({});
-  const selectRef = useRef();
 
   useEffect(() => {
     let newState = [];
@@ -18,9 +17,8 @@ export default function ListHeader({ data, setData }) {
   }, []);
 
   const handleClick = () => {
-    const token = selectRef.current.value;
+    const token = selectedAdvertiser.token;
     fetchCjAdvertisers(token).then((data) => {
-      console.log(data);
       setData(data);
     });
   };
@@ -36,8 +34,8 @@ export default function ListHeader({ data, setData }) {
         <p>last update : 2022-03-27</p>
       </div>
       <div>
-        <button onClick={handleClick}>Retrieve</button>
-        <select onChange={handleChange} ref={selectRef}>
+        <button onClick={handleClick}>Get Data</button>
+        <select onChange={handleChange}>
           {advertisers.map((advertiser) => (
             <option
               data-name={advertiser.name}
