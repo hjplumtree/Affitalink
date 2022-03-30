@@ -8,7 +8,6 @@ export default function Token({ tokens, setTokens, networkName, storageName }) {
         newState[storageName] = localStorage.getItem(storageName);
         return newState;
       });
-      console.log(tokens);
     }
   }, []);
 
@@ -21,7 +20,7 @@ export default function Token({ tokens, setTokens, networkName, storageName }) {
   };
 
   const handleOnClick = () => {
-    if (tokens[storageName]) {
+    if (tokens[storageName] || localStorage.getItem(storageName)) {
       setTokens((prevState) => {
         const newState = { ...prevState };
         newState[storageName] = tokens[storageName];
