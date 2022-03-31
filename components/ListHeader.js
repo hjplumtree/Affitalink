@@ -2,8 +2,8 @@ import { useEffect, useState, useRef } from "react";
 import { fetchCjAdvertisers } from "../lib/fetch";
 
 export default function ListHeader({ data, setData }) {
-  const [advertisers, setAdvertisers] = useState([]);
-  const [selectedAdvertiser, setSelectedAdvertiser] = useState({});
+  const [networkSites, setNetworkSites] = useState([]);
+  const [selectedNetwork, setSelectedNetwork] = useState({});
 
   useEffect(() => {
     let newState = [];
@@ -12,31 +12,31 @@ export default function ListHeader({ data, setData }) {
         newState.push({ name: key, token: value });
       }
     }
-    setAdvertisers(newState);
-    setSelectedAdvertiser(newState[0]);
+    setNetworkSites(newState);
+    setSelectedNetwork(newState[0]);
   }, []);
 
   const handleClick = () => {
-    const token = selectedAdvertiser.token;
+    const token = selectedNetwork.token;
     fetchCjAdvertisers(token).then((data) => {
       setData(data);
     });
   };
 
   const handleChange = (e) => {
-    setSelectedAdvertiser(advertisers[e.target.selectedIndex]);
+    setSelectedNetwork(networkSites[e.target.selectedIndex]);
   };
 
   return (
     <header>
       <div>
-        <h1>{selectedAdvertiser.name}</h1>
+        <h1>{selectedNetwork.name}</h1>
         <p>last update : 2022-03-27</p>
       </div>
       <div>
         <button onClick={handleClick}>Get Data</button>
         <select onChange={handleChange}>
-          {advertisers.map((advertiser) => (
+          {networkSites.map((advertiser) => (
             <option
               data-name={advertiser.name}
               key={advertiser.name}
