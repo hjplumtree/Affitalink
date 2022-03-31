@@ -4,11 +4,16 @@ import AdvertiserLists from "../components/AdvertiserLists";
 
 export default function List() {
   const [data, setData] = useState([]);
+  const [selectedNetwork, setSelectedNetwork] = useState(null);
 
   return (
     <div>
-      <ListHeader setData={setData} />
-      <AdvertiserLists data={data} />
+      <ListHeader
+        selectedNetwork={selectedNetwork}
+        setSelectedNetwork={setSelectedNetwork}
+        setData={setData}
+      />
+      <AdvertiserLists selectedNetwork={selectedNetwork} data={data} />
     </div>
   );
 }

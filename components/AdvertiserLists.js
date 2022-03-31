@@ -1,8 +1,9 @@
 import Loading from "./Loading";
+import { fetchOffers } from "../lib/fetch";
 
-export default function AdvertiserLists({ data }) {
+export default function AdvertiserLists({ selectedNetwork, data }) {
   function handleClick(id) {
-    console.log(id);
+    fetchOffers({ token: selectedNetwork.token, id });
   }
 
   if (data.length === 0) {
