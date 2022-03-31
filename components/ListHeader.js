@@ -1,10 +1,13 @@
 import { useEffect, useState, useRef } from "react";
 import { fetchCjAdvertisers } from "../lib/fetch";
+import uppercaseFirstLetter from "../lib/uppercase";
 
-export default function ListHeader({ data, setData }) {
+export default function ListHeader({
+  setData,
+  selectedNetwork,
+  setSelectedNetwork,
+}) {
   const [networkSites, setNetworkSites] = useState([]);
-  const [selectedNetwork, setSelectedNetwork] = useState({});
-
   useEffect(() => {
     let newState = [];
     for (const [key, value] of Object.entries(localStorage)) {
@@ -30,11 +33,11 @@ export default function ListHeader({ data, setData }) {
   return (
     <header>
       <div>
-        <h1>{selectedNetwork.name}</h1>
+        <h1>{selectedNetwork && uppercaseFirstLetter(selectedNetwork.name)}</h1>
         <p>last update : 2022-03-27</p>
       </div>
       <div>
-        <button onClick={handleClick}>Get Data</button>
+        <button onClick={handleClick}>Fetch Advertisers</button>
         <select onChange={handleChange}>
           {networkSites.map((advertiser) => (
             <option
@@ -42,8 +45,7 @@ export default function ListHeader({ data, setData }) {
               key={advertiser.name}
               value={advertiser.token}
             >
-              {advertiser.name.slice(0, 1).toUpperCase() +
-                advertiser.name.slice(1)}
+              {uppercaseFirstLetter(advertiser.name)}
             </option>
           ))}
         </select>
