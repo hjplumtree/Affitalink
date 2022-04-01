@@ -1,30 +1,29 @@
 import { useState } from "react";
-import Token from "../components/Token";
-import DeleteTokens from "../components/DeleteTokens";
+import InformationBoard from "../components/InformationBoard";
 
 export default function Admin() {
-  const initialState = {
-    cj: "",
-    rakuten: "",
+  const cj_initialState = {
+    token: "",
+    requestorId: "",
+    websiteId: "",
   };
-
-  const [tokens, setTokens] = useState(initialState);
+  const [cjInfo, setCjInfo] = useState(cj_initialState);
 
   return (
     <main>
-      <Token
-        tokens={tokens}
-        setTokens={setTokens}
+      <InformationBoard
+        cjInfo={cjInfo}
+        setCjInfo={setCjInfo}
         networkName="CJ"
         storageName="cj"
+        initialState={cj_initialState}
       />
-      <Token
+      {/* <InformationBoard
         tokens={tokens}
         setTokens={setTokens}
         networkName="Rakuten"
         storageName="rakuten"
-      />
-      <DeleteTokens setTokens={setTokens} />
+      /> */}
     </main>
   );
 }

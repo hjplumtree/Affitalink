@@ -8,6 +8,7 @@ export default function ListHeader({
   setSelectedNetwork,
 }) {
   const [networkSites, setNetworkSites] = useState([]);
+
   useEffect(() => {
     let newState = [];
     for (const [key, value] of Object.entries(localStorage)) {
@@ -15,6 +16,7 @@ export default function ListHeader({
         newState.push({ name: key, token: value });
       }
     }
+    console.log(localStorage);
     setNetworkSites(newState);
     setSelectedNetwork(newState[0]);
   }, []);
