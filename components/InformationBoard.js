@@ -8,7 +8,6 @@ export default function Token({
   initialState,
 }) {
   useEffect(() => {
-    console.log(JSON.parse(localStorage.getItem(storageName)));
     if (localStorage.getItem(storageName)) {
       setCjInfo(JSON.parse(localStorage.getItem(storageName)));
     }

@@ -3,7 +3,7 @@ import { fetchOffers } from "../lib/fetch";
 
 export default function AdvertiserLists({ selectedNetwork, data }) {
   function handleClick(id) {
-    fetchOffers({ token: selectedNetwork.token, id });
+    fetchOffers({ info: selectedNetwork.info, id });
   }
 
   if (data.length === 0) {
