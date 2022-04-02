@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import ListHeader from "../components/ListHeader";
-import AdvertiserLists from "../components/AdvertiserLists";
+import ListHeader from "../components/LinksHeader";
+import LinksList from "../components/LinksList";
 
-export default function List() {
+export default function LinksPage() {
   const [data, setData] = useState([]);
   const [networkSites, setNetworkSites] = useState([]);
   const [selectedNetwork, setSelectedNetwork] = useState(null);
@@ -27,7 +27,7 @@ export default function List() {
         setSelectedNetwork={setSelectedNetwork}
         setData={setData}
       />
-      <AdvertiserLists selectedNetwork={selectedNetwork} data={data} />
+      <LinksList links={data} />
     </div>
   );
 }

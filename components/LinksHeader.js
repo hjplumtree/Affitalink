@@ -1,7 +1,7 @@
-import { fetchCjAdvertisers } from "../lib/fetch";
+import { fetchLinks } from "../lib/fetch";
 import uppercaseFirstLetter from "../lib/uppercase";
 
-export default function ListHeader({
+export default function LinksHeader({
   networkSites,
   setData,
   selectedNetwork,
@@ -9,7 +9,7 @@ export default function ListHeader({
 }) {
   const handleClick = () => {
     const network_info = selectedNetwork.info;
-    fetchCjAdvertisers(network_info).then((data) => {
+    fetchLinks({ info: network_info }).then((data) => {
       setData(data);
     });
   };
