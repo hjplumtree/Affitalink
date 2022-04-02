@@ -1,14 +1,13 @@
-import "../styles/globals.css";
+import { ChakraProvider } from "@chakra-ui/react";
 import Layouts from "../components/Layouts";
-import { TokenProvider } from "../context/TokenContext";
 
 function MyApp({ Component, pageProps }) {
   return (
-    <Layouts>
-      <TokenProvider>
+    <ChakraProvider>
+      <Layouts>
         <Component {...pageProps} />
-      </TokenProvider>
-    </Layouts>
+      </Layouts>
+    </ChakraProvider>
   );
 }
 
