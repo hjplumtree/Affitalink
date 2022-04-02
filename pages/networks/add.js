@@ -1,5 +1,5 @@
 import { useState } from "react";
-import InformationBoard from "../components/InformationBoard";
+import InformationBoard from "../../components/InformationBoard";
 
 export default function Admin() {
   const cj_initialState = {

@@ -1,9 +1,14 @@
 import Loading from "./Loading";
 import { fetchOffers } from "../lib/fetch";
+import { useState } from "react";
 
 export default function AdvertiserLists({ selectedNetwork, data }) {
+  const [offers, setOffers] = useState([]);
+
   function handleClick(id) {
-    fetchOffers({ info: selectedNetwork.info, id });
+    fetchOffers({ info: selectedNetwork.info, id }).then((offers) =>
+      setOffers(offers),
+    );
   }
 
   if (data.length === 0) {
@@ -22,10 +27,16 @@ export default function AdvertiserLists({ selectedNetwork, data }) {
           >
             <div>{advertiser["advertiser-name"][0]}</div>
             <div>id: {advertiser["advertiser-id"]}</div>
-            <div>Category: {advertiser["primary-category"][0]["child"]}</div>
+            <div>Category: {advertiser["primary-category"][0]["parent"]}</div>
+            <br />
+            <div>EPC</div>
+            <div>
+              7-day: ${advertiser["seven-day-epc"][0]} / 3-month: $
+              {advertiser["three-month-epc"][0]}
+            </div>
+            <div></div>
           </div>
         ))}
-        <div></div>
       </main>
     );
   }
