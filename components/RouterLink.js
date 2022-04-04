@@ -6,20 +6,23 @@ export default function RouterLink({ to, children, ...props }) {
   const router = useRouter();
   const isActive = router.pathname === to;
   const styles = {
-    padding: "5px",
+    padding: 2,
+    borderRadius: 5,
   };
 
   if (isActive) {
     return (
       <Link href={to} passHref>
-        <ChakraLink bg="yellow">{children}</ChakraLink>
+        <ChakraLink {...styles} bg="#4895EF" color="#fff">
+          {children}
+        </ChakraLink>
       </Link>
     );
   }
 
   return (
     <Link href={to} passHref>
-      <ChakraLink>{children}</ChakraLink>
+      <ChakraLink {...styles}>{children}</ChakraLink>
     </Link>
   );
 }

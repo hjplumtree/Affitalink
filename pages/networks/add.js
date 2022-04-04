@@ -1,5 +1,6 @@
 import { useState } from "react";
 import InformationBoard from "../../components/InformationBoard";
+import { Box } from "@chakra-ui/react";
 
 export default function Admin() {
   const cj_initialState = {

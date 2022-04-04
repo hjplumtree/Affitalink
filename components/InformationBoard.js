@@ -1,4 +1,16 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import {
+  Box,
+  Heading,
+  Text,
+  Input,
+  InputGroup,
+  InputRightElement,
+  Button,
+  ButtonGroup,
+  VStack,
+  FormControl,
+} from "@chakra-ui/react";
 
 export default function Token({
   cjInfo,
@@ -7,13 +19,15 @@ export default function Token({
   storageName,
   initialState,
 }) {
+  const [show, setShow] = useState(false);
+
   useEffect(() => {
     if (localStorage.getItem(storageName)) {
       setCjInfo(JSON.parse(localStorage.getItem(storageName)));
     }
   }, []);
 
-  const handleOnChange = (e) => {
+  const handleInputChange = (e) => {
     setCjInfo((prevState) => {
       const newState = { ...prevState };
       newState[e.target.dataset.name] = e.target.value;
@@ -21,7 +35,7 @@ export default function Token({
     });
   };
 
-  const handleOnClick = () => {
+  const handleSave = () => {
     if (cjInfo || localStorage.getItem(storageName)) {
       localStorage.setItem(storageName, JSON.stringify(cjInfo));
     }
@@ -31,46 +45,63 @@ export default function Token({
     setCjInfo(initialState);
     localStorage.removeItem(storageName);
   };
+
+  const handleShow = () => {
+    setShow(!show);
+  };
+
   return (
-    <div>
-      <h1>{networkName}</h1>
-      <form>
-        <div>
-          <p>TOKEN</p>
-          <input
-            onChange={handleOnChange}
-            type="password"
+    <Box>
+      <Heading>{networkName}</Heading>
+
+      <FormControl>
+        <Text>TOKEN:</Text>
+        <InputGroup>
+          <Input
+            onChange={handleInputChange}
+            type={show ? "text" : "password"}
             placeholder="Enter token"
             value={cjInfo["token"]}
             data-name="token"
             required
           />
-        </div>
-        <div>
-          <p>Requestor id</p>
+          <InputRightElement width="4.5rem">
+            <Button h="1.75rem" size="sm" onClick={handleShow}>
+              {show ? "Hide" : "Show"}
+            </Button>
+          </InputRightElement>
+        </InputGroup>
+        <Box>
+          <Text>Requestor id:</Text>
 
-          <input
-            onChange={handleOnChange}
+          <Input
+            onChange={handleInputChange}
             type="text"
             placeholder="Enter requestor id"
             value={cjInfo["requestorId"]}
             data-name="requestorId"
           />
-        </div>
-        <div>
-          <p>website id</p>
+        </Box>
+        <Box>
+          <Text>website id:</Text>
 
-          <input
-            onChange={handleOnChange}
+          <Input
+            onChange={handleInputChange}
             type="text"
             placeholder="Enter website id"
             value={cjInfo["websiteId"]}
             data-name="websiteId"
           />
-        </div>
-        <input onClick={handleOnClick} type="button" value="Save" />
-        <input onClick={handleDelete} type="button" value={`Delete Info`} />
-      </form>
-    </div>
+        </Box>
+        <VStack mt={3} spacing={3} align="stretch">
+          <Button variant="outline" colorScheme="blue" onClick={handleSave}>
+            Save
+          </Button>
+          <Button variant="outline" colorScheme="red" onClick={handleDelete}>
+            Delete
+          </Button>
+        </VStack>
+      </FormControl>
+    </Box>
   );
 }
