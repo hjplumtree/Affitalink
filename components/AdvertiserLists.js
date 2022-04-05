@@ -3,7 +3,7 @@ import { fetchOffers } from "../lib/fetch";
 import { useState } from "react";
 
 export default function AdvertiserLists({ selectedNetwork, data }) {
-  // CURRENT :: coment out as not using AdvertiserLists yet
+  // CURRENT :: comment out as not using AdvertiserLists yet
   // TODO :: use in /networks/add page to select advertisers
 
   // const [offers, setOffers] = useState([]);

@@ -6,7 +6,7 @@ import { Flex } from "@chakra-ui/react";
 function MyApp({ Component, pageProps }) {
   return (
     <ChakraProvider>
-      <Flex>
+      <Flex h="100vh">
         <Navigator />
         <Layouts>
           <Component {...pageProps} />

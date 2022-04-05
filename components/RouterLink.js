@@ -8,6 +8,9 @@ export default function RouterLink({ to, children, ...props }) {
   const styles = {
     padding: 2,
     borderRadius: 5,
+    display: "flex",
+    alignItems: "center",
+    gap: 3,
   };
 
   if (isActive) {
