@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   Box,
   Heading,
@@ -7,9 +7,15 @@ import {
   InputGroup,
   InputRightElement,
   Button,
-  ButtonGroup,
   VStack,
   FormControl,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  useDisclosure,
 } from "@chakra-ui/react";
 
 export default function Token({
@@ -20,6 +26,8 @@ export default function Token({
   initialState,
 }) {
   const [show, setShow] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = useRef();
 
   useEffect(() => {
     if (localStorage.getItem(storageName)) {
@@ -97,9 +105,44 @@ export default function Token({
           <Button variant="outline" colorScheme="blue" onClick={handleSave}>
             Save
           </Button>
-          <Button variant="outline" colorScheme="red" onClick={handleDelete}>
+
+          <Button variant="outline" colorScheme="red" onClick={onOpen}>
             Delete
           </Button>
+
+          <AlertDialog
+            isOpen={isOpen}
+            LeastDestructiveRef={cancelRef}
+            onClose={onClose}
+          >
+            <AlertDialogOverlay>
+              <AlertDialogContent>
+                <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                  Delete {networkName}
+                </AlertDialogHeader>
+
+                <AlertDialogBody>
+                  Are you sure you want to delete all infomation?
+                </AlertDialogBody>
+
+                <AlertDialogFooter>
+                  <Button ref={cancelRef} onClick={onClose}>
+                    Cancel
+                  </Button>
+                  <Button
+                    colorScheme="red"
+                    onClick={() => {
+                      onClose();
+                      handleDelete();
+                    }}
+                    ml={3}
+                  >
+                    Delete
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialogOverlay>
+          </AlertDialog>
         </VStack>
       </FormControl>
     </Box>

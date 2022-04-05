@@ -1,5 +1,6 @@
 import { fetchLinks } from "../lib/fetch";
 import uppercaseFirstLetter from "../lib/uppercase";
+import { Box, Heading, Text, Button, Select, Flex } from "@chakra-ui/react";
 
 export default function LinksHeader({
   networkSites,
@@ -19,14 +20,20 @@ export default function LinksHeader({
   };
 
   return (
-    <header>
-      <div>
-        <h1>{selectedNetwork && uppercaseFirstLetter(selectedNetwork.name)}</h1>
-        <p>last update : 2022-03-27</p>
-      </div>
-      <div>
-        <button onClick={handleClick}>Fetch Advertisers</button>
-        <select onChange={handleChange}>
+    <Box w="100%" margin="10px auto">
+      <Box>
+        <Flex justifyContent="space-between" alignItems="center">
+          <Box>
+            <Heading>
+              {selectedNetwork && uppercaseFirstLetter(selectedNetwork.name)}
+            </Heading>
+            <Text>last update : 2022-03-27</Text>
+          </Box>
+          <Button onClick={handleClick}>Fetch Links</Button>
+        </Flex>
+      </Box>
+      <Box>
+        <Select onChange={handleChange}>
           {networkSites.map((advertiser) => (
             <option
               data-name={advertiser.name}
@@ -36,8 +43,8 @@ export default function LinksHeader({
               {uppercaseFirstLetter(advertiser.name)}
             </option>
           ))}
-        </select>
-      </div>
-    </header>
+        </Select>
+      </Box>
+    </Box>
   );
 }
