@@ -71,7 +71,6 @@ export default function Token({
             placeholder="Enter token"
             value={cjInfo["token"]}
             data-name="token"
-            required
           />
           <InputRightElement width="4.5rem">
             <Button h="1.75rem" size="sm" onClick={handleShow}>
