@@ -5,16 +5,15 @@ import logo from "../public/link_reduced.png";
 import { StarIcon, AddIcon, LinkIcon } from "@chakra-ui/icons";
 import NextLink from "next/link";
 
-export default function Navigator() {
+export default function Navigator({ ...rest }) {
   return (
     <VStack
-      outline="none"
       p={5}
       align="stretch"
       spacing={3}
       minWidth="200px"
       borderRight="1px solid #e5e5e5"
-      mr={5}
+      {...rest}
     >
       <Box mb={2}>
         <NextLink href="/" passHref>

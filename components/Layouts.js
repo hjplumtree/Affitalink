@@ -1,10 +1,16 @@
-import { Box } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 
-function Layouts({ children }) {
+function Layouts({ children, ...rest }) {
   return (
-    <Box margin="50px auto" width="100%" maxWidth="1000px">
+    <Flex
+      p="10px 50px"
+      direction="column"
+      width="100%"
+      maxWidth="1000px"
+      {...rest}
+    >
       {children}
-    </Box>
+    </Flex>
   );
 }
 
