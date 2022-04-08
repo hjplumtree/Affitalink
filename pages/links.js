@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import ListHeader from "../components/LinksHeader";
+import LinksHeader from "../components/LinksHeader";
 import LinksList from "../components/LinksList";
+import { VStack } from "@chakra-ui/react";
 
 export default function LinksPage() {
   const [data, setData] = useState([]);
@@ -20,14 +21,14 @@ export default function LinksPage() {
   }, []);
 
   return (
-    <div>
-      <ListHeader
+    <VStack>
+      <LinksHeader
         networkSites={networkSites}
         selectedNetwork={selectedNetwork}
         setSelectedNetwork={setSelectedNetwork}
         setData={setData}
       />
       <LinksList links={data} />
-    </div>
+    </VStack>
   );
 }

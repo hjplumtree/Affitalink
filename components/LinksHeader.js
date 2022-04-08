@@ -20,30 +20,34 @@ export default function LinksHeader({
   };
 
   return (
-    <Box w="100%" margin="10px auto">
-      <Box>
-        <Flex justifyContent="space-between" alignItems="center">
-          <Box>
-            <Heading>
-              {selectedNetwork && uppercaseFirstLetter(selectedNetwork.name)}
-            </Heading>
-            <Text>last update : 2022-03-27</Text>
-          </Box>
-          <Button onClick={handleClick}>Fetch Links</Button>
-        </Flex>
-      </Box>
-      <Box>
-        <Select onChange={handleChange}>
-          {networkSites.map((advertiser) => (
-            <option
-              data-name={advertiser.name}
-              key={advertiser.name}
-              value={advertiser.token}
-            >
-              {uppercaseFirstLetter(advertiser.name)}
-            </option>
-          ))}
-        </Select>
+    <Box p="60px 20px 30px" w="100%" bg="#fff">
+      <Box maxWidth="1000px" margin="0 auto">
+        <Box>
+          <Flex justifyContent="space-between" alignItems="center">
+            <Box>
+              <Heading>
+                {selectedNetwork && uppercaseFirstLetter(selectedNetwork.name)}
+              </Heading>
+              <Text>last update : 2022-03-27</Text>
+            </Box>
+            <Button background="#4895EF" color="#fff" onClick={handleClick}>
+              Fetch Links
+            </Button>
+          </Flex>
+        </Box>
+        <Box>
+          <Select onChange={handleChange}>
+            {networkSites.map((advertiser) => (
+              <option
+                data-name={advertiser.name}
+                key={advertiser.name}
+                value={advertiser.token}
+              >
+                {uppercaseFirstLetter(advertiser.name)}
+              </option>
+            ))}
+          </Select>
+        </Box>
       </Box>
     </Box>
   );

@@ -1,6 +1,6 @@
 import { Box, Text, Tooltip, useToast } from "@chakra-ui/react";
 
-export default function CopyTextToClipboard({ children }) {
+export default function CopyTextToClipboard({ Title, children }) {
   const toast = useToast();
 
   const handleClick = (e) => {

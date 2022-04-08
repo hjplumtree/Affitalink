@@ -4,7 +4,7 @@ import CopyTextToClipboard from "./CopyTextToClipboard";
 export default function LinksList({ links }) {
   const { $: meta, link: link_arr } = links;
   return (
-    <main>
+    <VStack maxWidth="1000px" spacing={2}>
       {link_arr &&
         link_arr.map((link) => (
           <Flex
@@ -13,6 +13,8 @@ export default function LinksList({ links }) {
             p={5}
             gap={2}
             wrap="wrap"
+            marginTop={3}
+            bg="#fff"
           >
             <VStack align="baseline" flexGrow="1" flexBasis="300px">
               <Code>{link["advertiser-name"][0]}</Code>
@@ -36,6 +38,6 @@ export default function LinksList({ links }) {
             </VStack>
           </Flex>
         ))}
-    </main>
+    </VStack>
   );
 }

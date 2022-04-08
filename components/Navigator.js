@@ -10,8 +10,9 @@ export default function Navigator({ ...rest }) {
     <VStack
       p={5}
       align="stretch"
+      h="100%"
       spacing={3}
-      minWidth="200px"
+      width="200px"
       borderRight="1px solid #e5e5e5"
       {...rest}
     >
