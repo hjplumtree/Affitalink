@@ -10,31 +10,35 @@ export default function LinksList({ links }) {
           <Flex
             key={link["link-id"]}
             justifyContent="space-between"
+            w="100%"
             p={5}
-            gap={2}
+            gap={8}
             wrap="wrap"
             marginTop={3}
             bg="#fff"
           >
-            <VStack align="baseline" flexGrow="1" flexBasis="300px">
+            <VStack align="baseline" flexBasis="300px" flexGrow={1}>
               <Code>{link["advertiser-name"][0]}</Code>
               <Heading size="md">{link["link-name"][0]}</Heading>
               <Text fontSize="sm">{link["description"][0]}</Text>
             </VStack>
-            <VStack align="baseline" flex="0 0 100px">
+            <VStack align="baseline" width="200px">
               {/* TODO */}
               {/* Click to copy text*/}
               {/*  */}
+              <CopyTextToClipboard title="Coupon code">
+                {link["coupon-code"][0].length === 0
+                  ? "No Code Needed"
+                  : link["coupon-code"][0]}
+              </CopyTextToClipboard>
 
-              {link["coupon-code"][0].length === 0 ? (
-                <Box>No Code Needed</Box>
-              ) : (
-                <CopyTextToClipboard>
-                  ${link["coupon-code"][0]}
-                </CopyTextToClipboard>
-              )}
-              <CopyTextToClipboard>{link["clickUrl"][0]}</CopyTextToClipboard>
-              <Box>{link["link-code-html"][0]}</Box>
+              <CopyTextToClipboard title="Tracking link">
+                {link["clickUrl"][0]}
+              </CopyTextToClipboard>
+
+              <CopyTextToClipboard title="Image link">
+                {link["link-code-html"][0]}
+              </CopyTextToClipboard>
             </VStack>
           </Flex>
         ))}
