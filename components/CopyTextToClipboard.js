@@ -5,8 +5,9 @@ import {
   Text,
   Tooltip,
   useToast,
+  Icon,
 } from "@chakra-ui/react";
-import { CopyIcon } from "@chakra-ui/icons";
+import { FaCopy } from "react-icons/fa";
 export default function CopyTextToClipboard({ title, children }) {
   const toast = useToast();
 
@@ -22,7 +23,7 @@ export default function CopyTextToClipboard({ title, children }) {
   };
 
   const styles = {
-    border: "1px solid #99AAB5",
+    border: "2px solid #99AAB5",
     width: "100%",
     p: 1,
   };
@@ -32,16 +33,16 @@ export default function CopyTextToClipboard({ title, children }) {
       <Heading size="xs">{title}</Heading>
 
       {/* When 'No Code Needed' received */}
-      {children === "No Code Needed" ? (
-        <HStack {...styles}>
+      {children === "No Code Needed" || children === "No Image" ? (
+        <HStack {...styles} bg="#F0F0F0">
           <Text whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">
             {children}
           </Text>
         </HStack>
       ) : (
-        <Tooltip label="Click to copy">
+        <Tooltip label={children}>
           <HStack onClick={handleClick} cursor="pointer" {...styles}>
-            <CopyIcon color="#99AAB5" />
+            <Icon as={FaCopy} color="#99AAB5" />
             <Text whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">
               {children}
             </Text>
@@ -49,24 +50,5 @@ export default function CopyTextToClipboard({ title, children }) {
         </Tooltip>
       )}
     </VStack>
-
-    // <Box
-    //   onClick={handleClick}
-    //   cursor="pointer"
-    //   p={1}
-    //   border="2px dashed #4895EF"
-    //   bg="#e1e1e1"
-    // >
-    // <Tooltip label="Click to copy">
-    //   <Text
-    //     width="170px"
-    //     whiteSpace="nowrap"
-    //     overflow="hidden"
-    //     textOverflow="ellipsis"
-    //   >
-    //     {children}
-    //   </Text>
-    // </Tooltip>
-    // </Box>
   );
 }

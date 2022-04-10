@@ -1,8 +1,10 @@
-import { Flex, VStack, Box, Code, Heading, Text } from "@chakra-ui/react";
+import { Flex, VStack, Code, Heading, Text } from "@chakra-ui/react";
 import CopyTextToClipboard from "./CopyTextToClipboard";
+import extractImg from "../lib/extractImg";
 
 export default function LinksList({ links }) {
   const { $: meta, link: link_arr } = links;
+  console.log(link_arr);
   return (
     <VStack maxWidth="1000px" spacing={2}>
       {link_arr &&
@@ -37,7 +39,9 @@ export default function LinksList({ links }) {
               </CopyTextToClipboard>
 
               <CopyTextToClipboard title="Image link">
-                {link["link-code-html"][0]}
+                {link["link-type"][0] === "Banner"
+                  ? extractImg(link["link-code-html"][0])
+                  : "No Image"}
               </CopyTextToClipboard>
             </VStack>
           </Flex>
