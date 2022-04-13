@@ -4,7 +4,6 @@ import extractImg from "../lib/extractImg";
 
 export default function LinksList({ links }) {
   const { $: meta, link: link_arr } = links;
-  console.log(link_arr);
   return (
     <VStack maxWidth="1000px" spacing={2}>
       {link_arr &&
