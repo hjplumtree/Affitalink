@@ -2,7 +2,7 @@ import { VStack, Box, Link, Text, Icon } from "@chakra-ui/react";
 import RouterLink from "./RouterLink";
 import Image from "next/image";
 import logo from "../public/link_reduced.png";
-import { FaNetworkWired, FaLink, FaPlus } from "react-icons/fa";
+import { FaNetworkWired, FaLink } from "react-icons/fa";
 import NextLink from "next/link";
 
 export default function Navigator({ ...rest }) {
@@ -28,10 +28,7 @@ export default function Navigator({ ...rest }) {
         <Icon as={FaNetworkWired} />
         Networks
       </RouterLink>
-      <RouterLink to="/networks/add">
-        <Icon as={FaPlus} />
-        Connect
-      </RouterLink>
+
       <RouterLink to="/links">
         <Icon as={FaLink} />
         Links
