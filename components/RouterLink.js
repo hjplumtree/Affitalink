@@ -11,6 +11,7 @@ export default function RouterLink({ to, children, ...props }) {
     display: "flex",
     alignItems: "center",
     gap: 3,
+    ...props,
   };
 
   if (isActive) {
