@@ -3,13 +3,13 @@ import CopyTextToClipboard from "./CopyTextToClipboard";
 import extractImg from "../lib/extractImg";
 
 export default function LinksList({ links }) {
-  const { $: meta, link: link_arr } = links;
+  const { page, data: link_arr } = links;
   return (
     <VStack maxWidth="1000px" spacing={2}>
       {link_arr &&
         link_arr.map((link) => (
           <Flex
-            key={link["link-id"]}
+            key={link["link_id"]}
             justifyContent="space-between"
             w="100%"
             p={5}
@@ -19,27 +19,27 @@ export default function LinksList({ links }) {
             bg="#fff"
           >
             <VStack align="baseline" flexBasis="300px" flexGrow={1}>
-              <Code>{link["advertiser-name"][0]}</Code>
-              <Heading size="md">{link["link-name"][0]}</Heading>
-              <Text fontSize="sm">{link["description"][0]}</Text>
+              <Code>{link["advertiser_name"]}</Code>
+              <Heading size="md">{link["link_name"]}</Heading>
+              <Text fontSize="sm">{link["description"]}</Text>
             </VStack>
             <VStack align="baseline" width="200px">
               {/* TODO */}
               {/* Click to copy text*/}
               {/*  */}
               <CopyTextToClipboard title="Coupon code">
-                {link["coupon-code"][0].length === 0
+                {link["coupon_code"] === ""
                   ? "No Code Needed"
-                  : link["coupon-code"][0]}
+                  : link["coupon_code"]}
               </CopyTextToClipboard>
 
               <CopyTextToClipboard title="Tracking link">
-                {link["clickUrl"][0]}
+                {link["click_url"]}
               </CopyTextToClipboard>
 
               <CopyTextToClipboard title="Image link">
-                {link["link-type"][0] === "Banner"
-                  ? extractImg(link["link-code-html"][0])
+                {link["link_type"] === "Banner"
+                  ? extractImg(link["link_code_html"])
                   : "No Image"}
               </CopyTextToClipboard>
             </VStack>
