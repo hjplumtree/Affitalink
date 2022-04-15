@@ -1,6 +1,5 @@
 import uppercaseFirstLetter from "../lib/uppercase";
 import { fetchLinks } from "../lib/fetch";
-import { fetchRakutenLinks } from "../lib/fetchRakuten";
 import { Box, Heading, Text, Button, Select, Flex } from "@chakra-ui/react";
 
 export default function LinksHeader({
@@ -11,15 +10,6 @@ export default function LinksHeader({
 }) {
   const handleClick = () => {
     const { name, info: network_info } = selectedNetwork;
-    // if (name === "cj") {
-    //   fetchLinks({ info: network_info, network: name }).then((data) => {
-    //     setData(data);
-    //   });
-    // } else if (name === "rakuten") {
-    //   fetchRakutenLinks({ info: network_info }).then((data) => {
-    //     setData(data);
-    //   });
-    // }
     fetchLinks({ info: network_info, network: name }).then((data) => {
       setData(data);
     });
