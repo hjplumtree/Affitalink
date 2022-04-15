@@ -32,7 +32,7 @@ export default function CopyTextToClipboard({ title, children }) {
     <VStack align="baseline" marginTop={8} width="100%">
       <Heading size="xs">{title}</Heading>
 
-      {/* When 'No Code Needed' received */}
+      {/* When 'No Code Needed' or "No Image" received */}
       {children === "No Code Needed" || children === "No Image" ? (
         <HStack {...styles} bg="#F0F0F0">
           <Text whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">
