@@ -1,6 +1,7 @@
 import uppercaseFirstLetter from "../lib/uppercase";
 import { fetchLinks } from "../lib/fetch";
 import { Box, Heading, Text, Button, Select, Flex } from "@chakra-ui/react";
+import SectionBox from "./SectionBox";
 
 export default function LinksHeader({
   networkSites,
@@ -20,13 +21,7 @@ export default function LinksHeader({
   };
 
   return (
-    <Box
-      borderRadius={5}
-      shadow="base"
-      p={30}
-      width="clamp(0px, 100%, 1000px)"
-      bg="#fff"
-    >
+    <SectionBox>
       <Box margin="0 auto">
         <Box>
           <Flex justifyContent="space-between" alignItems="center">
@@ -59,6 +54,6 @@ export default function LinksHeader({
           </Select>
         </Box>
       </Box>
-    </Box>
+    </SectionBox>
   );
 }

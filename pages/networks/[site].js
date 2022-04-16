@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { Heading, Box } from "@chakra-ui/react";
 import NetworkInput from "../../components/NetworkInput";
+import SectionBox from "../../components/SectionBox";
 
 export default function Site() {
   const router = useRouter();
@@ -21,13 +21,7 @@ export default function Site() {
   const [rakutenInfo, setRakutenInfo] = useState(rakuten_initialState);
 
   return (
-    <Box
-      width="clamp(0px, 100%, 1000px)"
-      borderRadius={5}
-      shadow="base"
-      p={30}
-      bg="#fff"
-    >
+    <SectionBox>
       {site === "cj" && (
         <NetworkInput
           info={cjInfo}
@@ -46,6 +40,6 @@ export default function Site() {
           initialState={rakuten_initialState}
         />
       )}
-    </Box>
+    </SectionBox>
   );
 }
