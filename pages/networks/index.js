@@ -3,16 +3,29 @@ import NetworkSite from "../../components/NetworkSite";
 import { Box, VStack } from "@chakra-ui/react";
 import cj_logo from "../../public/cj.png";
 import rakuten_logo from "../../public/rakuten.png";
+import temp_logo from "../../public/favicon.ico";
 
 function index() {
   return (
-    <Box w="100%">
-      <Box margin="0 auto" maxWidth="1000px" border="1px solid red">
+    <Box
+      w="clamp(0px, 100%, 1000px)"
+      shadow="base"
+      p={30}
+      bg="#fff"
+      borderRadius={5}
+    >
+      <Box margin="0 auto">
         <Header
           title="NETWORKS"
           subtitle="Connect network sites to get links"
         />
-        <VStack align="stretch">
+        <VStack
+          marginTop={5}
+          p="20px 10px"
+          border="1px solid #F1ECFE"
+          align="stretch"
+          spacing={3}
+        >
           <NetworkSite
             imageUrl={cj_logo}
             name="CJ"
@@ -24,6 +37,18 @@ function index() {
             name="Rakuten"
             subtitle="Connect with Rakuten network"
             endpoint="rakuten"
+          />
+          <NetworkSite
+            imageUrl={temp_logo}
+            name="Pepperjam"
+            subtitle="Connect with Pepperjam network"
+            endpoint={false}
+          />
+          <NetworkSite
+            imageUrl={temp_logo}
+            name="Impact"
+            subtitle="Connect with Impact network"
+            endpoint={false}
           />
         </VStack>
       </Box>

@@ -8,7 +8,7 @@ function MyApp({ Component, pageProps }) {
     <ChakraProvider>
       <Flex w="100%" h="100%">
         <Navigator position="fixed" />
-        <Layouts bg="#F0F0F0">
+        <Layouts bg="#F1ECFE">
           <Component {...pageProps} />
         </Layouts>
       </Flex>

@@ -34,8 +34,13 @@ export default function CopyTextToClipboard({ title, children }) {
 
       {/* When 'No Code Needed' or "No Image" received */}
       {children === "No Code Needed" || children === "No Image" ? (
-        <HStack {...styles} bg="#F0F0F0">
-          <Text whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">
+        <HStack {...styles} bg="#D6E0E8">
+          <Text
+            color="#95AFC4"
+            whiteSpace="nowrap"
+            overflow="hidden"
+            textOverflow="ellipsis"
+          >
             {children}
           </Text>
         </HStack>

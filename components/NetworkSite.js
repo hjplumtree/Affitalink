@@ -1,4 +1,4 @@
-import { Flex, Box, Text, Heading } from "@chakra-ui/react";
+import { Flex, Box, Text } from "@chakra-ui/react";
 import RouterLink from "./RouterLink";
 import Image from "next/image";
 
@@ -12,9 +12,22 @@ export default function NetworkSite({ imageUrl, name, subtitle, endpoint }) {
         </Text>
         <Text>{subtitle}</Text>
       </Box>
-      <Flex marginLeft="auto" bg="#4895ef" color="#fff" borderRadius={5}>
-        <RouterLink to={`/networks/${endpoint}`}>Connect</RouterLink>
-      </Flex>
+      {endpoint ? (
+        <Flex
+          marginLeft="auto"
+          border="1px solid #3A0CA3"
+          color="#3A0CA3"
+          borderRadius={5}
+        >
+          <RouterLink to={`/networks/${endpoint}`}>Setting</RouterLink>
+        </Flex>
+      ) : (
+        <Box p={1} borderRadius={5} marginLeft="auto" bg="#A3EED6">
+          <Text fontSize="xs" color="#1AD598">
+            Comming Soon
+          </Text>
+        </Box>
+      )}
     </Flex>
   );
 }

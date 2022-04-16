@@ -5,7 +5,7 @@ import extractImg from "../lib/extractImg";
 export default function LinksList({ links }) {
   const { page, data: link_arr } = links;
   return (
-    <VStack maxWidth="1000px" spacing={2}>
+    <VStack width="clamp(0px, 100%, 1000px)" spacing={2}>
       {link_arr &&
         link_arr.map((link) => (
           <Flex
@@ -17,6 +17,8 @@ export default function LinksList({ links }) {
             wrap="wrap"
             marginTop={3}
             bg="#fff"
+            shadow="base"
+            borderRadius={5}
           >
             <VStack align="baseline" flexBasis="300px" flexGrow={1}>
               <Code>{link["advertiser_name"]}</Code>

@@ -21,7 +21,13 @@ export default function Site() {
   const [rakutenInfo, setRakutenInfo] = useState(rakuten_initialState);
 
   return (
-    <Box>
+    <Box
+      width="clamp(0px, 100%, 1000px)"
+      borderRadius={5}
+      shadow="base"
+      p={30}
+      bg="#fff"
+    >
       {site === "cj" && (
         <NetworkInput
           info={cjInfo}

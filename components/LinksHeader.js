@@ -20,8 +20,14 @@ export default function LinksHeader({
   };
 
   return (
-    <Box p="60px 20px 30px" w="100%" bg="#fff">
-      <Box maxWidth="1000px" margin="0 auto">
+    <Box
+      borderRadius={5}
+      shadow="base"
+      p={30}
+      width="clamp(0px, 100%, 1000px)"
+      bg="#fff"
+    >
+      <Box margin="0 auto">
         <Box>
           <Flex justifyContent="space-between" alignItems="center">
             <Box>
@@ -30,7 +36,11 @@ export default function LinksHeader({
               </Heading>
               <Text>last update : 2022-03-27</Text>
             </Box>
-            <Button background="#4895EF" color="#fff" onClick={handleClick}>
+            <Button
+              border="1px solid #3a0ca3"
+              color="#3a0ca3"
+              onClick={handleClick}
+            >
               Fetch Links
             </Button>
           </Flex>
