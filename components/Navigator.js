@@ -1,9 +1,8 @@
 import { VStack, Box, Link, Text, Icon } from "@chakra-ui/react";
 import RouterLink from "./RouterLink";
 import Image from "next/image";
-import logo from "../public/link_reduced.png";
-import { FaNetworkWired, FaLink } from "react-icons/fa";
-import NextLink from "next/link";
+import logo from "../public/logo.svg";
+import { FaNetworkWired, FaLink, FaTachometerAlt } from "react-icons/fa";
 
 export default function Navigator({ ...rest }) {
   return (
@@ -16,14 +15,18 @@ export default function Navigator({ ...rest }) {
       borderRight="1px solid #e5e5e5"
       {...rest}
     >
-      <Box mb={2}>
-        <NextLink href="/" passHref>
-          <Link display="flex" alignItems="center" gap={3}>
-            <Image src={logo} alt="logo" width={30} height={30} />
-            <Text fontSize={20}>AffitaLinks</Text>
-          </Link>
-        </NextLink>
+      <Box display="flex" mb={5}>
+        <Image src={logo} alt="logo" width={30} height={30} />
+        <Text ml={2} fontSize={20}>
+          AffitaLinks
+        </Text>
       </Box>
+
+      <RouterLink to="/">
+        <Icon as={FaTachometerAlt} />
+        Dashboard
+      </RouterLink>
+
       <RouterLink to="/networks">
         <Icon as={FaNetworkWired} />
         Networks
