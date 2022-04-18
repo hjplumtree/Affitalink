@@ -1,10 +1,16 @@
-# Affiliate Offer Manager(fake name)
-A place to manage all offers from various network sites
+# Affitalink(strong candidate name)
+Check affiliate links in one place!
+CJ, Rakuten and more network sites will be connected
 
-Purpose of this project is simple enough. Saving your time.
-It's bothersome to login and hunt what you want among thousnads of offers.
+## Why you use it?
+- No need to sign everytime to see the links
+- See only advertisers at your choose
+- Click to copy tracking link & image link
+### => Saving time!
 
-## Starting with these network sites
+## Network sites are here
 - CJ
 - Rakuten marketing
+- ... and more
+- Contact me if you want to add but one should have API
 
