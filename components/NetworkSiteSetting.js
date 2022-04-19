@@ -39,6 +39,9 @@ export default function NetworkInput({
     if (localStorage.getItem(storageName)) {
       setInfo(JSON.parse(localStorage.getItem(storageName)));
     }
+    if (validate(inputs)) {
+      setError(false);
+    }
   }, []);
 
   const handleInputChange = (e) => {
@@ -122,9 +125,9 @@ export default function NetworkInput({
           </Box>
         ))}
         {error && (
-          <Alert status="error" borderRadius={5} size="lg">
+          <Alert status="warning" borderRadius={5}>
             <AlertIcon />
-            Please fill out all the fields
+            Please fill all the fields and connect again
           </Alert>
         )}
         <VStack mt={5} spacing={3} align="stretch">
