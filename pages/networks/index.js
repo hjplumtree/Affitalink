@@ -1,5 +1,5 @@
 import Header from "../../components/Header";
-import NetworkSite from "../../components/NetworkSite";
+import NetworkSiteList from "../../components/NetworkSiteList";
 import SectionBox from "../../components/SectionBox";
 import { Box, VStack } from "@chakra-ui/react";
 import cj_logo from "../../public/cj.png";
@@ -21,25 +21,25 @@ function index() {
           align="stretch"
           spacing={3}
         >
-          <NetworkSite
+          <NetworkSiteList
             imageUrl={cj_logo}
             name="CJ"
             subtitle="Connect with CJ network"
             endpoint="cj"
           />
-          <NetworkSite
+          <NetworkSiteList
             imageUrl={rakuten_logo}
             name="Rakuten"
             subtitle="Connect with Rakuten network"
             endpoint="rakuten"
           />
-          <NetworkSite
+          <NetworkSiteList
             imageUrl={temp_logo}
             name="Pepperjam"
             subtitle="Connect with Pepperjam network"
             endpoint={false}
           />
-          <NetworkSite
+          <NetworkSiteList
             imageUrl={temp_logo}
             name="Impact"
             subtitle="Connect with Impact network"

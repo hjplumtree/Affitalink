@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
-import NetworkInput from "../../components/NetworkInput";
+import NetworkSiteSetting from "../../components/NetworkSiteSetting";
 import SectionBox from "../../components/SectionBox";
 
 export default function Site() {
@@ -23,7 +23,7 @@ export default function Site() {
   return (
     <SectionBox>
       {site === "cj" && (
-        <NetworkInput
+        <NetworkSiteSetting
           info={cjInfo}
           setInfo={setCjInfo}
           networkName="CJ"
@@ -32,7 +32,7 @@ export default function Site() {
         />
       )}
       {site === "rakuten" && (
-        <NetworkInput
+        <NetworkSiteSetting
           info={rakutenInfo}
           setInfo={setRakutenInfo}
           networkName="RAKUTEN"

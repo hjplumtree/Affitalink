@@ -2,7 +2,12 @@ import { Flex, Box, Text } from "@chakra-ui/react";
 import RouterLink from "./RouterLink";
 import Image from "next/image";
 
-export default function NetworkSite({ imageUrl, name, subtitle, endpoint }) {
+export default function NetworkSiteList({
+  imageUrl,
+  name,
+  subtitle,
+  endpoint,
+}) {
   return (
     <Flex alignItems="center">
       <Image src={imageUrl} alt={name} width={30} height={30} />
