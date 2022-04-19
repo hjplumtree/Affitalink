@@ -3,16 +3,11 @@ import { fetchOffers } from "../lib/fetch";
 import { useState } from "react";
 
 export default function AdvertiserLists({ selectedNetwork, data }) {
-  // CURRENT :: comment out as not using AdvertiserLists yet
-  // TODO :: use in /networks/add page to select advertisers
-
-  // const [offers, setOffers] = useState([]);
-
-  // function handleClick(id) {
-  //   fetchLinks({ info: selectedNetwork.info, id }).then((offers) =>
-  //     setOffers(offers),
-  //   );
-  // }
+  function handleClick(id) {
+    fetchLinks({ info: selectedNetwork.info, id }).then((offers) =>
+      setOffers(offers),
+    );
+  }
 
   if (data.length === 0) {
     return <Loading />;

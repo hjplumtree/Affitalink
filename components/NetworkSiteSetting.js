@@ -16,7 +16,12 @@ import {
   AlertDialogContent,
   AlertDialogOverlay,
   useDisclosure,
+  FormLabel,
+  Alert,
+  AlertIcon,
 } from "@chakra-ui/react";
+
+import Header from "./Header";
 
 export default function NetworkInput({
   info,
@@ -26,6 +31,7 @@ export default function NetworkInput({
   initialState,
 }) {
   const [show, setShow] = useState(false);
+  const [error, setError] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef();
 
@@ -43,11 +49,28 @@ export default function NetworkInput({
     });
   };
 
-  const handleSave = () => {
-    if (info || localStorage.getItem(storageName)) {
-      localStorage.setItem(storageName, JSON.stringify(info));
+  const handleShow = () => {
+    setShow(!show);
+  };
+
+  const inputs = Object.entries(info);
+
+  const validate = (arr) => {
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i][1] === "") {
+        return false;
+      }
     }
-    console.log(localStorage);
+    return true;
+  };
+
+  const handleSave = () => {
+    if (validate(inputs)) {
+      setError(false);
+      localStorage.setItem(storageName, JSON.stringify(info));
+    } else {
+      setError(true);
+    }
   };
 
   const handleDelete = () => {
@@ -55,28 +78,29 @@ export default function NetworkInput({
     localStorage.removeItem(storageName);
   };
 
-  const handleShow = () => {
-    setShow(!show);
-  };
-
-  const inputs = Object.entries(info);
-
   return (
     <Box>
-      <Heading>{networkName}</Heading>
-      <FormControl>
+      <Header
+        title={networkName}
+        subtitle={`Connect ${networkName} and see only selected advertisers`}
+      />
+      <FormControl isRequired mt={5}>
         {inputs.map((input) => (
           <Box key={input[0]}>
-            <Text>{input[0].split("_").join(" ").toUpperCase()}</Text>
+            <FormLabel htmlFor={input[0]}>
+              {input[0].split("_").join(" ").toUpperCase()}
+            </FormLabel>
 
             {input[0] === "token" ? (
               <InputGroup>
                 <Input
+                  id={input[0]}
                   onChange={handleInputChange}
                   type={show ? "text" : "password"}
                   placehodler="Enter token"
                   value={info["token"]}
                   data-name="token"
+                  mb={3}
                 />
                 <InputRightElement width="4.5rem">
                   <Button h="1.75rem" size="sm" onClick={handleShow}>
@@ -85,22 +109,27 @@ export default function NetworkInput({
                 </InputRightElement>
               </InputGroup>
             ) : (
-              <Box>
-                <Input
-                  onChange={handleInputChange}
-                  type="text"
-                  placeholder={`Enter ${input[0].split("_").join(" ")}`}
-                  value={info[input[0]]}
-                  data-name={input[0]}
-                />
-              </Box>
+              <Input
+                id={input[0]}
+                onChange={handleInputChange}
+                type="text"
+                placeholder={`Enter ${input[0].split("_").join(" ")}`}
+                value={info[input[0]]}
+                data-name={input[0]}
+                mb={3}
+              />
             )}
           </Box>
         ))}
-
-        <VStack mt={3} spacing={3} align="stretch">
-          <Button variant="outline" colorScheme="blue" onClick={handleSave}>
-            Save
+        {error && (
+          <Alert status="error" borderRadius={5} size="lg">
+            <AlertIcon />
+            Please fill out all the fields
+          </Alert>
+        )}
+        <VStack mt={5} spacing={3} align="stretch">
+          <Button colorScheme="blue" onClick={handleSave}>
+            Connect
           </Button>
 
           <Button variant="outline" colorScheme="red" onClick={onOpen}>
