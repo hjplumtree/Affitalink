@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import { fecthAdvertisers } from "../lib/fetch";
 import {
   Box,
   Heading,
@@ -31,7 +32,7 @@ export default function NetworkInput({
   initialState,
 }) {
   const [show, setShow] = useState(false);
-  const [error, setError] = useState(false);
+  const [inputError, setInputError] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef();
 
@@ -40,7 +41,7 @@ export default function NetworkInput({
       setInfo(JSON.parse(localStorage.getItem(storageName)));
     }
     if (validate(inputs)) {
-      setError(false);
+      setInputError(false);
     }
   }, []);
 
@@ -69,10 +70,13 @@ export default function NetworkInput({
 
   const handleSave = () => {
     if (validate(inputs)) {
-      setError(false);
+      setInputError(false);
       localStorage.setItem(storageName, JSON.stringify(info));
+      fecthAdvertisers({ network: storageName, info: info }).then((data) =>
+        console.log(data),
+      );
     } else {
-      setError(true);
+      setInputError(true);
     }
   };
 
@@ -124,7 +128,7 @@ export default function NetworkInput({
             )}
           </Box>
         ))}
-        {error && (
+        {inputError && (
           <Alert status="warning" borderRadius={5}>
             <AlertIcon />
             Please fill all the fields and connect again
