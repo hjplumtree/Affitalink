@@ -1,9 +1,8 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import NetworkSiteSetting from "../../components/NetworkSiteSetting";
-import SectionBox from "../../components/SectionBox";
-import { Box } from "@chakra-ui/react";
 import AdvertiserLists from "../../components/AdvertiserLists";
+import { Box } from "@chakra-ui/react";
 
 export default function Site() {
   const router = useRouter();
@@ -22,9 +21,13 @@ export default function Site() {
   const [cjInfo, setCjInfo] = useState(cj_initialState);
   const [rakutenInfo, setRakutenInfo] = useState(rakuten_initialState);
   const [data, setData] = useState({
-    page: null,
+    page: 0,
     advertisers: [],
   });
+
+  /** TODO */
+  // localStorage에서 저장된 switch 값 가져오기
+  useEffect(() => {}, []);
   return (
     <Box>
       {site === "cj" && (
