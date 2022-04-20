@@ -50,7 +50,7 @@ export default function Site() {
           setData={setData}
         />
       )}
-      <AdvertiserLists data={data} />
+      <AdvertiserLists data={data} setData={setData} />
     </Box>
   );
 }
