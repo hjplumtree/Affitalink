@@ -1,41 +1,51 @@
-import Loading from "./Loading";
-import { fetchOffers } from "../lib/fetch";
-import { useState } from "react";
+import {
+  Divider,
+  VStack,
+  Text,
+  Alert,
+  AlertIcon,
+  Flex,
+  Box,
+  Switch,
+  Heading,
+} from "@chakra-ui/react";
+import Header from "./Header";
+import SectionBox from "./SectionBox";
 
-export default function AdvertiserLists({ selectedNetwork, data }) {
-  function handleClick(id) {
-    fetchLinks({ info: selectedNetwork.info, id }).then((offers) =>
-      setOffers(offers),
-    );
-  }
+export default function AdvertiserLists({ data }) {
+  const { page, advertisers } = data;
+  const alphabetical_advertisers = advertisers.sort((a, b) =>
+    a.name.localeCompare(b.name),
+  );
+  return (
+    <SectionBox mt={5}>
+      <Header
+        title="Advertisers"
+        subtitle="Choose advertisers to see only their links"
+        size="lg"
+      />
 
-  if (data.length === 0) {
-    return <Loading />;
-  } else {
-    const page = data.$;
-    const advertisers = data.advertiser;
+      {advertisers.length !== 0 ? (
+        <VStack align="stretch" justifyContent="center" mt={10}>
+          {advertisers.map((advertiser) => (
+            <Flex key={advertiser.id}>
+              <Box>
+                <Heading fontSize="md">{advertiser.name}</Heading>
+                <Text fontSize="sm" color="#95AFC4">
+                  #{advertiser.id}
+                </Text>
+              </Box>
 
-    return (
-      <main>
-        {advertisers.map((advertiser) => (
-          <div
-            onClick={() => handleClick(...advertiser["advertiser-id"])}
-            style={{ cursor: "pointer", border: "1px red solid" }}
-            key={advertiser["advertiser-id"]}
-          >
-            <div>{advertiser["advertiser-name"][0]}</div>
-            <div>id: {advertiser["advertiser-id"]}</div>
-            <div>Category: {advertiser["primary-category"][0]["parent"]}</div>
-            <br />
-            <div>EPC</div>
-            <div>
-              7-day: ${advertiser["seven-day-epc"][0]} / 3-month: $
-              {advertiser["three-month-epc"][0]}
-            </div>
-            <div></div>
-          </div>
-        ))}
-      </main>
-    );
-  }
+              <Switch colorScheme="purple" ml="auto" defaultChecked={true} />
+            </Flex>
+          ))}
+        </VStack>
+      ) : (
+        <Alert status="info" mt={10}>
+          <AlertIcon />
+          Once Connected, joined advertisers will be shown here
+        </Alert>
+      )}
+    </SectionBox>
+  );
 }

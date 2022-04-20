@@ -2,6 +2,8 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import NetworkSiteSetting from "../../components/NetworkSiteSetting";
 import SectionBox from "../../components/SectionBox";
+import { Box } from "@chakra-ui/react";
+import AdvertiserLists from "../../components/AdvertiserLists";
 
 export default function Site() {
   const router = useRouter();
@@ -19,9 +21,12 @@ export default function Site() {
   };
   const [cjInfo, setCjInfo] = useState(cj_initialState);
   const [rakutenInfo, setRakutenInfo] = useState(rakuten_initialState);
-
+  const [data, setData] = useState({
+    page: null,
+    advertisers: [],
+  });
   return (
-    <SectionBox>
+    <Box>
       {site === "cj" && (
         <NetworkSiteSetting
           info={cjInfo}
@@ -29,6 +34,7 @@ export default function Site() {
           networkName="CJ"
           storageName="cj"
           initialState={cj_initialState}
+          setData={setData}
         />
       )}
       {site === "rakuten" && (
@@ -38,8 +44,10 @@ export default function Site() {
           networkName="RAKUTEN"
           storageName="rakuten"
           initialState={rakuten_initialState}
+          setData={setData}
         />
       )}
-    </SectionBox>
+      <AdvertiserLists data={data} />
+    </Box>
   );
 }

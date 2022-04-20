@@ -2,8 +2,6 @@ import { useEffect, useState, useRef } from "react";
 import { fecthAdvertisers } from "../lib/fetch";
 import {
   Box,
-  Heading,
-  Text,
   Input,
   InputGroup,
   InputRightElement,
@@ -21,15 +19,16 @@ import {
   Alert,
   AlertIcon,
 } from "@chakra-ui/react";
+import SectionBox from "./SectionBox";
 
 import Header from "./Header";
-
 export default function NetworkInput({
   info,
   setInfo,
   networkName,
   storageName,
   initialState,
+  setData,
 }) {
   const [show, setShow] = useState(false);
   const [inputError, setInputError] = useState(false);
@@ -73,7 +72,7 @@ export default function NetworkInput({
       setInputError(false);
       localStorage.setItem(storageName, JSON.stringify(info));
       fecthAdvertisers({ network: storageName, info: info }).then((data) =>
-        console.log(data),
+        setData(data),
       );
     } else {
       setInputError(true);
@@ -86,10 +85,10 @@ export default function NetworkInput({
   };
 
   return (
-    <Box>
+    <SectionBox>
       <Header
         title={networkName}
-        subtitle={`Connect ${networkName} and see only selected advertisers`}
+        subtitle={`Enter correct information to Connect ${networkName}!`}
       />
       <FormControl isRequired mt={5}>
         {inputs.map((input) => (
@@ -178,6 +177,6 @@ export default function NetworkInput({
           </AlertDialog>
         </VStack>
       </FormControl>
-    </Box>
+    </SectionBox>
   );
 }
