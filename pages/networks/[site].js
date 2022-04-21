@@ -25,7 +25,6 @@ export default function Site() {
   const [auth, setAuth] = useState(null);
 
   useEffect(() => {
-    console.log(localStorage);
     if (!router.isReady) return;
     const current_data = { ...JSON.parse(localStorage.getItem(site)) };
     if (current_data["auth"]) {
