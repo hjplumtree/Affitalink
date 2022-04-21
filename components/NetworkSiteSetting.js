@@ -23,12 +23,13 @@ import SectionBox from "./SectionBox";
 
 import Header from "./Header";
 export default function NetworkInput({
-  info,
-  setInfo,
   networkName,
   storageName,
-  initialState,
+  initializeAuth,
   setData,
+  saveAuthToDB,
+  auth,
+  setAuth,
 }) {
   const [show, setShow] = useState(false);
   const [inputError, setInputError] = useState(false);
@@ -36,16 +37,13 @@ export default function NetworkInput({
   const cancelRef = useRef();
 
   useEffect(() => {
-    if (localStorage.getItem(storageName)) {
-      setInfo(JSON.parse(localStorage.getItem(storageName)));
-    }
     if (validate(inputs)) {
       setInputError(false);
     }
   }, []);
 
   const handleInputChange = (e) => {
-    setInfo((prevState) => {
+    setAuth((prevState) => {
       const newState = { ...prevState };
       newState[e.target.dataset.name] = e.target.value;
       return newState;
@@ -56,7 +54,7 @@ export default function NetworkInput({
     setShow(!show);
   };
 
-  const inputs = Object.entries(info);
+  const inputs = Object.entries(auth);
 
   const validate = (arr) => {
     for (let i = 0; i < arr.length; i++) {
@@ -67,11 +65,13 @@ export default function NetworkInput({
     return true;
   };
 
-  const handleSave = () => {
+  const handleConnect = (auth) => {
+    // window.localStorage.clear();
     if (validate(inputs)) {
       setInputError(false);
-      localStorage.setItem(storageName, JSON.stringify(info));
-      fecthAdvertisers({ network: storageName, info: info }).then((data) =>
+
+      saveAuthToDB(auth);
+      fecthAdvertisers({ network: storageName, info: auth }).then((data) =>
         setData(data),
       );
     } else {
@@ -80,8 +80,7 @@ export default function NetworkInput({
   };
 
   const handleDelete = () => {
-    setInfo(initialState);
-    localStorage.removeItem(storageName);
+    initializeAuth();
   };
 
   return (
@@ -104,7 +103,7 @@ export default function NetworkInput({
                   onChange={handleInputChange}
                   type={show ? "text" : "password"}
                   placehodler="Enter token"
-                  value={info["token"]}
+                  value={auth["token"]}
                   data-name="token"
                   mb={3}
                 />
@@ -120,7 +119,7 @@ export default function NetworkInput({
                 onChange={handleInputChange}
                 type="text"
                 placeholder={`Enter ${input[0].split("_").join(" ")}`}
-                value={info[input[0]]}
+                value={auth[input[0]]}
                 data-name={input[0]}
                 mb={3}
               />
@@ -134,7 +133,7 @@ export default function NetworkInput({
           </Alert>
         )}
         <VStack mt={5} spacing={3} align="stretch">
-          <Button colorScheme="blue" onClick={handleSave}>
+          <Button colorScheme="blue" onClick={() => handleConnect(auth)}>
             Connect
           </Button>
 

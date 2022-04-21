@@ -18,39 +18,57 @@ export default function Site() {
     client_id: "",
     client_secret: "",
   };
-  const [cjInfo, setCjInfo] = useState(cj_initialState);
-  const [rakutenInfo, setRakutenInfo] = useState(rakuten_initialState);
   const [data, setData] = useState({
     page: 0,
     advertisers: [],
   });
+  const [auth, setAuth] = useState(null);
 
-  /** TODO */
-  // localStorage에서 저장된 switch 값 가져오기
-  useEffect(() => {}, []);
+  useEffect(() => {
+    console.log(localStorage);
+    if (!router.isReady) return;
+    const current_data = { ...JSON.parse(localStorage.getItem(site)) };
+    if (current_data["auth"]) {
+      setAuth(current_data["auth"]);
+    } else {
+      initializeAuth();
+    }
+  }, [router.isReady]);
+
+  const saveAuthToDB = (info) => {
+    const current_data = { ...JSON.parse(localStorage.getItem(site)) };
+    const updated_data = { ...current_data };
+    updated_data["auth"] = info;
+    localStorage.setItem(site, JSON.stringify(updated_data));
+  };
+
+  const initializeAuth = () => {
+    if (site === "cj") {
+      setAuth(cj_initialState);
+      saveAuthToDB(cj_initialState);
+    } else if (site === "rakuten") {
+      setAuth(rakuten_initialState);
+      saveAuthToDB(rakuten_initialState);
+    }
+  };
+
   return (
-    <Box>
-      {site === "cj" && (
-        <NetworkSiteSetting
-          info={cjInfo}
-          setInfo={setCjInfo}
-          networkName="CJ"
-          storageName="cj"
-          initialState={cj_initialState}
-          setData={setData}
-        />
+    <>
+      {auth && (
+        <Box>
+          <NetworkSiteSetting
+            networkName={site.toUpperCase()}
+            storageName={site}
+            initializeAuth={initializeAuth}
+            setData={setData}
+            saveAuthToDB={saveAuthToDB}
+            auth={auth}
+            setAuth={setAuth}
+          />
+
+          <AdvertiserLists data={data} setData={setData} />
+        </Box>
       )}
-      {site === "rakuten" && (
-        <NetworkSiteSetting
-          info={rakutenInfo}
-          setInfo={setRakutenInfo}
-          networkName="RAKUTEN"
-          storageName="rakuten"
-          initialState={rakuten_initialState}
-          setData={setData}
-        />
-      )}
-      <AdvertiserLists data={data} setData={setData} />
-    </Box>
+    </>
   );
 }

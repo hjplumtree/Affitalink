@@ -13,9 +13,7 @@ import SectionBox from "./SectionBox";
 
 export default function AdvertiserLists({ data, setData }) {
   const { page, advertisers } = data;
-  const alphabetical_advertisers = advertisers.sort((a, b) =>
-    a.name.localeCompare(b.name),
-  );
+  advertisers.sort((a, b) => a.name.localeCompare(b.name));
 
   const handleToggle = (index) => {
     advertisers[index].isChecked = !advertisers[index].isChecked;
@@ -28,7 +26,7 @@ export default function AdvertiserLists({ data, setData }) {
     <SectionBox mt={5}>
       <Header
         title="Advertisers"
-        subtitle="Choose advertisers to see only their links"
+        subtitle="Choose advertisers and see only selected links"
         size="lg"
       />
 
