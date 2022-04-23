@@ -103,7 +103,7 @@ export default function NetworkInput({
                   id={input[0]}
                   onChange={handleInputChange}
                   type={show ? "text" : "password"}
-                  placehodler="Enter token"
+                  placeholder="Enter token"
                   value={auth["token"]}
                   data-name="token"
                   mb={3}
