@@ -18,13 +18,18 @@ export default function Site() {
     client_id: "",
     client_secret: "",
   };
-  const [data, setData] = useState({
+
+  const data_initialState = {
     page: 0,
     advertisers: [],
-  });
+  };
+  const [data, setData] = useState(data_initialState);
+
   const [auth, setAuth] = useState(null);
 
   useEffect(() => {
+    console.log(localStorage);
+    // localStorage.removeItem("undefined");
     if (!router.isReady) return;
     const current_data = { ...JSON.parse(localStorage.getItem(site)) };
     if (current_data["auth"]) {
@@ -32,12 +37,32 @@ export default function Site() {
     } else {
       initializeAuth();
     }
+    if (current_data["advertisers"]) {
+      setData(current_data["advertisers"]);
+    }
   }, [router.isReady]);
+
+  useEffect(() => {
+    const current_data = { ...JSON.parse(localStorage.getItem(site)) };
+    if (
+      Object.keys(current_data).length !== 0 &&
+      current_data["advertisers"].length !== 0
+    ) {
+      saveAdvertisersToDB(data);
+    }
+  }, [data]);
 
   const saveAuthToDB = (info) => {
     const current_data = { ...JSON.parse(localStorage.getItem(site)) };
     const updated_data = { ...current_data };
     updated_data["auth"] = info;
+    localStorage.setItem(site, JSON.stringify(updated_data));
+  };
+
+  const saveAdvertisersToDB = (info) => {
+    const current_data = { ...JSON.parse(localStorage.getItem(site)) };
+    const updated_data = { ...current_data };
+    updated_data["advertisers"] = info;
     localStorage.setItem(site, JSON.stringify(updated_data));
   };
 
@@ -63,6 +88,7 @@ export default function Site() {
             saveAuthToDB={saveAuthToDB}
             auth={auth}
             setAuth={setAuth}
+            data_initialState={data_initialState}
           />
 
           <AdvertiserLists data={data} setData={setData} />
