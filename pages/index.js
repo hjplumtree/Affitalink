@@ -1,6 +1,6 @@
 import SectionBox from "../components/SectionBox";
 import Header from "../components/Header";
-import { VStack, Heading, Divider } from "@chakra-ui/react";
+import { VStack, Heading } from "@chakra-ui/react";
 
 export default function Home() {
   return (

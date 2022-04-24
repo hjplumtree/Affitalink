@@ -1,4 +1,4 @@
-import { VStack, Box, Link, Text, Icon } from "@chakra-ui/react";
+import { VStack, Box, Text, Icon } from "@chakra-ui/react";
 import RouterLink from "./RouterLink";
 import Image from "next/image";
 import logo from "../public/logo.svg";
