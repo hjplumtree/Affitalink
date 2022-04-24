@@ -20,7 +20,7 @@ import {
   AlertIcon,
 } from "@chakra-ui/react";
 import SectionBox from "./SectionBox";
-
+import Loading from "./Loading";
 import Header from "./Header";
 export default function NetworkInput({
   networkName,
@@ -34,6 +34,7 @@ export default function NetworkInput({
 }) {
   const [show, setShow] = useState(false);
   const [inputError, setInputError] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef();
 
@@ -68,12 +69,14 @@ export default function NetworkInput({
 
   const handleConnect = (auth) => {
     if (validate(inputs)) {
+      setLoading(true);
       setInputError(false);
 
       saveAuthToDB(auth);
-      fecthAdvertisers({ network: storageName, info: auth }).then((data) =>
-        setData(data),
-      );
+      fecthAdvertisers({ network: storageName, info: auth }).then((data) => {
+        setData(data);
+        setLoading(false);
+      });
     } else {
       setInputError(true);
     }
@@ -177,6 +180,7 @@ export default function NetworkInput({
           </AlertDialog>
         </VStack>
       </FormControl>
+      <Loading loading={loading} />
     </SectionBox>
   );
 }
