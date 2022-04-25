@@ -25,12 +25,12 @@ import Header from "./Header";
 export default function NetworkInput({
   networkName,
   storageName,
-  initializeAuth,
-  setData,
+  deleteLocal,
+  setAdvertisers,
   saveAuthToDB,
   auth,
   setAuth,
-  advertiser_initialState,
+  advertisers_initialState,
 }) {
   const [show, setShow] = useState(false);
   const [inputError, setInputError] = useState(false);
@@ -74,7 +74,7 @@ export default function NetworkInput({
 
       saveAuthToDB(auth);
       fecthAdvertisers({ network: storageName, info: auth }).then((data) => {
-        setData(data);
+        setAdvertisers(data);
         setLoading(false);
       });
     } else {
@@ -83,8 +83,8 @@ export default function NetworkInput({
   };
 
   const handleDelete = () => {
-    initializeAuth();
-    setData(advertiser_initialState);
+    deleteLocal();
+    setAdvertisers(advertisers_initialState);
   };
 
   return (

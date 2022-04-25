@@ -11,8 +11,8 @@ import {
 import Header from "./Header";
 import SectionBox from "./SectionBox";
 
-export default function AdvertiserLists({ data, setData }) {
-  const { page, advertisers_info } = data;
+export default function AdvertiserLists({ advertisers, setAdvertisers }) {
+  const { page, advertisers_info } = advertisers;
 
   const alphabetical_sort = (arr) => {
     return arr.sort((a, b) => a.name.localeCompare(b.name));
@@ -20,9 +20,8 @@ export default function AdvertiserLists({ data, setData }) {
 
   const handleToggle = (index) => {
     advertisers_info[index].isChecked = !advertisers_info[index].isChecked;
-    setData({
-      ...data,
-      ...advertisers_info,
+    setAdvertisers({
+      ...advertisers,
     });
   };
   return (
@@ -33,7 +32,7 @@ export default function AdvertiserLists({ data, setData }) {
         size="lg"
       />
 
-      {data ? (
+      {advertisers ? (
         advertisers_info.length !== 0 ? (
           <VStack align="stretch" justifyContent="center" mt={5}>
             {alphabetical_sort(advertisers_info).map((advertiser, index) => (

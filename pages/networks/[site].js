@@ -19,14 +19,15 @@ export default function Site() {
     client_secret: "",
   };
 
-  const advertiser_initialState = {
+  const advertisers_initialState = {
     page: 0,
     advertisers_info: [],
   };
-  const [data, setData] = useState(advertiser_initialState);
+  const [advertisers, setAdvertisers] = useState(advertisers_initialState);
   const [auth, setAuth] = useState(null);
 
   useEffect(() => {
+    // localStorage.clear();
     if (!router.isReady) return;
     const current_data = { ...JSON.parse(localStorage.getItem(site)) };
     if (current_data["auth"]) {
@@ -35,16 +36,22 @@ export default function Site() {
       initializeAuth();
     }
     if (current_data["advertisers"]) {
-      setData(current_data["advertisers"]);
+      setAdvertisers(current_data["advertisers"]);
+    } else {
+      initializeAdvertisers();
     }
   }, [router.isReady]);
 
   useEffect(() => {
-    const current_data = { ...JSON.parse(localStorage.getItem(site)) };
-    if (Object.keys(current_data).length !== 0) {
-      saveAdvertisersToDB(data);
-    }
-  }, [data]);
+    if (advertisers["advertisers_info"].length === 0) return;
+    saveAdvertisersToDB(advertisers);
+  }, [advertisers]);
+
+  useEffect(() => {
+    if (!auth) return;
+    if (Object.values(auth)[0] === "") return;
+    saveAuthToDB(advertisers);
+  }, [auth]);
 
   const saveAuthToDB = (info) => {
     const current_data = { ...JSON.parse(localStorage.getItem(site)) };
@@ -63,11 +70,19 @@ export default function Site() {
   const initializeAuth = () => {
     if (site === "cj") {
       setAuth(cj_initialState);
-      saveAuthToDB(cj_initialState);
+      // saveAuthToDB(cj_initialState);
     } else if (site === "rakuten") {
       setAuth(rakuten_initialState);
-      saveAuthToDB(rakuten_initialState);
+      // saveAuthToDB(rakuten_initialState);
     }
+  };
+
+  const initializeAdvertisers = () => {
+    setAdvertisers(advertisers_initialState);
+  };
+
+  const deleteLocal = (storageName) => {
+    localStorage.removeItem(storageName);
   };
 
   return (
@@ -77,15 +92,18 @@ export default function Site() {
           <NetworkSiteSetting
             networkName={site.toUpperCase()}
             storageName={site}
-            initializeAuth={initializeAuth}
-            setData={setData}
+            deleteLocal={deleteLocal}
+            setAdvertisers={setAdvertisers}
             saveAuthToDB={saveAuthToDB}
             auth={auth}
             setAuth={setAuth}
-            advertiser_initialState={advertiser_initialState}
+            advertisers_initialState={advertisers_initialState}
           />
 
-          <AdvertiserLists data={data} setData={setData} />
+          <AdvertiserLists
+            advertisers={advertisers}
+            setAdvertisers={setAdvertisers}
+          />
         </Box>
       )}
     </>
