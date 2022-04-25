@@ -19,12 +19,11 @@ export default function Site() {
     client_secret: "",
   };
 
-  const data_initialState = {
+  const advertiser_initialState = {
     page: 0,
-    advertisers: [],
+    advertisers_info: [],
   };
-  const [data, setData] = useState(data_initialState);
-
+  const [data, setData] = useState(advertiser_initialState);
   const [auth, setAuth] = useState(null);
 
   useEffect(() => {
@@ -42,10 +41,7 @@ export default function Site() {
 
   useEffect(() => {
     const current_data = { ...JSON.parse(localStorage.getItem(site)) };
-    if (
-      Object.keys(current_data).length !== 0 &&
-      current_data["advertisers"].length !== 0
-    ) {
+    if (Object.keys(current_data).length !== 0) {
       saveAdvertisersToDB(data);
     }
   }, [data]);
@@ -86,7 +82,7 @@ export default function Site() {
             saveAuthToDB={saveAuthToDB}
             auth={auth}
             setAuth={setAuth}
-            data_initialState={data_initialState}
+            advertiser_initialState={advertiser_initialState}
           />
 
           <AdvertiserLists data={data} setData={setData} />

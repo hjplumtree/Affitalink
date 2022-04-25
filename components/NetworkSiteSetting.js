@@ -30,7 +30,7 @@ export default function NetworkInput({
   saveAuthToDB,
   auth,
   setAuth,
-  data_initialState,
+  advertiser_initialState,
 }) {
   const [show, setShow] = useState(false);
   const [inputError, setInputError] = useState(false);
@@ -84,7 +84,7 @@ export default function NetworkInput({
 
   const handleDelete = () => {
     initializeAuth();
-    setData(data_initialState);
+    setData(advertiser_initialState);
   };
 
   return (

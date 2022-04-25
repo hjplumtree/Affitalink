@@ -5,15 +5,12 @@ import SectionBox from "./SectionBox";
 
 export default function LinksHeader({
   networkSites,
-  setData,
+  fetchOffers,
   selectedNetwork,
   setSelectedNetwork,
 }) {
   const handleClick = () => {
-    const { name, info: network_info } = selectedNetwork;
-    fetchLinks({ info: network_info, network: name }).then((data) => {
-      setData(data);
-    });
+    fetchOffers();
   };
 
   const handleChange = (e) => {
