@@ -67,12 +67,11 @@ export default function NetworkInput({
     return true;
   };
 
-  const handleConnect = (auth) => {
+  const handleConnect = () => {
     if (validate(inputs)) {
       setLoading(true);
       setInputError(false);
 
-      saveAuthToDB(auth);
       fecthAdvertisers({ network: storageName, info: auth }).then((data) => {
         setAdvertisers(data);
         setLoading(false);
@@ -137,7 +136,7 @@ export default function NetworkInput({
           </Alert>
         )}
         <VStack mt={5} spacing={3} align="stretch">
-          <Button colorScheme="blue" onClick={() => handleConnect(auth)}>
+          <Button colorScheme="blue" onClick={handleConnect}>
             Connect
           </Button>
 

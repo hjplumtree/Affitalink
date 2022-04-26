@@ -53,10 +53,10 @@ export default function Site() {
     saveAuthToDB(advertisers);
   }, [auth]);
 
-  const saveAuthToDB = (info) => {
+  const saveAuthToDB = () => {
     const current_data = { ...JSON.parse(localStorage.getItem(site)) };
     const updated_data = { ...current_data };
-    updated_data["auth"] = info;
+    updated_data["auth"] = auth;
     localStorage.setItem(site, JSON.stringify(updated_data));
   };
 
@@ -70,10 +70,8 @@ export default function Site() {
   const initializeAuth = () => {
     if (site === "cj") {
       setAuth(cj_initialState);
-      // saveAuthToDB(cj_initialState);
     } else if (site === "rakuten") {
       setAuth(rakuten_initialState);
-      // saveAuthToDB(rakuten_initialState);
     }
   };
 
