@@ -1,5 +1,4 @@
 import uppercaseFirstLetter from "../lib/uppercase";
-import { fetchLinks } from "../lib/fetch";
 import { Box, Heading, Text, Button, Select, Flex } from "@chakra-ui/react";
 import SectionBox from "./SectionBox";
 

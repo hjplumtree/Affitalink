@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import LinksHeader from "../components/LinksHeader";
 import LinksList from "../components/LinksList";
 import { VStack } from "@chakra-ui/react";
+import { fetchLinks } from "../lib/fetch";
 
 export default function LinksPage() {
   const [offer, setOffer] = useState([]);
@@ -22,14 +23,19 @@ export default function LinksPage() {
   }, []);
 
   const fetchOffers = () => {
-    const {
-      name,
-      data: { advertisers },
-    } = selectedNetwork;
-    console.log(advertisers);
-    // fetchLinks({ info: network_info, network: name }).then((data) => {
-    //   setOffer(data);
-    // });
+    const { name, data } = selectedNetwork;
+    const { auth } = data;
+    const advertiser_ids = data["advertisers"]["advertisers_info"]
+      .filter((advertiser) => advertiser.isChecked)
+      .map((advertiser) => advertiser.id);
+
+    fetchLinks({
+      auth: auth,
+      network: name,
+      ids: advertiser_ids.join(","),
+    }).then((data) => {
+      setOffer(data);
+    });
   };
 
   return (
