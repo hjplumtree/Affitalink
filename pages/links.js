@@ -5,7 +5,7 @@ import { VStack } from "@chakra-ui/react";
 import { fetchLinks } from "../lib/fetch";
 
 export default function LinksPage() {
-  const [offer, setOffer] = useState([]);
+  const [links, setLinks] = useState([]);
   const [networkSites, setNetworkSites] = useState([]);
   const [selectedNetwork, setSelectedNetwork] = useState(null);
 
@@ -17,9 +17,13 @@ export default function LinksPage() {
         sites.push({ name: key, data: parsedValue });
       }
     }
-    console.log(sites);
     setNetworkSites(sites);
     setSelectedNetwork(sites[0]);
+
+    if ("offers" in JSON.parse(localStorage.getItem(sites[0].name))) {
+      const data = getOffersFromDB(sites[0].name);
+      setLinks(data);
+    }
   }, []);
 
   const fetchOffers = () => {
@@ -34,8 +38,32 @@ export default function LinksPage() {
       network: name,
       ids: advertiser_ids.join(","),
     }).then((data) => {
-      setOffer(data);
+      setLinks(data);
     });
+  };
+
+  useEffect(() => {
+    if (!selectedNetwork) return;
+    saveOffersToDB();
+  }, [links]);
+
+  useEffect(() => {
+    if (!selectedNetwork) return;
+    const data = getOffersFromDB(selectedNetwork.name);
+    setLinks(data);
+  }, [selectedNetwork]);
+
+  const saveOffersToDB = () => {
+    const { name } = selectedNetwork;
+    const current_data = { ...JSON.parse(localStorage.getItem(name)) };
+    const updated_data = { ...current_data };
+    updated_data["offers"] = links;
+    localStorage.setItem(name, JSON.stringify(updated_data));
+  };
+
+  const getOffersFromDB = (network_name) => {
+    const { offers } = { ...JSON.parse(localStorage.getItem(network_name)) };
+    return offers;
   };
 
   return (
@@ -46,7 +74,7 @@ export default function LinksPage() {
         setSelectedNetwork={setSelectedNetwork}
         fetchOffers={fetchOffers}
       />
-      <LinksList links={offer} />
+      <LinksList links={links} />
     </VStack>
   );
 }
