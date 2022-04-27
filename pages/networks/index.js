@@ -22,16 +22,16 @@ function index() {
           spacing={3}
         >
           <NetworkSiteList
-            imageUrl={cj_logo}
-            name="CJ"
-            subtitle="Connect with CJ network"
-            endpoint="cj"
-          />
-          <NetworkSiteList
             imageUrl={rakuten_logo}
             name="Rakuten"
             subtitle="Connect with Rakuten network"
             endpoint="rakuten"
+          />
+          <NetworkSiteList
+            imageUrl={cj_logo}
+            name="CJ"
+            subtitle="Connect with CJ network"
+            endpoint="cj"
           />
           <NetworkSiteList
             imageUrl={temp_logo}
