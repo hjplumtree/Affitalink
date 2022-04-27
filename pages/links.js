@@ -41,7 +41,6 @@ export default function LinksPage() {
       ids: advertiser_ids,
     }).then((data) => {
       setLinks(data);
-      console.log(data);
       setLoading(false);
     });
   };
