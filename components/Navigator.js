@@ -24,7 +24,7 @@ export default function Navigator({ ...rest }) {
 
       <RouterLink to="/">
         <Icon as={FaTachometerAlt} />
-        Dashboard
+        Home
       </RouterLink>
 
       <RouterLink to="/networks">
