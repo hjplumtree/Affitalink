@@ -27,7 +27,6 @@ export default function Site() {
   const [auth, setAuth] = useState(null);
 
   useEffect(() => {
-    // localStorage.clear();
     if (!router.isReady) return;
     const current_data = { ...JSON.parse(localStorage.getItem(site)) };
     if (current_data["auth"]) {
@@ -92,7 +91,6 @@ export default function Site() {
             storageName={site}
             deleteLocal={deleteLocal}
             setAdvertisers={setAdvertisers}
-            saveAuthToDB={saveAuthToDB}
             auth={auth}
             setAuth={setAuth}
             advertisers_initialState={advertisers_initialState}

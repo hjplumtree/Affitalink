@@ -27,7 +27,6 @@ export default function NetworkInput({
   storageName,
   deleteLocal,
   setAdvertisers,
-  saveAuthToDB,
   auth,
   setAuth,
   advertisers_initialState,
