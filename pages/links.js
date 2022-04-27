@@ -3,11 +3,12 @@ import LinksHeader from "../components/LinksHeader";
 import LinksList from "../components/LinksList";
 import { VStack } from "@chakra-ui/react";
 import { fetchLinks } from "../lib/fetch";
-
+import Loading from "../components/Loading";
 export default function LinksPage() {
   const [links, setLinks] = useState([]);
   const [networkSites, setNetworkSites] = useState([]);
   const [selectedNetwork, setSelectedNetwork] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     let sites = [];
@@ -27,6 +28,7 @@ export default function LinksPage() {
   }, []);
 
   const fetchOffers = () => {
+    setLoading(true);
     const { name, data } = selectedNetwork;
     const { auth } = data;
     const advertiser_ids = data["advertisers"]["advertisers_info"]
@@ -36,9 +38,11 @@ export default function LinksPage() {
     fetchLinks({
       auth: auth,
       network: name,
-      ids: advertiser_ids.join(","),
+      ids: advertiser_ids,
     }).then((data) => {
       setLinks(data);
+      console.log(data);
+      setLoading(false);
     });
   };
 
@@ -75,6 +79,7 @@ export default function LinksPage() {
         fetchOffers={fetchOffers}
       />
       <LinksList links={links} />
+      <Loading loading={loading} />
     </VStack>
   );
 }
