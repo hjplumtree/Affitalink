@@ -1,22 +1,30 @@
 import SectionBox from "../components/SectionBox";
-import Header from "../components/Header";
-import { VStack, Heading } from "@chakra-ui/react";
+import { VStack, Heading, Link, Text } from "@chakra-ui/react";
 
 export default function Home() {
   return (
     <VStack>
-      <SectionBox>
-        <Header title="Welcome to Affitalink" />
-      </SectionBox>
-      <SectionBox>
+      <SectionBox borderLeft="5px #1AD598 solid">
         <Heading size="lg" mb={7}>
-          Now is beta, feel free to use and feedback 😄
+          Welcome to Affitalink 👋
         </Heading>
-        <Heading size="lg">1. Connect networks like CJ and Rakuten</Heading>
-        <Heading size="lg">2. Get tracking links</Heading>
-        <Heading size="lg">
-          Also find coupon code, description, image link ... etc
-        </Heading>
+        <Text fontSize="sm">
+          This is beta service, feel free to use. Appreciate your feedback via{" "}
+          <Link href="https://twitter.com/hjplumtree" color="#1DA1F2">
+            Twitter
+          </Link>
+        </Text>
+        <br />
+        <Text fontSize="sm">1. Connect networks (Rakuten, CJ so far)</Text>
+        <br />
+        <Text fontSize="sm">2. Filter advertisers only you want to see</Text>
+        <br />
+        <Text fontSize="sm">3. Check offer title, description</Text>
+        <br />
+        <Text fontSize="sm">4. Copy tracking link, promo code, image url</Text>
+      </SectionBox>
+      <SectionBox borderLeft="5px #3A0CA3 solid">
+        <Heading size="md"></Heading>
       </SectionBox>
     </VStack>
   );
