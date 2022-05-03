@@ -6,21 +6,16 @@ import SectionBox from "./SectionBox";
 export default function LinksList({ links }) {
   const { page, data: link_arr } = links;
   return (
-    <SectionBox>
-      <VStack width="clamp(0px, 100%, 1000px)" spacing={2}>
-        {link_arr &&
-          link_arr.map((link) => (
+    <VStack width="clamp(0px, 100%, 1000px)" spacing={2} bg="transparent">
+      {link_arr &&
+        link_arr.map((link) => (
+          <SectionBox key={link["link_id"]}>
             <Flex
-              key={link["link_id"]}
               justifyContent="space-between"
               w="100%"
               p={5}
               gap={8}
               wrap="wrap"
-              marginTop={3}
-              bg="#fff"
-              shadow="base"
-              borderRadius={5}
             >
               <VStack align="baseline" flexBasis="300px" flexGrow={1}>
                 <Code>{link["advertiser_name"]}</Code>
@@ -28,9 +23,6 @@ export default function LinksList({ links }) {
                 <Text fontSize="sm">{link["description"]}</Text>
               </VStack>
               <VStack align="baseline" width="200px">
-                {/* TODO */}
-                {/* Click to copy text*/}
-                {/*  */}
                 <CopyTextToClipboard title="Coupon code">
                   {link["coupon_code"] === ""
                     ? "No Code Needed"
@@ -48,8 +40,8 @@ export default function LinksList({ links }) {
                 </CopyTextToClipboard>
               </VStack>
             </Flex>
-          ))}
-      </VStack>
-    </SectionBox>
+          </SectionBox>
+        ))}
+    </VStack>
   );
 }
