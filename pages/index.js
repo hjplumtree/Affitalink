@@ -1,7 +1,6 @@
 import SectionBox from "../components/SectionBox";
 import { VStack, Heading, Link, Text, Button } from "@chakra-ui/react";
 import RouterLink from "../components/RouterLink";
-import { FaNetworkWired, FaLink, FaTachometerAlt } from "react-icons/fa";
 
 export default function Home() {
   return (
