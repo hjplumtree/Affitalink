@@ -1,5 +1,7 @@
 import SectionBox from "../components/SectionBox";
-import { VStack, Heading, Link, Text } from "@chakra-ui/react";
+import { VStack, Heading, Link, Text, Button } from "@chakra-ui/react";
+import RouterLink from "../components/RouterLink";
+import { FaNetworkWired, FaLink, FaTachometerAlt } from "react-icons/fa";
 
 export default function Home() {
   return (
@@ -24,7 +26,36 @@ export default function Home() {
         <Text fontSize="sm">4. Copy tracking link, promo code, image url</Text>
       </SectionBox>
       <SectionBox borderLeft="5px #3A0CA3 solid">
-        <Heading size="md"></Heading>
+        <Heading size="sm" mb={7}>
+          Network sites are ready to be connected!
+        </Heading>
+        <Text fontSize="sm">
+          You must already be an affiliate to a network site to connect. for
+          example,{" "}
+          <Link
+            href="https://rakutenadvertising.com/partners/publishers/"
+            color="#1DA1F2"
+          >
+            Rakuten Affiliate Publisher
+          </Link>
+        </Text>
+        <Text fontSize="sm" mb={6}>
+          {`If you're already a partner with CJ or Rakuten, connect right
+          away!`}
+        </Text>
+        <RouterLink
+          border="1px #3A0CA3 solid"
+          color="#3A0CA3"
+          bg="#F1ECFE"
+          borderRadius={5}
+          padding={2}
+          to="/networks"
+          display="inline"
+          fontSize="md"
+          fontWeight="bold"
+        >
+          Connect Network Site
+        </RouterLink>
       </SectionBox>
     </VStack>
   );
