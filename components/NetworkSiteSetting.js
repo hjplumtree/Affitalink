@@ -151,11 +151,11 @@ export default function NetworkInput({
             <AlertDialogOverlay>
               <AlertDialogContent>
                 <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                  Delete {networkName}
+                  DELETE
                 </AlertDialogHeader>
 
                 <AlertDialogBody>
-                  Are you sure you want to delete all infomation?
+                  Are you sure you want to delete {networkName} infomation?
                 </AlertDialogBody>
 
                 <AlertDialogFooter>
@@ -177,6 +177,11 @@ export default function NetworkInput({
             </AlertDialogOverlay>
           </AlertDialog>
         </VStack>
+        <Alert status="warning" fontSize="xs" mt={5}>
+          <AlertIcon />
+          Information you provided will be saved in your computer. Make sure to
+          click delete if you need.
+        </Alert>
       </FormControl>
       <Loading loading={loading} />
     </SectionBox>

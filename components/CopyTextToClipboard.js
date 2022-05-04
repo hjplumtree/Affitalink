@@ -50,7 +50,7 @@ export default function CopyTextToClipboard({ title, children }) {
             cursor="pointer"
             {...styles}
             bg="#F1ECFE"
-            border="1px dashed #3A0CA3"
+            border="1px dashed #AD8DF7"
           >
             <Icon as={FaCopy} color="#3A0CA3" />
             <Text
