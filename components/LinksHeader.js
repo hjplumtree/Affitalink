@@ -38,15 +38,19 @@ export default function LinksHeader({
       {networkSites.length !== 0 ? (
         <Box margin="0 auto" mt={3}>
           <Box>
-            <Flex justifyContent="space-between" alignItems="center">
-              <Box>
-                <Heading>
-                  {selectedNetwork &&
-                    uppercaseFirstLetter(selectedNetwork.name)}
-                </Heading>
-
-                {/* Fetch date comment out for now */}
-                {/* <Text>last update : 2022-03-27</Text> */}
+            <Flex alignItems="center" gap={1}>
+              <Box flexGrow="1">
+                <Select onChange={handleChange}>
+                  {networkSites.map((advertiser) => (
+                    <option
+                      data-name={advertiser.name}
+                      key={advertiser.name}
+                      value={advertiser.token}
+                    >
+                      {advertiser.name.toUpperCase()}
+                    </option>
+                  ))}
+                </Select>
               </Box>
               <Button
                 border="1px solid #3a0ca3"
@@ -57,18 +61,9 @@ export default function LinksHeader({
               </Button>
             </Flex>
           </Box>
-          <Box mt={3}>
-            <Select onChange={handleChange}>
-              {networkSites.map((advertiser) => (
-                <option
-                  data-name={advertiser.name}
-                  key={advertiser.name}
-                  value={advertiser.token}
-                >
-                  {uppercaseFirstLetter(advertiser.name)}
-                </option>
-              ))}
-            </Select>
+          <Box>
+            {/* Fetch date comment out for now */}
+            {/* <Text>last update : 2022-03-27</Text> */}
           </Box>
         </Box>
       ) : (
