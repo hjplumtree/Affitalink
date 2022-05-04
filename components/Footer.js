@@ -3,7 +3,7 @@ import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa";
 
 export default function Footer() {
   return (
-    <VStack mt="auto" mb={7}>
+    <VStack pt={10} mt="auto" mb={7}>
       <Text>Made with happiness by HeJ</Text>
       <Flex color="#5a5a66" gap="3">
         <Link
