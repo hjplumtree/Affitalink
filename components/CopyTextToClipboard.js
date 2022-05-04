@@ -23,7 +23,6 @@ export default function CopyTextToClipboard({ title, children }) {
   };
 
   const styles = {
-    border: "2px solid #99AAB5",
     width: "100%",
     p: 1,
   };
@@ -34,7 +33,7 @@ export default function CopyTextToClipboard({ title, children }) {
 
       {/* When 'No Code Needed' or "No Image" received */}
       {children === "No Code Needed" || children === "No Image" ? (
-        <HStack {...styles} bg="#D6E0E8">
+        <HStack {...styles} bg="#D6E0E8" border="2px solid #99AAB5">
           <Text
             color="#95AFC4"
             whiteSpace="nowrap"
@@ -46,9 +45,20 @@ export default function CopyTextToClipboard({ title, children }) {
         </HStack>
       ) : (
         <Tooltip label={children}>
-          <HStack onClick={handleClick} cursor="pointer" {...styles}>
-            <Icon as={FaCopy} color="#99AAB5" />
-            <Text whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">
+          <HStack
+            onClick={handleClick}
+            cursor="pointer"
+            {...styles}
+            bg="#F1ECFE"
+            border="1px dashed #3A0CA3"
+          >
+            <Icon as={FaCopy} color="#3A0CA3" />
+            <Text
+              whiteSpace="nowrap"
+              overflow="hidden"
+              textOverflow="ellipsis"
+              color="#3A0CA3"
+            >
               {children}
             </Text>
           </HStack>
