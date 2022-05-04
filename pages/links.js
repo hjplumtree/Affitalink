@@ -21,6 +21,7 @@ export default function LinksPage() {
     setNetworkSites(sites);
     setSelectedNetwork(sites[0]);
 
+    if (sites.length === 0) return;
     if ("offers" in JSON.parse(localStorage.getItem(sites[0].name))) {
       const data = getOffersFromDB(sites[0].name);
       setLinks(data);

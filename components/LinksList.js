@@ -1,4 +1,4 @@
-import { Flex, VStack, Code, Heading, Text } from "@chakra-ui/react";
+import { Box, Flex, VStack, Code, Heading, Text } from "@chakra-ui/react";
 import CopyTextToClipboard from "./CopyTextToClipboard";
 import extractImg from "../lib/extractImg";
 import SectionBox from "./SectionBox";

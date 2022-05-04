@@ -62,7 +62,7 @@ export default function AdvertiserLists({ advertisers, setAdvertisers }) {
       ) : (
         <Alert status="error" mt={5}>
           <AlertIcon />
-          Opps, Please check your information.
+          Oops, Please check your information.
         </Alert>
       )}
     </SectionBox>
