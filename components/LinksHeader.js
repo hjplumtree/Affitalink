@@ -98,7 +98,7 @@ export default function LinksHeader({
               fontSize="md"
               fontWeight="bold"
             >
-              Click here to connect
+              Click to connect
             </RouterLink>
           </Alert>
         </VStack>
