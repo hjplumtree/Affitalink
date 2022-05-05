@@ -1,5 +1,5 @@
 import SectionBox from "../components/SectionBox";
-import { VStack, Heading, Link, Text, Button } from "@chakra-ui/react";
+import { VStack, Heading, Link, Text } from "@chakra-ui/react";
 import RouterLink from "../components/RouterLink";
 
 export default function Home() {
@@ -11,7 +11,11 @@ export default function Home() {
         </Heading>
         <Text fontSize="sm">
           This is beta service, feel free to use. Appreciate your feedback via{" "}
-          <Link href="https://twitter.com/hjplumtree" color="#1DA1F2">
+          <Link
+            href="https://twitter.com/hjplumtree"
+            color="#1DA1F2"
+            isExternal
+          >
             Twitter
           </Link>
         </Text>
@@ -34,6 +38,7 @@ export default function Home() {
           <Link
             href="https://rakutenadvertising.com/partners/publishers/"
             color="#1DA1F2"
+            isExternal
           >
             Rakuten Affiliate Publisher
           </Link>

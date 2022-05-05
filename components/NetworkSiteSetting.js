@@ -18,10 +18,12 @@ import {
   FormLabel,
   Alert,
   AlertIcon,
+  useToast,
 } from "@chakra-ui/react";
 import SectionBox from "./SectionBox";
 import Loading from "./Loading";
 import Header from "./Header";
+
 export default function NetworkInput({
   networkName,
   storageName,
@@ -36,6 +38,8 @@ export default function NetworkInput({
   const [loading, setLoading] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef();
+  const toast = useToast();
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (validate(inputs)) {
@@ -72,7 +76,12 @@ export default function NetworkInput({
       setInputError(false);
 
       fecthAdvertisers({ network: storageName, info: auth }).then((data) => {
-        setAdvertisers(data);
+        if (typeof data === "string") {
+          // setError(data);
+          toast({ title: data });
+        } else {
+          setAdvertisers(data);
+        }
         setLoading(false);
       });
     } else {
@@ -87,6 +96,7 @@ export default function NetworkInput({
 
   return (
     <SectionBox>
+      {error !== "" && toast({ title: "sss" })}
       <Header
         title={networkName}
         subtitle={`Enter correct information to Connect ${networkName}!`}
@@ -180,7 +190,7 @@ export default function NetworkInput({
         <Alert status="warning" fontSize="xs" mt={5}>
           <AlertIcon />
           Information you provided will be saved in your computer. Make sure to
-          click delete if you need.
+          delete them if you need.
         </Alert>
       </FormControl>
       <Loading loading={loading} />

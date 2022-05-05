@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import LinksHeader from "../components/LinksHeader";
 import LinksList from "../components/LinksList";
-import { VStack } from "@chakra-ui/react";
+import { VStack, useToast } from "@chakra-ui/react";
 import { fetchLinks } from "../lib/fetch";
 import Loading from "../components/Loading";
 export default function LinksPage() {
@@ -9,6 +9,8 @@ export default function LinksPage() {
   const [networkSites, setNetworkSites] = useState([]);
   const [selectedNetwork, setSelectedNetwork] = useState(null);
   const [loading, setLoading] = useState(false);
+  const toast = useToast();
+  const [error, setError] = useState("");
 
   useEffect(() => {
     let sites = [];
@@ -41,7 +43,11 @@ export default function LinksPage() {
       network: name,
       ids: advertiser_ids,
     }).then((data) => {
-      setLinks(data);
+      if (typeof data === "string") {
+        setError(data);
+      } else {
+        setLinks(data);
+      }
       setLoading(false);
     });
   };
