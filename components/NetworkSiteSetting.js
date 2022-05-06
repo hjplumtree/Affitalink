@@ -77,7 +77,6 @@ export default function NetworkInput({
 
       fecthAdvertisers({ network: storageName, info: auth }).then((data) => {
         if (typeof data === "string") {
-          // setError(data);
           toast({ title: data });
         } else {
           setAdvertisers(data);
