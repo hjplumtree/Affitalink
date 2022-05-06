@@ -94,6 +94,7 @@ export default function Site() {
             auth={auth}
             setAuth={setAuth}
             advertisers_initialState={advertisers_initialState}
+            initializeAuth={initializeAuth}
           />
 
           <AdvertiserLists

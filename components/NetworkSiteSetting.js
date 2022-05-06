@@ -32,6 +32,7 @@ export default function NetworkInput({
   auth,
   setAuth,
   advertisers_initialState,
+  initializeAuth,
 }) {
   const [show, setShow] = useState(false);
   const [inputError, setInputError] = useState(false);
@@ -39,7 +40,6 @@ export default function NetworkInput({
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef();
   const toast = useToast();
-  const [error, setError] = useState("");
 
   useEffect(() => {
     if (validate(inputs)) {
@@ -89,13 +89,13 @@ export default function NetworkInput({
   };
 
   const handleDelete = () => {
-    deleteLocal();
+    deleteLocal(storageName);
     setAdvertisers(advertisers_initialState);
+    initializeAuth();
   };
 
   return (
     <SectionBox>
-      {error !== "" && toast({ title: "sss" })}
       <Header
         title={networkName}
         subtitle={`Enter correct information to Connect ${networkName}!`}
