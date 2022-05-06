@@ -75,7 +75,6 @@ export default function LinksPage() {
     const { offers } = { ...JSON.parse(localStorage.getItem(network_name)) };
     return offers;
   };
-
   return (
     <VStack>
       <LinksHeader
@@ -84,7 +83,8 @@ export default function LinksPage() {
         setSelectedNetwork={setSelectedNetwork}
         fetchOffers={fetchOffers}
       />
-      <LinksList links={links} />
+      {links && <LinksList links={links} />}
+
       <Loading loading={loading} />
     </VStack>
   );
