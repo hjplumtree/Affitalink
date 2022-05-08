@@ -77,9 +77,14 @@ export default function NetworkInput({
 
       fecthAdvertisers({ network: storageName, info: auth }).then((data) => {
         if (typeof data === "string") {
-          toast({ title: data });
+          toast({ title: data, status: "error", duration: 2000 });
         } else {
           setAdvertisers(data);
+          toast({
+            title: "Advertisers connected!",
+            status: "success",
+            duration: 2000,
+          });
         }
         setLoading(false);
       });
