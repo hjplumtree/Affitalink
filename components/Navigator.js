@@ -4,38 +4,40 @@ import Image from "next/image";
 import logo from "../public/logo.svg";
 import { FaNetworkWired, FaLink, FaTachometerAlt } from "react-icons/fa";
 
-export default function Navigator({ ...rest }) {
+export default function Navigator({ ...styles }) {
   return (
     <VStack
-      p={5}
       align="stretch"
       h="100%"
+      p={5}
       spacing={3}
-      width="200px"
       borderRight="1px solid #e5e5e5"
-      {...rest}
+      width="clamp(200px, 100%, 220px)"
+      {...styles}
     >
-      <Box display="flex" mb={5}>
+      <Box display="flex" mb={7}>
         <Image src={logo} alt="logo" width={30} height={30} />
         <Text ml={2} fontSize={20}>
           AffitaLinks
         </Text>
       </Box>
 
-      <RouterLink to="/">
-        <Icon as={FaTachometerAlt} />
-        Home
-      </RouterLink>
+      <Box>
+        <RouterLink to="/">
+          <Icon as={FaTachometerAlt} />
+          Home
+        </RouterLink>
 
-      <RouterLink to="/networks">
-        <Icon as={FaNetworkWired} />
-        Networks
-      </RouterLink>
+        <RouterLink to="/networks">
+          <Icon as={FaNetworkWired} />
+          Networks
+        </RouterLink>
 
-      <RouterLink to="/links">
-        <Icon as={FaLink} />
-        Links
-      </RouterLink>
+        <RouterLink to="/links">
+          <Icon as={FaLink} />
+          Links
+        </RouterLink>
+      </Box>
     </VStack>
   );
 }
