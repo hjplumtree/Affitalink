@@ -29,7 +29,7 @@ export default function NetworkSiteList({
       ) : (
         <Box p={1} borderRadius={5} marginLeft="auto" bg="#A3EED6">
           <Text fontSize="xs" color="#1AD598">
-            Comming Soon
+            Checking
           </Text>
         </Box>
       )}
