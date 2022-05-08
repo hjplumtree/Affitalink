@@ -17,6 +17,7 @@ export default function Site() {
   const rakuten_initialState = {
     client_id: "",
     client_secret: "",
+    sid: "",
   };
 
   const advertisers_initialState = {
