@@ -28,11 +28,17 @@ export default function Navigator({ ...styles }) {
           Home
         </RouterLink>
 
+        <Text mt={4} mb={2} fontSize="sm" color="#95AFC4">
+          CONNECT
+        </Text>
         <RouterLink to="/networks">
           <Icon as={FaNetworkWired} />
           Networks
         </RouterLink>
 
+        <Text mt={4} mb={2} fontSize="sm" color="#95AFC4">
+          COPY
+        </Text>
         <RouterLink to="/links">
           <Icon as={FaLink} />
           Links
