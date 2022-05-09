@@ -6,6 +6,7 @@ import { Flex } from "@chakra-ui/react";
 function MyApp({ Component, pageProps }) {
   return (
     <ChakraProvider>
+      <link rel="icon" href="/logo.svg" />
       <Flex w="100%" h="100%">
         <Navigator position="fixed" />
         <Layouts bg="#ebe6f5" minHeight="100vh">
