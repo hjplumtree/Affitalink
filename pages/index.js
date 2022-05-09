@@ -20,13 +20,15 @@ export default function Home() {
           </Link>
         </Text>
         <br />
-        <Text fontSize="sm">1. Connect networks (Rakuten, CJ so far)</Text>
+        <Text fontSize="sm">1. Connect networks (Rakuten, CJ for now)</Text>
         <br />
         <Text fontSize="sm">2. Filter advertisers only you want to see</Text>
         <br />
         <Text fontSize="sm">3. Check offer title, description</Text>
         <br />
         <Text fontSize="sm">4. Copy tracking link, promo code, image url</Text>
+        <br />
+        <Text fontSize="sm">5. Paste to anywhere!</Text>
       </SectionBox>
       <SectionBox borderLeft="5px #3A0CA3 solid">
         <Heading size="sm" mb={7}>
