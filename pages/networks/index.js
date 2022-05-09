@@ -4,7 +4,8 @@ import SectionBox from "../../components/SectionBox";
 import { Box, VStack } from "@chakra-ui/react";
 import cj_logo from "../../public/cj.png";
 import rakuten_logo from "../../public/rakuten.png";
-import temp_logo from "../../public/favicon.ico";
+import impact_logo from "../../public/impact_logo.png";
+import ebay_logo from "../../public/ebay_logo.png";
 
 function index() {
   return (
@@ -34,15 +35,15 @@ function index() {
             endpoint="cj"
           />
           <NetworkSiteList
-            imageUrl={temp_logo}
-            name="Pepperjam"
-            subtitle="Connect with Pepperjam network"
+            imageUrl={impact_logo}
+            name="Impact"
+            subtitle="Connect with Impact network"
             endpoint={false}
           />
           <NetworkSiteList
-            imageUrl={temp_logo}
-            name="Impact"
-            subtitle="Connect with Impact network"
+            imageUrl={ebay_logo}
+            name="eBay"
+            subtitle="Connect with eBay network"
             endpoint={false}
           />
         </VStack>
