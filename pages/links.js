@@ -79,7 +79,6 @@ export default function LinksPage() {
     <VStack>
       <LinksHeader
         networkSites={networkSites}
-        selectedNetwork={selectedNetwork}
         setSelectedNetwork={setSelectedNetwork}
         fetchOffers={fetchOffers}
       />

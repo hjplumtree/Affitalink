@@ -1,7 +1,5 @@
-import uppercaseFirstLetter from "../lib/uppercase";
 import {
   Box,
-  Heading,
   Button,
   Select,
   Flex,
@@ -18,7 +16,6 @@ import RouterLink from "../components/RouterLink";
 export default function LinksHeader({
   networkSites,
   fetchOffers,
-  selectedNetwork,
   setSelectedNetwork,
 }) {
   const handleClick = () => {
