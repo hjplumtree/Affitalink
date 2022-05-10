@@ -6,7 +6,7 @@ import SectionBox from "./SectionBox";
 export default function LinksList({ links }) {
   const { page, data: link_arr } = links;
   return (
-    <VStack width="clamp(0px, 100%, 1000px)" spacing={2} bg="transparent">
+    <VStack width="clamp(0px, 100%, 1200px)" spacing={2} bg="transparent">
       {link_arr &&
         link_arr.map((link) => (
           <SectionBox key={link["link_id"]}>
