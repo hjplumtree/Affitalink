@@ -12,11 +12,11 @@ export default function Home() {
         <Text fontSize="sm">
           This is beta service, feel free to use. Appreciate your feedback via{" "}
           <Link
-            href="https://twitter.com/hjplumtree"
-            color="#1DA1F2"
+            href="https://www.producthunt.com/posts/affitalink"
+            color="#DA552F"
             isExternal
           >
-            Twitter
+            Product Hunt
           </Link>
         </Text>
         <br />
