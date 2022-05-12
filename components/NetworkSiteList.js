@@ -10,7 +10,7 @@ export default function NetworkSiteList({
   ...styles
 }) {
   return (
-    <Flex alignItems="center" {...styles}>
+    <Flex alignItems="center" p={2} {...styles}>
       <Image src={imageUrl} alt={name} width={30} height={30} />
       <Box marginLeft={3}>
         <Text>
@@ -21,8 +21,10 @@ export default function NetworkSiteList({
       {endpoint ? (
         <Flex
           marginLeft="auto"
-          border="1px solid #3A0CA3"
-          color="#3A0CA3"
+          border={
+            endpoint === "testnet" ? "1px solid #fff" : "1px solid #3A0CA3"
+          }
+          color={endpoint === "testnet" ? "#fff" : "#3A0CA3"}
           borderRadius={5}
         >
           <RouterLink to={`/networks/${endpoint}`}>Setting</RouterLink>
@@ -30,7 +32,7 @@ export default function NetworkSiteList({
       ) : (
         <Box p={1} borderRadius={5} marginLeft="auto" bg="#A3EED6">
           <Text fontSize="xs" color="#1AD598">
-            Checking
+            Coming Soon
           </Text>
         </Box>
       )}

@@ -24,15 +24,6 @@ function index() {
           spacing={3}
         >
           <NetworkSiteList
-            imageUrl={affitalink_logo}
-            name="TEST NETWORK"
-            subtitle="EXPLORE Affitalink with TEST NETWORK"
-            endpoint="testnet"
-            bg="#D6E0E8"
-            p={2}
-            borderRadius={3}
-          />
-          <NetworkSiteList
             imageUrl={rakuten_logo}
             name="Rakuten"
             subtitle="Connect with Rakuten network"
@@ -55,6 +46,15 @@ function index() {
             name="eBay"
             subtitle="Connect with eBay network"
             endpoint={false}
+          />
+          <NetworkSiteList
+            imageUrl={affitalink_logo}
+            name="TEST NETWORK"
+            subtitle="EXPLORE with TEST NETWORK"
+            endpoint="testnet"
+            bg="linear-gradient(150deg, rgba(108,9,181,1) 36%, rgba(58,12,163,1) 85%)"
+            color="#fff"
+            borderRadius={7}
           />
         </VStack>
       </Box>
