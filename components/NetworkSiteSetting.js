@@ -1,5 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { fecthAdvertisers } from "../lib/fetch";
+import { fecthTestAdvertisers } from "../lib/demoFetch";
+
 import {
   Box,
   Input,
@@ -75,7 +77,14 @@ export default function NetworkInput({
       setLoading(true);
       setInputError(false);
 
-      fecthAdvertisers({ network: storageName, auth: auth }).then((data) => {
+      let data = null;
+      (async () => {
+        if (networkName === "TESTNET") {
+          data = await fecthTestAdvertisers(auth);
+        } else {
+          data = await fecthAdvertisers({ network: storageName, auth: auth });
+        }
+
         if (typeof data === "string") {
           toast({ title: data, status: "error", duration: 2000 });
         } else {
@@ -87,7 +96,7 @@ export default function NetworkInput({
           });
         }
         setLoading(false);
-      });
+      })();
     } else {
       setInputError(true);
     }

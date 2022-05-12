@@ -34,7 +34,7 @@ export default function LinksList({ links }) {
                 </CopyTextToClipboard>
 
                 <CopyTextToClipboard title="Image link">
-                  {link["link_type"] === "Banner"
+                  {link["link_code_html"] !== ""
                     ? extractImg(link["link_code_html"])
                     : "No Image"}
                 </CopyTextToClipboard>

@@ -20,6 +20,12 @@ export default function Site() {
     sid: "",
   };
 
+  // Test network auth
+  const testnet_initialState = {
+    test_token_77777: "77777",
+    test_sid_77777: "77777",
+  };
+
   const advertisers_initialState = {
     page: 0,
     advertisers_info: [],
@@ -72,6 +78,8 @@ export default function Site() {
       setAuth(cj_initialState);
     } else if (site === "rakuten") {
       setAuth(rakuten_initialState);
+    } else if (site === "testnet") {
+      setAuth(testnet_initialState);
     }
   };
 

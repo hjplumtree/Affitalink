@@ -6,6 +6,7 @@ import cj_logo from "../../public/cj.png";
 import rakuten_logo from "../../public/rakuten.png";
 import impact_logo from "../../public/impact_logo.png";
 import ebay_logo from "../../public/ebay_logo.png";
+import affitalink_logo from "../../public/logo.svg";
 
 function index() {
   return (
@@ -45,6 +46,15 @@ function index() {
             name="eBay"
             subtitle="Connect with eBay network"
             endpoint={false}
+          />
+          <NetworkSiteList
+            imageUrl={affitalink_logo}
+            name="TEST NETWORK"
+            subtitle="EXPLORE with TEST NETWORK"
+            endpoint="testnet"
+            bg="linear-gradient(150deg, rgba(108,9,181,1) 36%, rgba(58,12,163,1) 85%)"
+            color="#fff"
+            borderRadius={7}
           />
         </VStack>
       </Box>

@@ -3,6 +3,7 @@ import LinksHeader from "../components/LinksHeader";
 import LinksList from "../components/LinksList";
 import { VStack, useToast } from "@chakra-ui/react";
 import { fetchLinks } from "../lib/fetch";
+import { fetchTestLinks } from "../lib/demoFetch";
 import Loading from "../components/Loading";
 export default function LinksPage() {
   const [links, setLinks] = useState([]);
@@ -17,7 +18,7 @@ export default function LinksPage() {
     for (const [key, value] of Object.entries(localStorage)) {
       if (!!value && key !== "ally-supports-cache") {
         const parsedValue = JSON.parse(value);
-        sites.push({ name: key, data: parsedValue });
+        sites.push({ name: key, info: parsedValue });
       }
     }
     setNetworkSites(sites);
@@ -32,24 +33,32 @@ export default function LinksPage() {
 
   const fetchOffers = () => {
     setLoading(true);
-    const { name, data } = selectedNetwork;
-    const { auth } = data;
-    const advertiser_ids = data["advertisers"]["advertisers_info"]
-      .filter((advertiser) => advertiser.isChecked)
-      .map((advertiser) => advertiser.id);
+    const { name, info } = selectedNetwork;
+    const { auth } = info;
 
-    fetchLinks({
-      auth: auth,
-      network: name,
-      ids: advertiser_ids,
-    }).then((data) => {
+    let data = null;
+    (async () => {
+      // test network
+      if (name === "testnet") {
+        data = await fetchTestLinks();
+      } else {
+        const advertiser_ids = info["advertisers"]["advertisers_info"]
+          .filter((advertiser) => advertiser.isChecked)
+          .map((advertiser) => advertiser.id);
+        data = await fetchLinks({
+          auth: auth,
+          network: name,
+          ids: advertiser_ids,
+        });
+      }
+      console.log(data);
       if (typeof data === "string") {
         setError(data);
       } else {
         setLinks(data);
       }
       setLoading(false);
-    });
+    })();
   };
 
   useEffect(() => {
