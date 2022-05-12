@@ -1,5 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { fecthAdvertisers } from "../lib/fetch";
+import { fecthTestAdvertisers } from "../lib/demoFetch";
+
 import {
   Box,
   Input,
@@ -78,7 +80,7 @@ export default function NetworkInput({
       let data = null;
       (async () => {
         if (networkName === "TESTNET") {
-          data = await fecthTestAdvertisers();
+          data = await fecthTestAdvertisers(auth);
         } else {
           data = await fecthAdvertisers({ network: storageName, auth: auth });
         }
