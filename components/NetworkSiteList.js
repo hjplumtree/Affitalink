@@ -7,9 +7,10 @@ export default function NetworkSiteList({
   name,
   subtitle,
   endpoint,
+  ...styles
 }) {
   return (
-    <Flex alignItems="center">
+    <Flex alignItems="center" {...styles}>
       <Image src={imageUrl} alt={name} width={30} height={30} />
       <Box marginLeft={3}>
         <Text>

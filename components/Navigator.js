@@ -18,7 +18,7 @@ export default function Navigator({ ...styles }) {
       <Box display="flex" mb={7}>
         <Image src={logo} alt="logo" width={30} height={30} />
         <Text ml={2} fontSize={20}>
-          AffitaLinks
+          AffitaLink
         </Text>
       </Box>
 

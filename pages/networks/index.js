@@ -6,6 +6,7 @@ import cj_logo from "../../public/cj.png";
 import rakuten_logo from "../../public/rakuten.png";
 import impact_logo from "../../public/impact_logo.png";
 import ebay_logo from "../../public/ebay_logo.png";
+import affitalink_logo from "../../public/logo.svg";
 
 function index() {
   return (
@@ -22,6 +23,15 @@ function index() {
           align="stretch"
           spacing={3}
         >
+          <NetworkSiteList
+            imageUrl={affitalink_logo}
+            name="TEST NETWORK"
+            subtitle="EXPLORE Affitalink with TEST NETWORK"
+            endpoint="testnet"
+            bg="#D6E0E8"
+            p={2}
+            borderRadius={3}
+          />
           <NetworkSiteList
             imageUrl={rakuten_logo}
             name="Rakuten"
