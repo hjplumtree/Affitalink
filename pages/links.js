@@ -38,20 +38,19 @@ export default function LinksPage() {
 
     let data = null;
     (async () => {
+      const advertiser_ids = info["advertisers"]["advertisers_info"]
+        .filter((advertiser) => advertiser.isChecked)
+        .map((advertiser) => advertiser.id);
       // test network
       if (name === "testnet") {
-        data = await fetchTestLinks();
+        data = await fetchTestLinks(advertiser_ids);
       } else {
-        const advertiser_ids = info["advertisers"]["advertisers_info"]
-          .filter((advertiser) => advertiser.isChecked)
-          .map((advertiser) => advertiser.id);
         data = await fetchLinks({
           auth: auth,
           network: name,
           ids: advertiser_ids,
         });
       }
-      console.log(data);
       if (typeof data === "string") {
         setError(data);
       } else {
