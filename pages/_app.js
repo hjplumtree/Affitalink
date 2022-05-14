@@ -10,7 +10,7 @@ function MyApp({ Component, pageProps }) {
       <Head>
         <link rel="icon" href="/logo.svg" />
       </Head>
-      <Flex w="100%" h="100%">
+      <Flex>
         <Navigator position="fixed" />
         <Layouts bg="#ebe6f5" minHeight="100vh">
           <Component {...pageProps} />
