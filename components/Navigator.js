@@ -3,7 +3,6 @@ import RouterLink from "./RouterLink";
 import Image from "next/image";
 import logo from "../public/logo.svg";
 import {
-  FaBars,
   FaNetworkWired,
   FaLink,
   FaTachometerAlt,
@@ -18,15 +17,16 @@ export default function Navigator({ ...styles }) {
     <VStack
       align={{ base: burgerMenuOpen || "center", lg: "stretch" }}
       h="100%"
-      pt={4}
-      pr={8}
-      pb={4}
-      pl={4}
+      pt={3}
+      pr={7}
+      pb={3}
+      pl={3}
       spacing={3}
       bg="#fff"
       borderRight="1px solid #e5e5e5"
       width={{ base: burgerMenuOpen ? "220px" : "70px", lg: "220px" }}
       {...styles}
+      zIndex={100}
     >
       <Box display="flex" mb={7}>
         <Image src={logo} alt="logo" width={30} height={30} />
