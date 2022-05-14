@@ -8,7 +8,7 @@ function Layouts({ children, ...styles }) {
       direction="column"
       width="100%"
       height="100%"
-      ml="220px"
+      ml={{ base: "70px", lg: "220px" }}
       {...styles}
     >
       {children}

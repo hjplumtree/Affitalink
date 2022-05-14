@@ -1,47 +1,104 @@
-import { VStack, Box, Text, Icon } from "@chakra-ui/react";
+import { VStack, Box, Text, Icon, Flex } from "@chakra-ui/react";
 import RouterLink from "./RouterLink";
 import Image from "next/image";
 import logo from "../public/logo.svg";
-import { FaNetworkWired, FaLink, FaTachometerAlt } from "react-icons/fa";
+import {
+  FaBars,
+  FaNetworkWired,
+  FaLink,
+  FaTachometerAlt,
+  FaArrowCircleLeft,
+  FaArrowCircleRight,
+} from "react-icons/fa";
+import { useState } from "react";
 
 export default function Navigator({ ...styles }) {
+  const [burgerMenuOpen, setBurgerMenuOpen] = useState(false);
   return (
     <VStack
-      align="stretch"
+      align={{ base: burgerMenuOpen || "center", lg: "stretch" }}
       h="100%"
-      p={5}
+      pt={4}
+      pr={8}
+      pb={4}
+      pl={4}
       spacing={3}
+      bg="#fff"
       borderRight="1px solid #e5e5e5"
-      width="clamp(200px, 100%, 220px)"
+      width={{ base: burgerMenuOpen ? "220px" : "70px", lg: "220px" }}
       {...styles}
     >
       <Box display="flex" mb={7}>
         <Image src={logo} alt="logo" width={30} height={30} />
-        <Text ml={2} fontSize={20}>
+        <Text
+          display={{ base: burgerMenuOpen || "none", lg: "inline-block" }}
+          ml={2}
+          fontSize={20}
+        >
           AffitaLink
         </Text>
       </Box>
 
       <Box>
-        <RouterLink to="/">
-          <Icon as={FaTachometerAlt} />
-          Home
-        </RouterLink>
+        <Box as={Flex} align="center">
+          <RouterLink to="/" width="100%">
+            <Icon as={FaTachometerAlt} />
+            <Text
+              display={{ base: burgerMenuOpen || "none", lg: "inline-block" }}
+            >
+              Home
+            </Text>
+          </RouterLink>
+          <Icon
+            w="22px"
+            h="22px"
+            as={burgerMenuOpen ? FaArrowCircleLeft : FaArrowCircleRight}
+            position="absolute"
+            right="-10px"
+            color="#95AFC4"
+            display={{ lg: "none" }}
+            cursor="pointer"
+            onClick={() => {
+              setBurgerMenuOpen((menu) => !menu);
+            }}
+            _hover={{ color: "#000" }}
+          />
+        </Box>
 
-        <Text mt={4} mb={2} fontSize="sm" color="#95AFC4">
+        <Text
+          display={{ base: burgerMenuOpen || "none", lg: "inline-block" }}
+          mt={4}
+          mb={2}
+          fontSize="sm"
+          color="#95AFC4"
+        >
           CONNECT
         </Text>
-        <RouterLink to="/networks">
+        <RouterLink to="/networks" mt={{ base: burgerMenuOpen || 3, lg: 0 }}>
           <Icon as={FaNetworkWired} />
-          Networks
+          <Text
+            display={{ base: burgerMenuOpen || "none", lg: "inline-block" }}
+          >
+            Networks
+          </Text>
         </RouterLink>
 
-        <Text mt={4} mb={2} fontSize="sm" color="#95AFC4">
+        <Text
+          display={{ base: burgerMenuOpen || "none", lg: "inline-block" }}
+          mt={4}
+          mb={2}
+          fontSize="sm"
+          color="#95AFC4"
+        >
           COPY
         </Text>
-        <RouterLink to="/links">
+        <RouterLink to="/links" mt={{ base: burgerMenuOpen || 3, lg: 0 }}>
           <Icon as={FaLink} />
-          Links
+          <Text
+            display={{ base: burgerMenuOpen || "none", lg: "inline-block" }}
+          >
+            Links
+          </Text>
         </RouterLink>
       </Box>
     </VStack>
