@@ -12,7 +12,7 @@
   <p align="center">
     Affiliate links in one place!
     <br />
-    <a href="https://affitalink.vercel.app/"><strong>Start Affitalink »</strong></a>
+    <a href="https://www.affitalink.com/"><strong>Start Affitalink »</strong></a>
     <br />
     <br />
 
