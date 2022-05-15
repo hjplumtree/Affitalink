@@ -5,9 +5,9 @@ import logo from "../public/logo.svg";
 import {
   FaNetworkWired,
   FaLink,
-  FaTachometerAlt,
-  FaArrowCircleLeft,
-  FaArrowCircleRight,
+  FaHome,
+  FaChevronLeft,
+  FaChevronRight,
 } from "react-icons/fa";
 import { useState } from "react";
 
@@ -15,21 +15,18 @@ export default function Navigator({ ...styles }) {
   const [burgerMenuOpen, setBurgerMenuOpen] = useState(false);
   return (
     <VStack
-      align={{ base: burgerMenuOpen || "center", lg: "stretch" }}
+      alignItems="center"
       h="100%"
-      pt={3}
-      pr={7}
-      pb={3}
-      pl={3}
+      p={2}
       spacing={3}
       bg="#fff"
       borderRight="1px solid #e5e5e5"
-      width={{ base: burgerMenuOpen ? "220px" : "70px", lg: "220px" }}
+      width={{ base: burgerMenuOpen ? "210px" : "55px", lg: "210px" }}
       {...styles}
       zIndex={100}
     >
-      <Box display="flex" mb={7}>
-        <Image src={logo} alt="logo" width={30} height={30} />
+      <Box display="flex" mb={7} alignItems="center" width="100%">
+        <Image src={logo} alt="logo" width="33px" height="33px" />
         <Text
           display={{ base: burgerMenuOpen || "none", lg: "inline-block" }}
           ml={2}
@@ -37,32 +34,42 @@ export default function Navigator({ ...styles }) {
         >
           AffitaLink
         </Text>
+
+        <Icon
+          w="24px"
+          h="24px"
+          p="6px"
+          as={burgerMenuOpen ? FaChevronLeft : FaChevronRight}
+          position="absolute"
+          right="-17px"
+          bg={"#fff"}
+          color="#000"
+          border="1px solid #e5e5e5"
+          borderRadius="50%"
+          display={{ lg: "none" }}
+          cursor="pointer"
+          onClick={() => {
+            setBurgerMenuOpen((menu) => !menu);
+          }}
+          _hover={{ bg: "#D6E0E8" }}
+        />
       </Box>
 
-      <Box>
+      <Box w="100%">
         <Box as={Flex} align="center">
           <RouterLink to="/" width="100%">
-            <Icon as={FaTachometerAlt} />
+            <Icon
+              width="18px"
+              height="18px"
+              as={FaHome}
+              margin={burgerMenuOpen || "0 auto"}
+            />
             <Text
               display={{ base: burgerMenuOpen || "none", lg: "inline-block" }}
             >
               Home
             </Text>
           </RouterLink>
-          <Icon
-            w="22px"
-            h="22px"
-            as={burgerMenuOpen ? FaArrowCircleLeft : FaArrowCircleRight}
-            position="absolute"
-            right="-10px"
-            color="#95AFC4"
-            display={{ lg: "none" }}
-            cursor="pointer"
-            onClick={() => {
-              setBurgerMenuOpen((menu) => !menu);
-            }}
-            _hover={{ color: "#000" }}
-          />
         </Box>
 
         <Text
@@ -75,7 +82,12 @@ export default function Navigator({ ...styles }) {
           CONNECT
         </Text>
         <RouterLink to="/networks" mt={{ base: burgerMenuOpen || 3, lg: 0 }}>
-          <Icon as={FaNetworkWired} />
+          <Icon
+            width="18px"
+            height="18px"
+            as={FaNetworkWired}
+            margin={burgerMenuOpen || "0 auto"}
+          />
           <Text
             display={{ base: burgerMenuOpen || "none", lg: "inline-block" }}
           >
@@ -93,7 +105,12 @@ export default function Navigator({ ...styles }) {
           COPY
         </Text>
         <RouterLink to="/links" mt={{ base: burgerMenuOpen || 3, lg: 0 }}>
-          <Icon as={FaLink} />
+          <Icon
+            width="18px"
+            height="18px"
+            as={FaLink}
+            margin={burgerMenuOpen || "0 auto"}
+          />
           <Text
             display={{ base: burgerMenuOpen || "none", lg: "inline-block" }}
           >
