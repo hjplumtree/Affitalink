@@ -4,11 +4,12 @@ import Footer from "./Footer";
 function Layouts({ children, ...styles }) {
   return (
     <Flex
-      padding={3}
+      p={3}
+      pl={6}
       direction="column"
       width="100%"
       height="100%"
-      ml={{ base: "70px", lg: "220px" }}
+      ml={{ base: "50px", lg: "210px" }}
       {...styles}
     >
       {children}
