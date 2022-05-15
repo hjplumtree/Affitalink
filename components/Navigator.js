@@ -18,6 +18,7 @@ export default function Navigator({ ...styles }) {
       alignItems="center"
       h="100%"
       p={2}
+      pt={3}
       spacing={3}
       bg="#fff"
       borderRight="1px solid #e5e5e5"
