@@ -58,13 +58,15 @@ export default function Navigator({ ...styles }) {
 
       <Box w="100%">
         <Box as={Flex} align="center">
-          <RouterLink to="/" width="100%">
-            <Icon
-              width="18px"
-              height="18px"
-              as={FaHome}
-              margin={burgerMenuOpen || "0 auto"}
-            />
+          <RouterLink
+            to="/"
+            width="100%"
+            justifyContent={{
+              base: burgerMenuOpen ? "stretch" : "center",
+              lg: "stretch",
+            }}
+          >
+            <Icon width="18px" height="18px" as={FaHome} />
             <Text
               display={{ base: burgerMenuOpen || "none", lg: "inline-block" }}
             >
@@ -87,7 +89,10 @@ export default function Navigator({ ...styles }) {
             width="18px"
             height="18px"
             as={FaNetworkWired}
-            margin={burgerMenuOpen || "0 auto"}
+            justifyContent={{
+              base: burgerMenuOpen ? "stretch" : "center",
+              lg: "stretch",
+            }}
           />
           <Text
             display={{ base: burgerMenuOpen || "none", lg: "inline-block" }}
@@ -110,7 +115,10 @@ export default function Navigator({ ...styles }) {
             width="18px"
             height="18px"
             as={FaLink}
-            margin={burgerMenuOpen || "0 auto"}
+            justifyContent={{
+              base: burgerMenuOpen ? "stretch" : "center",
+              lg: "stretch",
+            }}
           />
           <Text
             display={{ base: burgerMenuOpen || "none", lg: "inline-block" }}
