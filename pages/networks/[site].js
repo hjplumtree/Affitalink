@@ -6,36 +6,39 @@ import { Box } from "@chakra-ui/react";
 
 export default function Site() {
   const router = useRouter();
-  const { site } = router.query;
+  const { site: network_site_name } = router.query;
 
-  const cj_initialState = {
+  const cj_initial_auth = {
     token: "",
     requestor_id: "",
     website_id: "",
   };
 
-  const rakuten_initialState = {
+  const rakuten_initial_auth = {
     client_id: "",
     client_secret: "",
     sid: "",
   };
 
   // Test network auth
-  const testnet_initialState = {
+  const testnet_initial_auth = {
     test_token_77777: "77777",
     test_sid_77777: "77777",
   };
 
   const advertisers_initialState = {
     page: 0,
-    advertisers_info: [],
+    advertisers_list: [],
   };
   const [advertisers, setAdvertisers] = useState(advertisers_initialState);
   const [auth, setAuth] = useState(null);
 
+  // Initialization
   useEffect(() => {
     if (!router.isReady) return;
-    const current_data = { ...JSON.parse(localStorage.getItem(site)) };
+    const current_data = {
+      ...JSON.parse(localStorage.getItem(network_site_name)),
+    };
     if (current_data["auth"]) {
       setAuth(current_data["auth"]);
     } else {
@@ -49,7 +52,7 @@ export default function Site() {
   }, [router.isReady]);
 
   useEffect(() => {
-    if (advertisers["advertisers_info"].length === 0) return;
+    if (advertisers["advertisers_list"].length === 0) return;
     saveToDB("advertisers", advertisers);
   }, [advertisers]);
 
@@ -60,19 +63,21 @@ export default function Site() {
   }, [auth]);
 
   const saveToDB = (name, data) => {
-    const current_data = { ...JSON.parse(localStorage.getItem(site)) };
+    const current_data = {
+      ...JSON.parse(localStorage.getItem(network_site_name)),
+    };
     const updated_data = { ...current_data };
     updated_data[name] = data;
-    localStorage.setItem(site, JSON.stringify(updated_data));
+    localStorage.setItem(network_site_name, JSON.stringify(updated_data));
   };
 
   const initializeAuth = () => {
-    if (site === "cj") {
-      setAuth(cj_initialState);
-    } else if (site === "rakuten") {
-      setAuth(rakuten_initialState);
-    } else if (site === "testnet") {
-      setAuth(testnet_initialState);
+    if (network_site_name === "cj") {
+      setAuth(cj_initial_auth);
+    } else if (network_site_name === "rakuten") {
+      setAuth(rakuten_initial_auth);
+    } else if (network_site_name === "testnet") {
+      setAuth(testnet_initial_auth);
     }
   };
 
@@ -89,8 +94,8 @@ export default function Site() {
       {auth && (
         <Box>
           <NetworkSiteSetting
-            networkName={site.toUpperCase()}
-            storageName={site}
+            networkName={network_site_name.toUpperCase()}
+            storageName={network_site_name}
             deleteLocal={deleteLocal}
             setAdvertisers={setAdvertisers}
             auth={auth}
