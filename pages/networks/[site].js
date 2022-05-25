@@ -50,26 +50,19 @@ export default function Site() {
 
   useEffect(() => {
     if (advertisers["advertisers_info"].length === 0) return;
-    saveAdvertisersToDB(advertisers);
+    saveToDB("advertisers", advertisers);
   }, [advertisers]);
 
   useEffect(() => {
     if (!auth) return;
     if (Object.values(auth)[0] === "") return;
-    saveAuthToDB(advertisers);
+    saveToDB("auth", auth);
   }, [auth]);
 
-  const saveAuthToDB = () => {
+  const saveToDB = (name, data) => {
     const current_data = { ...JSON.parse(localStorage.getItem(site)) };
     const updated_data = { ...current_data };
-    updated_data["auth"] = auth;
-    localStorage.setItem(site, JSON.stringify(updated_data));
-  };
-
-  const saveAdvertisersToDB = (info) => {
-    const current_data = { ...JSON.parse(localStorage.getItem(site)) };
-    const updated_data = { ...current_data };
-    updated_data["advertisers"] = info;
+    updated_data[name] = data;
     localStorage.setItem(site, JSON.stringify(updated_data));
   };
 
