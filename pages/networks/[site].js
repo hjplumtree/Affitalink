@@ -2,12 +2,17 @@ import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import NetworkSiteSetting from "../../components/NetworkSiteSetting";
 import AdvertiserLists from "../../components/AdvertiserLists";
-import { Box } from "@chakra-ui/react";
+import { Box, useToast } from "@chakra-ui/react";
 import { saveToDB } from "../../lib/storage";
+import { fecthAdvertisers } from "../../lib/fetch";
+import { fecthTestAdvertisers } from "../../lib/demoFetch";
+import Loading from "../../components/Loading";
 
 export default function Site() {
   const router = useRouter();
   const { site: network_site_name } = router.query;
+  const [loading, setLoading] = useState(false);
+  const toast = useToast();
 
   const cj_initial_auth = {
     token: "",
@@ -53,16 +58,18 @@ export default function Site() {
     }
   }, [router.isReady]);
 
-  useEffect(() => {
-    if (advertisers["advertisers_list"].length === 0) return;
-    saveToDB(network_site_name, "advertisers", advertisers);
-  }, [advertisers]);
-
+  // when advertisers auth
   useEffect(() => {
     if (!auth) return;
     if (Object.values(auth)[0] === "") return;
     saveToDB(network_site_name, "auth", auth);
   }, [auth]);
+
+  // when advertisers change
+  useEffect(() => {
+    if (advertisers["advertisers_list"].length === 0) return;
+    saveToDB(network_site_name, "advertisers", advertisers);
+  }, [advertisers]);
 
   const initializeAuth = () => {
     if (network_site_name === "cj") {
@@ -78,8 +85,37 @@ export default function Site() {
     setAdvertisers(advertisers_initialState);
   };
 
-  const deleteLocal = (storageName) => {
-    localStorage.removeItem(storageName);
+  const fetchAdvertiserList = () => {
+    setLoading(true);
+    let data = null;
+    (async () => {
+      if (network_site_name === "TESTNET") {
+        data = await fecthTestAdvertisers(auth);
+      } else {
+        data = await fecthAdvertisers({
+          network: network_site_name,
+          auth: auth,
+        });
+      }
+
+      if (typeof data === "string") {
+        toast({ title: data, status: "error", duration: 2000 });
+      } else {
+        setAdvertisers(data);
+        toast({
+          title: "Advertisers connected!",
+          status: "success",
+          duration: 2000,
+        });
+      }
+      setLoading(false);
+    })();
+  };
+
+  const deleteDB = () => {
+    localStorage.removeItem(network_site_name);
+    setAdvertisers(advertisers_initialState);
+    initializeAuth();
   };
 
   return (
@@ -88,13 +124,10 @@ export default function Site() {
         <Box>
           <NetworkSiteSetting
             networkName={network_site_name.toUpperCase()}
-            storageName={network_site_name}
-            deleteLocal={deleteLocal}
-            setAdvertisers={setAdvertisers}
             auth={auth}
             setAuth={setAuth}
-            advertisers_initialState={advertisers_initialState}
-            initializeAuth={initializeAuth}
+            fetchAdvertiserList={fetchAdvertiserList}
+            deleteDB={deleteDB}
           />
 
           <AdvertiserLists
@@ -103,6 +136,7 @@ export default function Site() {
           />
         </Box>
       )}
+      <Loading loading={loading} />
     </>
   );
 }
