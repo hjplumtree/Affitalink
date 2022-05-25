@@ -12,18 +12,19 @@ import Header from "./Header";
 import SectionBox from "./SectionBox";
 
 export default function AdvertiserLists({ advertisers, setAdvertisers }) {
-  const { page, advertisers_info } = advertisers;
+  const { page, advertisers_list } = advertisers;
 
   const alphabetical_sort = (arr) => {
     return arr.sort((a, b) => a.name.localeCompare(b.name));
   };
 
   const handleToggle = (index) => {
-    advertisers_info[index].isChecked = !advertisers_info[index].isChecked;
+    advertisers_list[index].isChecked = !advertisers_list[index].isChecked;
     setAdvertisers({
       ...advertisers,
     });
   };
+
   return (
     <SectionBox mt={5}>
       <Header
@@ -33,9 +34,9 @@ export default function AdvertiserLists({ advertisers, setAdvertisers }) {
       />
 
       {advertisers ? (
-        advertisers_info.length !== 0 ? (
+        advertisers_list.length !== 0 ? (
           <VStack align="stretch" justifyContent="center" mt={5}>
-            {alphabetical_sort(advertisers_info).map((advertiser, index) => (
+            {alphabetical_sort(advertisers_list).map((advertiser, index) => (
               <Flex key={advertiser.id}>
                 <Box>
                   <Heading fontSize="md">{advertiser.name}</Heading>

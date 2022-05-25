@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { fecthAdvertisers } from "../lib/fetch";
-import { fecthTestAdvertisers } from "../lib/demoFetch";
+import { isEmpty } from "../lib/validate";
 
 import {
   Box,
@@ -20,31 +19,24 @@ import {
   FormLabel,
   Alert,
   AlertIcon,
-  useToast,
 } from "@chakra-ui/react";
 import SectionBox from "./SectionBox";
-import Loading from "./Loading";
 import Header from "./Header";
 
 export default function NetworkInput({
   networkName,
-  storageName,
-  deleteLocal,
-  setAdvertisers,
   auth,
   setAuth,
-  advertisers_initialState,
-  initializeAuth,
+  fetchAdvertiserList,
+  deleteDB,
 }) {
   const [show, setShow] = useState(false);
   const [inputError, setInputError] = useState(false);
-  const [loading, setLoading] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef();
-  const toast = useToast();
 
   useEffect(() => {
-    if (validate(inputs)) {
+    if (isEmpty(inputs)) {
       setInputError(false);
     }
   }, []);
@@ -63,49 +55,17 @@ export default function NetworkInput({
 
   const inputs = Object.entries(auth);
 
-  const validate = (arr) => {
-    for (let i = 0; i < arr.length; i++) {
-      if (arr[i][1] === "") {
-        return false;
-      }
-    }
-    return true;
-  };
-
   const handleConnect = () => {
-    if (validate(inputs)) {
-      setLoading(true);
+    if (isEmpty(inputs)) {
       setInputError(false);
-
-      let data = null;
-      (async () => {
-        if (networkName === "TESTNET") {
-          data = await fecthTestAdvertisers(auth);
-        } else {
-          data = await fecthAdvertisers({ network: storageName, auth: auth });
-        }
-
-        if (typeof data === "string") {
-          toast({ title: data, status: "error", duration: 2000 });
-        } else {
-          setAdvertisers(data);
-          toast({
-            title: "Advertisers connected!",
-            status: "success",
-            duration: 2000,
-          });
-        }
-        setLoading(false);
-      })();
+      fetchAdvertiserList();
     } else {
       setInputError(true);
     }
   };
 
   const handleDelete = () => {
-    deleteLocal(storageName);
-    setAdvertisers(advertisers_initialState);
-    initializeAuth();
+    deleteDB();
   };
 
   return (
@@ -152,7 +112,7 @@ export default function NetworkInput({
           </Box>
         ))}
         {inputError && (
-          <Alert status="warning" borderRadius={5}>
+          <Alert status="error" borderRadius={5}>
             <AlertIcon />
             Please fill all the fields and connect again
           </Alert>
@@ -206,7 +166,6 @@ export default function NetworkInput({
           delete them if you need.
         </Alert>
       </FormControl>
-      <Loading loading={loading} />
     </SectionBox>
   );
 }

@@ -8,7 +8,7 @@ import impact_logo from "../../public/impact_logo.png";
 import ebay_logo from "../../public/ebay_logo.png";
 import affitalink_logo from "../../public/logo.svg";
 
-function index() {
+export default function index() {
   return (
     <SectionBox>
       <Box>
@@ -61,5 +61,3 @@ function index() {
     </SectionBox>
   );
 }
-
-export default index;
