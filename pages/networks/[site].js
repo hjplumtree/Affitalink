@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import NetworkSiteSetting from "../../components/NetworkSiteSetting";
 import AdvertiserLists from "../../components/AdvertiserLists";
 import { Box } from "@chakra-ui/react";
+import { saveToDB } from "../../lib/storage";
 
 export default function Site() {
   const router = useRouter();
@@ -30,6 +31,7 @@ export default function Site() {
     page: 0,
     advertisers_list: [],
   };
+
   const [advertisers, setAdvertisers] = useState(advertisers_initialState);
   const [auth, setAuth] = useState(null);
 
@@ -53,23 +55,14 @@ export default function Site() {
 
   useEffect(() => {
     if (advertisers["advertisers_list"].length === 0) return;
-    saveToDB("advertisers", advertisers);
+    saveToDB(network_site_name, "advertisers", advertisers);
   }, [advertisers]);
 
   useEffect(() => {
     if (!auth) return;
     if (Object.values(auth)[0] === "") return;
-    saveToDB("auth", auth);
+    saveToDB(network_site_name, "auth", auth);
   }, [auth]);
-
-  const saveToDB = (name, data) => {
-    const current_data = {
-      ...JSON.parse(localStorage.getItem(network_site_name)),
-    };
-    const updated_data = { ...current_data };
-    updated_data[name] = data;
-    localStorage.setItem(network_site_name, JSON.stringify(updated_data));
-  };
 
   const initializeAuth = () => {
     if (network_site_name === "cj") {
