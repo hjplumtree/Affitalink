@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { fecthAdvertisers } from "../lib/fetch";
 import { fecthTestAdvertisers } from "../lib/demoFetch";
+import { isEmpty } from "../lib/validate";
 
 import {
   Box,
@@ -44,7 +45,7 @@ export default function NetworkInput({
   const toast = useToast();
 
   useEffect(() => {
-    if (validate(inputs)) {
+    if (isEmpty(inputs)) {
       setInputError(false);
     }
   }, []);
@@ -63,17 +64,8 @@ export default function NetworkInput({
 
   const inputs = Object.entries(auth);
 
-  const validate = (arr) => {
-    for (let i = 0; i < arr.length; i++) {
-      if (arr[i][1] === "") {
-        return false;
-      }
-    }
-    return true;
-  };
-
   const handleConnect = () => {
-    if (validate(inputs)) {
+    if (isEmpty(inputs)) {
       setLoading(true);
       setInputError(false);
 
@@ -152,7 +144,7 @@ export default function NetworkInput({
           </Box>
         ))}
         {inputError && (
-          <Alert status="warning" borderRadius={5}>
+          <Alert status="error" borderRadius={5}>
             <AlertIcon />
             Please fill all the fields and connect again
           </Alert>
