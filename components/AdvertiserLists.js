@@ -12,7 +12,6 @@ import Header from "./Header";
 import SectionBox from "./SectionBox";
 
 export default function AdvertiserLists({ advertisers, setAdvertisers }) {
-  console.log(advertisers);
   const { page, advertisers_list } = advertisers;
 
   const alphabetical_sort = (arr) => {

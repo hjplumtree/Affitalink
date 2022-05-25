@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import LinksHeader from "../components/LinksHeader";
 import LinksList from "../components/LinksList";
-import { VStack, useToast } from "@chakra-ui/react";
+import { VStack } from "@chakra-ui/react";
 import { fetchLinks } from "../lib/fetch";
+import { saveToDB } from "../lib/storage";
 import { fetchTestLinks } from "../lib/demoFetch";
 import Loading from "../components/Loading";
 export default function LinksPage() {
@@ -10,16 +11,14 @@ export default function LinksPage() {
   const [networkSites, setNetworkSites] = useState([]);
   const [selectedNetwork, setSelectedNetwork] = useState(null);
   const [loading, setLoading] = useState(false);
-  const toast = useToast();
-  const [error, setError] = useState("");
 
   useEffect(() => {
     let sites = [];
     for (const [key, value] of Object.entries(localStorage)) {
-      if (!!value && key !== "ally-supports-cache") {
-        const parsedValue = JSON.parse(value);
-        sites.push({ name: key, info: parsedValue });
-      }
+      if (key === "ally-supports-cache") continue;
+      const parsedValue = JSON.parse(value);
+      if (!parsedValue["advertisers"]) continue;
+      sites.push({ name: key, info: parsedValue });
     }
     setNetworkSites(sites);
     setSelectedNetwork(sites[0]);
@@ -51,18 +50,14 @@ export default function LinksPage() {
           ids: advertiser_ids,
         });
       }
-      if (typeof data === "string") {
-        setError(data);
-      } else {
-        setLinks(data);
-      }
+      setLinks(data);
       setLoading(false);
     })();
   };
 
   useEffect(() => {
     if (!selectedNetwork) return;
-    saveOffersToDB();
+    saveToDB(selectedNetwork.name, "offers", links);
   }, [links]);
 
   useEffect(() => {
@@ -70,14 +65,6 @@ export default function LinksPage() {
     const data = getOffersFromDB(selectedNetwork.name);
     setLinks(data);
   }, [selectedNetwork]);
-
-  const saveOffersToDB = () => {
-    const { name } = selectedNetwork;
-    const current_data = { ...JSON.parse(localStorage.getItem(name)) };
-    const updated_data = { ...current_data };
-    updated_data["offers"] = links;
-    localStorage.setItem(name, JSON.stringify(updated_data));
-  };
 
   const getOffersFromDB = (network_name) => {
     const { offers } = { ...JSON.parse(localStorage.getItem(network_name)) };

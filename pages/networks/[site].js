@@ -46,11 +46,13 @@ export default function Site() {
     const current_data = {
       ...JSON.parse(localStorage.getItem(network_site_name)),
     };
+
     if (current_data["auth"]) {
       setAuth(current_data["auth"]);
     } else {
       initializeAuth();
     }
+
     if (current_data["advertisers"]) {
       setAdvertisers(current_data["advertisers"]);
     } else {
@@ -58,7 +60,7 @@ export default function Site() {
     }
   }, [router.isReady]);
 
-  // when advertisers auth
+  // when auth changes
   useEffect(() => {
     if (!auth) return;
     if (Object.values(auth)[0] === "") return;
@@ -89,7 +91,7 @@ export default function Site() {
     setLoading(true);
     let data = null;
     (async () => {
-      if (network_site_name === "TESTNET") {
+      if (network_site_name === "testnet") {
         data = await fecthTestAdvertisers(auth);
       } else {
         data = await fecthAdvertisers({
