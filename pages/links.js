@@ -38,7 +38,7 @@ export default function LinksPage() {
 
     let data = null;
     (async () => {
-      const advertiser_ids = info["advertisers"]["advertisers_info"]
+      const advertiser_ids = info["advertisers"]["advertisers_list"]
         .filter((advertiser) => advertiser.isChecked)
         .map((advertiser) => advertiser.id);
       // test network
