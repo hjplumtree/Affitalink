@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 export default function RouterLink({ to, children, ...props }) {
   const router = useRouter();
   const isActive = router.pathname === to;
+  const { color, _hover, ...rest } = props;
   const styles = {
     padding: 3,
     borderRadius: 16,
@@ -13,7 +14,7 @@ export default function RouterLink({ to, children, ...props }) {
     gap: 3,
     fontWeight: "600",
     transition: "all 180ms ease",
-    ...props,
+    ...rest,
   };
 
   if (isActive) {
@@ -21,10 +22,10 @@ export default function RouterLink({ to, children, ...props }) {
       <Link href={to} passHref>
         <ChakraLink
           {...styles}
-          bg="rgba(255, 66, 122, 0.12)"
-          color="ink.900"
-          border="1px solid rgba(255, 66, 122, 0.22)"
-          boxShadow="0 14px 32px rgba(245, 22, 96, 0.10)"
+          bg="rgba(139, 77, 255, 0.16)"
+          color={color || "ink.900"}
+          border="1px solid rgba(139, 77, 255, 0.28)"
+          boxShadow="0 14px 32px rgba(139, 77, 255, 0.14)"
         >
           {children}
         </ChakraLink>
@@ -36,8 +37,8 @@ export default function RouterLink({ to, children, ...props }) {
     <Link href={to} passHref>
       <ChakraLink
         {...styles}
-        color="ink.700"
-        _hover={{ bg: "rgba(15,17,23,0.04)", transform: "translateY(-1px)" }}
+        color={color || "ink.700"}
+        _hover={{ bg: "rgba(15,17,23,0.04)", transform: "translateY(-1px)", ..._hover }}
       >
         {children}
       </ChakraLink>

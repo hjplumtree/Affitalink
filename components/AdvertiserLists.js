@@ -44,7 +44,7 @@ export default function AdvertiserLists({ advertisers, onToggleAdvertiser }) {
             {selectedCount} of {advertisersList.length} merchants selected
           </Text>
         </Box>
-        <Badge bg="rgba(255,66,122,0.10)" color="brand.700" px={3} py={1.5} borderRadius="full">
+        <Badge bg="rgba(139,77,255,0.10)" color="brand.700" px={3} py={1.5} borderRadius="full">
           Active feed
         </Badge>
       </Flex>

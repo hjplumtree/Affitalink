@@ -82,7 +82,7 @@ export default function LinksHeader({
             </AlertDescription>
             <RouterLink
               mt={7}
-              border="1px solid rgba(255, 66, 122, 0.16)"
+              border="1px solid rgba(139, 77, 255, 0.16)"
               to="/networks"
               fontSize="md"
               fontWeight="bold"

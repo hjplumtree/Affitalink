@@ -56,8 +56,8 @@ export default function CopyTextToClipboard({ title, children }) {
             onClick={handleClick}
             cursor="pointer"
             {...styles}
-            bg="rgba(255, 240, 244, 0.84)"
-            border="1px dashed rgba(255, 66, 122, 0.32)"
+            bg="rgba(237, 226, 255, 0.84)"
+            border="1px dashed rgba(139, 77, 255, 0.32)"
             borderRadius="16px"
           >
             <Icon as={FaCopy} color="brand.600" />

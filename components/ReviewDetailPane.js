@@ -37,10 +37,10 @@ function DiffRow({ label, beforeValue, afterValue }) {
         </Box>
         <Box
           flex="1"
-          border="1px solid rgba(255, 66, 122, 0.16)"
+          border="1px solid rgba(139, 77, 255, 0.16)"
           borderRadius="18px"
           p={4}
-          bg="rgba(255, 66, 122, 0.08)"
+          bg="rgba(139, 77, 255, 0.08)"
         >
           <Text fontSize="xs" color="ink.500" mb={1}>
             After

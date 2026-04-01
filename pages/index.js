@@ -166,7 +166,7 @@ export default function Home() {
           mt={5}
           display="inline-flex"
           width="fit-content"
-          border="1px solid rgba(255, 66, 122, 0.16)"
+          border="1px solid rgba(139, 77, 255, 0.16)"
         >
           Configure sources
         </RouterLink>

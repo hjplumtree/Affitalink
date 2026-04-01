@@ -87,12 +87,12 @@ export default function ReviewQueueList({ items, selectedId, onSelect }) {
               }
             }}
             borderTop="1px solid rgba(15, 17, 23, 0.06)"
-            bg={isSelected ? "rgba(255, 66, 122, 0.08)" : "transparent"}
+            bg={isSelected ? "rgba(139, 77, 255, 0.08)" : "transparent"}
             px={{ base: 4, lg: 5 }}
             py={4}
             cursor="pointer"
             transition="background 160ms ease"
-            _hover={{ bg: isSelected ? "rgba(255, 66, 122, 0.12)" : "rgba(15,17,23,0.03)" }}
+            _hover={{ bg: isSelected ? "rgba(139, 77, 255, 0.12)" : "rgba(15,17,23,0.03)" }}
           >
             <HStack justify="space-between" align="start">
               <VStack align="start" spacing={1} flex="1">

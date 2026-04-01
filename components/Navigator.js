@@ -26,7 +26,7 @@ export default function Navigator({ ...styles }) {
       p={3}
       pt={4}
       spacing={4}
-      bg="#10131c"
+      bg="#12131a"
       borderRight="1px solid rgba(255, 255, 255, 0.06)"
       backdropFilter="blur(18px)"
       width={{ base: burgerMenuOpen ? "210px" : "55px", lg: "210px" }}
@@ -39,8 +39,8 @@ export default function Navigator({ ...styles }) {
             width="40px"
             height="40px"
             borderRadius="16px"
-            bg="brand.500"
-            border="1px solid rgba(255, 255, 255, 0.12)"
+            bg="rgba(255,255,255,0.06)"
+            border="1px solid rgba(255, 255, 255, 0.10)"
             display="grid"
             placeItems="center"
           >
@@ -50,7 +50,7 @@ export default function Navigator({ ...styles }) {
             <Text fontSize="lg" fontWeight="700" letterSpacing="-0.03em" color="white">
               AffitaLink
             </Text>
-            <Text fontSize="xs" color="whiteAlpha.700">
+            <Text fontSize="xs" color="rgba(255,255,255,0.76)">
               Review ops console
             </Text>
           </Box>
@@ -80,7 +80,7 @@ export default function Navigator({ ...styles }) {
         <Text
           display={{ base: burgerMenuOpen ? "block" : "none", lg: "block" }}
           fontSize="xs"
-          color="whiteAlpha.700"
+          color="rgba(255,255,255,0.78)"
           lineHeight="1.5"
           mb={4}
           px={3}
@@ -93,10 +93,10 @@ export default function Navigator({ ...styles }) {
           mb={4}
           p={3}
           borderRadius="18px"
-          bg="rgba(255,255,255,0.06)"
-          border="1px solid rgba(255,255,255,0.08)"
+          bg="rgba(255,255,255,0.05)"
+          border="1px solid rgba(255,255,255,0.10)"
         >
-          <Text fontSize="10px" color="whiteAlpha.600" letterSpacing="0.16em" textTransform="uppercase">
+          <Text fontSize="10px" color="rgba(255,255,255,0.62)" letterSpacing="0.16em" textTransform="uppercase">
             Focus
           </Text>
           <Text mt={1} fontSize="sm" color="white" fontWeight="700">
@@ -129,8 +129,9 @@ export default function Navigator({ ...styles }) {
           mt={4}
           mb={2}
           fontSize="xs"
-          color="whiteAlpha.500"
+          color="rgba(255,255,255,0.54)"
           letterSpacing="0.18em"
+          fontWeight="700"
         >
           CONNECT
         </Text>
@@ -161,8 +162,9 @@ export default function Navigator({ ...styles }) {
           mt={4}
           mb={2}
           fontSize="xs"
-          color="whiteAlpha.500"
+          color="rgba(255,255,255,0.54)"
           letterSpacing="0.18em"
+          fontWeight="700"
         >
           COPY
         </Text>
@@ -193,8 +195,9 @@ export default function Navigator({ ...styles }) {
           mt={4}
           mb={2}
           fontSize="xs"
-          color="whiteAlpha.500"
+          color="rgba(255,255,255,0.54)"
           letterSpacing="0.18em"
+          fontWeight="700"
         >
           ACCOUNT
         </Text>
