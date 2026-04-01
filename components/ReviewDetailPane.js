@@ -68,11 +68,10 @@ export default function ReviewDetailPane({ item, onAction, acting, showBack, onB
           Detail pane
         </Text>
         <Text mt={3} fontSize="2xl" fontWeight="700" color="ink.900">
-          Review a flagged item
+          Select an item to review
         </Text>
         <Text color="ink.600" mt={2} maxW="46ch">
-          Select a change from the queue to inspect what changed, why it was surfaced,
-          and what to do next.
+          Open a change from the queue to compare the old value and the new value.
         </Text>
       </Box>
     );
@@ -124,7 +123,7 @@ export default function ReviewDetailPane({ item, onAction, acting, showBack, onB
             Decision brief
           </Text>
           <Text fontSize="lg" fontWeight="600" mb={2} color="ink.900">
-            Why this hit the queue
+            Why this changed
           </Text>
           <Text color="ink.700">{item.reason}</Text>
           <HStack spacing={2} mt={2}>
@@ -162,7 +161,7 @@ export default function ReviewDetailPane({ item, onAction, acting, showBack, onB
             Source evidence
           </Text>
           <Text fontSize="lg" fontWeight="600" mb={2} color="ink.900">
-            Verify before approving
+            Source details
           </Text>
           <Text fontSize="sm" color="ink.700">
             Latest seen: {afterSnapshot.lastSeenAt || "Unknown"}

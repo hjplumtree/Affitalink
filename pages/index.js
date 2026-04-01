@@ -11,12 +11,12 @@ export default function Home() {
           <Box>
             <Header
               eyebrow="Overview"
-              title="Run affiliate review like a live signal feed, not a sleepy dashboard"
-              subtitle="AffitaLink compresses the workflow into one bright operating surface: connect trusted sources, pull the latest snapshot, and clear the queue with evidence instead of tab sprawl."
+              title="Review affiliate offer changes in one place"
+              subtitle="Connect your sources, sync the latest offers, and review changes without checking each network by hand."
             />
             <HStack mt={6} spacing={3} flexWrap="wrap">
               <RouterLink to="/links" display="inline-flex" width="fit-content">
-                Open live queue
+                Open queue
               </RouterLink>
               <RouterLink
                 to="/networks"
@@ -25,7 +25,7 @@ export default function Home() {
                 bg="transparent"
                 border="1px solid rgba(15, 17, 23, 0.12)"
               >
-                Open source wall
+                Set up sources
               </RouterLink>
             </HStack>
           </Box>
@@ -37,7 +37,7 @@ export default function Home() {
             boxShadow="0 28px 70px rgba(15,17,23,0.18)"
           >
             <Text fontSize="11px" letterSpacing="0.22em" textTransform="uppercase" color="whiteAlpha.600">
-              Workflow loop
+              Workflow
             </Text>
             <VStack align="stretch" spacing={4} mt={4}>
               <Box>
@@ -68,7 +68,7 @@ export default function Home() {
             </Text>
           </Box>
           <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.04)">
-            <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="aqua.600">
+            <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500">
               Signal
             </Text>
             <Text mt={2} fontSize="lg" fontWeight="700" color="ink.900">
@@ -94,15 +94,15 @@ export default function Home() {
       <SimpleGrid columns={{ base: 1, xl: 2 }} spacing={5}>
         <SectionBox>
           <Text fontSize="xs" fontWeight="700" letterSpacing="0.18em" textTransform="uppercase" color="brand.500">
-            Product loop
+            Workflow
           </Text>
           <VStack align="stretch" mt={5} spacing={4}>
             <Box>
               <Text fontSize="lg" fontWeight="700" color="ink.900">
-                1. Build a clean source wall
+                1. Set up your sources
               </Text>
               <Text mt={1} fontSize="sm" color="ink.600">
-                Keep credentials and source validation away from the queue so operations stays clean.
+                Keep credentials and connection checks separate from the review queue.
               </Text>
             </Box>
             <Box>
@@ -125,14 +125,14 @@ export default function Home() {
         </SectionBox>
         <SectionBox>
           <Text fontSize="xs" fontWeight="700" letterSpacing="0.18em" textTransform="uppercase" color="brand.500">
-            Why this feels different
+            Why this helps
           </Text>
           <VStack align="stretch" mt={5} spacing={4}>
             <Text fontSize="sm" color="ink.700">
-              Most affiliate tools still feel like exports pretending to be products. This should feel closer to a content moderation desk: ranked list, visible freshness, one obvious next action.
+              Most affiliate tools send you across exports, dashboards, and merchant pages. This keeps the work in one queue with a clear next step.
             </Text>
             <Text fontSize="sm" color="ink.700">
-              That matters because stale affiliate data rarely fails loudly. It leaks into weak copy, broken trust, and wasted review time.
+              That matters because stale affiliate data quietly turns into bad copy, wrong links, and wasted time.
             </Text>
           </VStack>
         </SectionBox>

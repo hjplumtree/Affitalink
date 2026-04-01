@@ -25,7 +25,7 @@ export default function AdvertiserLists({ advertisers, onToggleAdvertiser }) {
         eyebrow="Selection"
       />
       <Text mt={4} fontSize="sm" color="ink.600">
-        Merchant selection is where you stop the queue from becoming a junk drawer.
+        Select only the merchants you want to review.
       </Text>
       <Flex
         mt={4}
@@ -82,13 +82,13 @@ export default function AdvertiserLists({ advertisers, onToggleAdvertiser }) {
         ) : (
           <Alert status="info" mt={5} borderRadius={18}>
             <AlertIcon />
-            Save valid connector credentials to load affiliated merchants here
+            Save valid connector credentials to load merchants here
           </Alert>
         )
       ) : (
         <Alert status="error" mt={5} borderRadius={18}>
           <AlertIcon />
-          Oops, Please check your information.
+          Check the connector details and try again.
         </Alert>
       )}
     </SectionBox>

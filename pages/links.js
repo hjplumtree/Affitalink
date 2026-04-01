@@ -164,8 +164,8 @@ export default function LinksPage() {
         <SectionBox bg="rgba(255,255,255,0.98)">
           <Header
             eyebrow="Review workspace"
-            title="Work the queue at the speed of trust"
-            subtitle="This page should feel immediate. Freshness stays visible, the queue stays ranked, and each decision gets a compact brief instead of a scavenger hunt across tabs."
+            title="Review offer changes"
+            subtitle="Sync the latest offers, open a change, and approve or dismiss it with the details you need in one place."
           />
           <HStack spacing={3} mt={6} flexWrap="wrap">
             <RouterLink
@@ -175,7 +175,7 @@ export default function LinksPage() {
               bg="transparent"
               border="1px solid rgba(15, 17, 23, 0.12)"
             >
-              Queue home
+              Reload queue
             </RouterLink>
             <RouterLink
               to="/networks"
@@ -200,8 +200,8 @@ export default function LinksPage() {
               </Text>
             </Box>
             <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.04)">
-              <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="aqua.600">
-                Sources live
+              <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500">
+                Sources
               </Text>
               <Text mt={2} fontSize="2xl" fontWeight="700" color="ink.900">
                 {connectors.length}
@@ -250,7 +250,7 @@ export default function LinksPage() {
               width="fit-content"
               border="1px solid rgba(139, 77, 255, 0.16)"
             >
-              Open connector settings
+              Open source settings
             </RouterLink>
           </SectionBox>
         )}

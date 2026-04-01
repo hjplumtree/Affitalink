@@ -152,12 +152,11 @@ export default function Site() {
           <SectionBox bg="rgba(255,255,255,0.98)">
             <Header
               eyebrow="Connector setup"
-              title={`Make ${network_site_name?.toUpperCase()} feel live, not brittle`}
-              subtitle="Save credentials, test the handshake, and choose only the merchants worth surfacing in the queue."
+              title={`Set up ${network_site_name?.toUpperCase()}`}
+              subtitle="Save credentials, test the connection, and choose which merchants should appear in the review queue."
             />
             <Text mt={5} fontSize="sm" color="ink.600" maxW="48ch">
-              This screen stays separate from the review workspace on purpose. Configure
-              sources here, then return to the queue once the connector feels trustworthy.
+              Set up the source here, then go back to the queue when the connection is working.
             </Text>
             <SimpleGrid columns={{ base: 1, md: 3 }} spacing={3} mt={7}>
               <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
@@ -169,7 +168,7 @@ export default function Site() {
                 </Text>
               </Box>
               <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
-                <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="aqua.600">
+                <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500">
                   Select
                 </Text>
                 <Text mt={2} fontSize="sm" color="ink.700">

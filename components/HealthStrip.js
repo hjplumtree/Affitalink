@@ -120,7 +120,7 @@ export default function HealthStrip({
           leftIcon={<FaSync />}
           variant="accent"
         >
-          Pull latest
+          Sync now
         </Button>
       </HStack>
     </Flex>

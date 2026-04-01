@@ -48,8 +48,8 @@ export default function LoginPage() {
       <SectionBox bg="rgba(255,255,255,0.98)">
         <Header
           eyebrow="Authentication"
-          title="Sign in fast, land exactly where the work is"
-          subtitle="This login flow is intentionally spare. Authenticate, resolve membership, and move straight into the review workspace without browser-local state pretending to be a backend."
+          title="Sign in to your workspace"
+          subtitle="Use your account to open the review queue and manage source settings for this workspace."
         />
         <SimpleGrid columns={{ base: 1, md: 3 }} spacing={3} mt={7}>
           <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
@@ -61,7 +61,7 @@ export default function LoginPage() {
             </Text>
           </Box>
           <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
-            <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="aqua.600">
+            <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500">
               Scoped
             </Text>
             <Text mt={2} fontSize="sm" color="ink.700">
@@ -87,7 +87,7 @@ export default function LoginPage() {
             color="white"
           >
             <Text fontSize="11px" letterSpacing="0.22em" textTransform="uppercase" color="whiteAlpha.600">
-              Before you enter
+              Access
             </Text>
             <VStack align="stretch" spacing={4} mt={4}>
               <Box>
@@ -103,9 +103,9 @@ export default function LoginPage() {
                 </Text>
               </Box>
               <Box>
-                <Text fontWeight="700">No fake onboarding theatre</Text>
+                <Text fontWeight="700">No extra steps</Text>
                 <Text fontSize="sm" color="whiteAlpha.700" mt={1}>
-                  Sign in, confirm membership, and get to the queue.
+                  Sign in and get back to work.
                 </Text>
               </Box>
             </VStack>

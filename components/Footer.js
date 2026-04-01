@@ -5,7 +5,7 @@ export default function Footer() {
   return (
     <VStack pt={10} mt="auto" mb={5} spacing={2}>
       <Text fontSize="sm" color="ink.500">
-        Built for fast review, not dashboard theatre.
+        Built for faster offer review.
       </Text>
       <Flex color="ink.500" gap="3">
         <Link

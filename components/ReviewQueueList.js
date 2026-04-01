@@ -17,14 +17,13 @@ export default function ReviewQueueList({ items, selectedId, onSelect }) {
           textTransform="uppercase"
           color="brand.500"
         >
-          Queue clear
+          No pending changes
         </Text>
         <Text mt={3} fontSize="2xl" fontWeight="700" letterSpacing="-0.03em" color="ink.900">
           All caught up
         </Text>
         <Text color="ink.600" mt={2} maxW="42ch">
-          No review items are waiting right now. Run a manual sync when you want a fresh pass
-          across your monitored merchants.
+          No review items are waiting right now. Run a sync to check for new changes.
         </Text>
       </Box>
     );
@@ -50,13 +49,13 @@ export default function ReviewQueueList({ items, selectedId, onSelect }) {
       >
         <Box>
           <Text fontSize="xs" fontWeight="700" letterSpacing="0.18em" textTransform="uppercase" color="brand.500">
-            Attention queue
+            Review queue
           </Text>
           <Text mt={1} fontSize="lg" fontWeight="700" color="ink.900">
-            Highest signal first
+            Open items
           </Text>
           <Text mt={1} fontSize="sm" color="ink.600">
-            Open the top item, decide quickly, then keep the line moving.
+            Pick an item, review the change, then approve or dismiss it.
           </Text>
         </Box>
         <Badge

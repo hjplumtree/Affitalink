@@ -85,7 +85,7 @@ export default function Navigator({ ...styles }) {
           mb={4}
           px={3}
         >
-          Bright signal. Ranked queue. One clear next move.
+          Check sources, sync offers, review changes.
         </Text>
         <Box
           display={{ base: burgerMenuOpen ? "block" : "none", lg: "block" }}
@@ -97,10 +97,10 @@ export default function Navigator({ ...styles }) {
           border="1px solid rgba(255,255,255,0.10)"
         >
           <Text fontSize="10px" color="rgba(255,255,255,0.62)" letterSpacing="0.16em" textTransform="uppercase">
-            Focus
+            Workspace
           </Text>
           <Text mt={1} fontSize="sm" color="white" fontWeight="700">
-            Review before drift becomes broken copy.
+            Keep offer changes clean and current.
           </Text>
         </Box>
         <Divider borderColor="whiteAlpha.200" mb={4} />
@@ -133,7 +133,7 @@ export default function Navigator({ ...styles }) {
           letterSpacing="0.18em"
           fontWeight="700"
         >
-          CONNECT
+          SETUP
         </Text>
         <RouterLink
           to="/networks"
@@ -153,7 +153,7 @@ export default function Navigator({ ...styles }) {
           <Text
             display={{ base: burgerMenuOpen ? "inline-block" : "none", lg: "inline-block" }}
           >
-            Networks
+            Sources
           </Text>
         </RouterLink>
 
@@ -166,7 +166,7 @@ export default function Navigator({ ...styles }) {
           letterSpacing="0.18em"
           fontWeight="700"
         >
-          COPY
+          REVIEW
         </Text>
         <RouterLink
           to="/links"
@@ -186,7 +186,7 @@ export default function Navigator({ ...styles }) {
           <Text
             display={{ base: burgerMenuOpen ? "inline-block" : "none", lg: "inline-block" }}
           >
-            Review Queue
+            Queue
           </Text>
         </RouterLink>
 

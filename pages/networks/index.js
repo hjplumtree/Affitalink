@@ -9,8 +9,8 @@ export default function index() {
       <SectionBox bg="rgba(255,255,255,0.98)">
         <Header
           eyebrow="Sources"
-          title="Build a source wall that earns the queue's trust"
-          subtitle="Each connector should justify its place. Validate credentials, trim the watchlist, and keep operations focused on sources that actually deserve review attention."
+          title="Connect the sources you want to monitor"
+          subtitle="Save credentials, test the connection, and choose which merchants should feed the review queue."
         />
         <SimpleGrid columns={{ base: 1, md: 3 }} spacing={3} mt={7}>
           <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
@@ -22,7 +22,7 @@ export default function index() {
             </Text>
           </Box>
           <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
-            <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="aqua.600">
+            <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500">
               Selection
             </Text>
             <Text mt={2} fontSize="sm" color="ink.700">
@@ -44,7 +44,7 @@ export default function index() {
           Available connectors
         </Text>
         <Text mt={2} color="ink.600" maxW="48ch">
-          Start with the networks that matter today. Leave the rest off the critical path.
+          Start with the networks you actively use. Leave the rest disconnected.
         </Text>
         <VStack marginTop={5} align="stretch" spacing={0}>
           <NetworkSiteList
@@ -73,8 +73,8 @@ export default function index() {
           />
           <NetworkSiteList
             imageUrl="/logo.svg"
-            name="TEST NETWORK"
-            subtitle="EXPLORE with TEST NETWORK"
+            name="Test network"
+            subtitle="Use the built-in test source"
             endpoint="testnet"
           />
         </VStack>

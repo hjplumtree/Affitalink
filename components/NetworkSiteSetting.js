@@ -76,7 +76,7 @@ export default function NetworkInput({
       />
       <FormControl isRequired mt={5}>
         <Text fontSize="sm" color="ink.600" mb={4}>
-          Save the credentials, verify the handshake, then trim the merchant list below.
+          Save the credentials, test the connection, then choose merchants below.
         </Text>
         {inputs.map((input) => (
           <Box key={input[0]}>
@@ -117,7 +117,7 @@ export default function NetworkInput({
         {inputError && (
           <Alert status="error" borderRadius={20}>
             <AlertIcon />
-            Please fill all the fields and connect again
+            Fill in every field, then try again.
           </Alert>
         )}
         {connectorStatus && (
@@ -153,7 +153,7 @@ export default function NetworkInput({
                 </AlertDialogHeader>
 
                 <AlertDialogBody>
-                  Are you sure you want to delete {networkName} information?
+                  Delete the saved settings for {networkName}?
                 </AlertDialogBody>
 
                 <AlertDialogFooter>
