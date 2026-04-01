@@ -112,7 +112,7 @@ export default function NetworkInput({
           </Box>
         ))}
         {inputError && (
-          <Alert status="error" borderRadius={18}>
+          <Alert status="error" borderRadius={20}>
             <AlertIcon />
             Please fill all the fields and connect again
           </Alert>
@@ -120,7 +120,7 @@ export default function NetworkInput({
         {connectorStatus && (
           <Alert
             status={connectorStatus.status === "connected" ? "success" : "warning"}
-            borderRadius={18}
+            borderRadius={20}
             mt={3}
           >
             <AlertIcon />
@@ -172,7 +172,7 @@ export default function NetworkInput({
             </AlertDialogOverlay>
           </AlertDialog>
         </VStack>
-        <Alert status="warning" fontSize="sm" mt={5} borderRadius={18}>
+        <Alert status="warning" fontSize="sm" mt={5} borderRadius={20}>
           <AlertIcon />
           <Text>
             Credentials are stored on the backend for manual sync. Remove them if the

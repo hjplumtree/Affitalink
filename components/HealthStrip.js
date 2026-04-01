@@ -46,10 +46,10 @@ export default function HealthStrip({
       gap={4}
       px={{ base: 4, lg: 5 }}
       py={4}
-      borderRadius="24px"
-      border="1px solid rgba(103, 77, 55, 0.16)"
-      bg="rgba(255, 251, 246, 0.92)"
-      boxShadow="0 10px 30px rgba(24, 34, 47, 0.04)"
+      borderRadius="26px"
+      border="1px solid rgba(15, 17, 23, 0.08)"
+      bg="linear-gradient(135deg, rgba(255,255,255,0.96), rgba(255, 240, 244, 0.78) 48%, rgba(236,255,255,0.76))"
+      boxShadow="0 16px 34px rgba(15, 17, 23, 0.07)"
       direction={{ base: "column", lg: "row" }}
     >
       <Stack direction={{ base: "column", md: "row" }} spacing={4} flex="1" align="flex-start">
@@ -66,7 +66,7 @@ export default function HealthStrip({
             <Icon as={statusIcon} boxSize={4} />
           </Flex>
           <Box>
-            <Text fontSize="xs" letterSpacing="0.18em" textTransform="uppercase" color="sand.700">
+            <Text fontSize="xs" letterSpacing="0.18em" textTransform="uppercase" color="brand.500">
               Health
             </Text>
             <Text fontWeight="700" color="ink.900">
@@ -90,8 +90,8 @@ export default function HealthStrip({
           px={3}
           py={1.5}
           borderRadius="full"
-          bg="rgba(24, 34, 47, 0.06)"
-          color="ink.700"
+          bg="rgba(15, 17, 23, 0.08)"
+          color="ink.800"
           fontWeight="700"
         >
           {activeNetwork.toUpperCase()}

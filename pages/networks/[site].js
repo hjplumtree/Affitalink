@@ -152,8 +152,8 @@ export default function Site() {
           <SectionBox>
             <Header
               eyebrow="Connector setup"
-              title={`Keep ${network_site_name?.toUpperCase()} healthy and predictable`}
-              subtitle="Save credentials, verify the connection, and pick the merchants that actually matter to your queue."
+              title={`Make ${network_site_name?.toUpperCase()} feel live, not fragile`}
+              subtitle="Save credentials, test the handshake, and choose only the merchants worth surfacing in the queue."
             />
             <Text mt={5} fontSize="sm" color="ink.600" maxW="48ch">
               This setup screen stays separate from the review workspace on purpose. Configure

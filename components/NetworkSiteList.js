@@ -13,7 +13,7 @@ export default function NetworkSiteList({
     <Flex
       alignItems="center"
       p={4}
-      borderTop="1px solid rgba(103, 77, 55, 0.1)"
+      borderTop="1px solid rgba(15, 17, 23, 0.08)"
       gap={4}
       {...styles}
     >
@@ -21,10 +21,10 @@ export default function NetworkSiteList({
         width="48px"
         height="48px"
         borderRadius="16px"
-        bg="rgba(255,255,255,0.82)"
+        bg="linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255, 240, 244, 0.68), rgba(236,255,255,0.6))"
         align="center"
         justify="center"
-        border="1px solid rgba(103, 77, 55, 0.12)"
+        border="1px solid rgba(15, 17, 23, 0.08)"
       >
         <Image src={imageUrl} alt={name} width={30} height={30} />
       </Flex>
@@ -45,10 +45,10 @@ export default function NetworkSiteList({
           p={2}
           borderRadius={999}
           marginLeft="auto"
-          bg="rgba(31, 106, 91, 0.08)"
-          border="1px solid rgba(31, 106, 91, 0.12)"
+          bg="rgba(172, 232, 44, 0.16)"
+          border="1px solid rgba(172, 232, 44, 0.24)"
         >
-          <Text fontSize="xs" color="brand.700" fontWeight="700">
+          <Text fontSize="xs" color="lime.800" fontWeight="700">
             Coming soon
           </Text>
         </Box>

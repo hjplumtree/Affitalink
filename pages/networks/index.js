@@ -9,12 +9,12 @@ export default function index() {
       <SectionBox>
         <Header
           eyebrow="Sources"
-          title="Choose the sources that feed your queue"
-          subtitle="Connector setup lives away from the review workspace on purpose. Save credentials here, verify the connection, and then head back to the queue once the source is trustworthy."
+          title="Choose the feeds that keep the queue moving"
+          subtitle="This is the source wall. Connect what you trust, ignore what you do not need, and keep the review workspace focused on decisions instead of setup clutter."
         />
       </SectionBox>
       <SectionBox>
-        <Text fontSize="xs" fontWeight="700" letterSpacing="0.18em" textTransform="uppercase" color="sand.700">
+        <Text fontSize="xs" fontWeight="700" letterSpacing="0.18em" textTransform="uppercase" color="brand.500">
           Available connectors
         </Text>
         <VStack marginTop={5} align="stretch" spacing={0}>

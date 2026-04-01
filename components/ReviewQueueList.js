@@ -5,17 +5,17 @@ export default function ReviewQueueList({ items, selectedId, onSelect }) {
   if (items.length === 0) {
     return (
       <Box
-        border="1px solid rgba(103, 77, 55, 0.16)"
-        borderRadius="28px"
+        border="1px solid rgba(15, 17, 23, 0.08)"
+        borderRadius="30px"
         p={{ base: 5, lg: 6 }}
-        bg="rgba(255, 251, 246, 0.9)"
+        bg="rgba(255, 255, 255, 0.92)"
       >
         <Text
           fontSize="xs"
           fontWeight="700"
           letterSpacing="0.18em"
           textTransform="uppercase"
-          color="sand.700"
+          color="brand.500"
         >
           Queue clear
         </Text>
@@ -32,10 +32,11 @@ export default function ReviewQueueList({ items, selectedId, onSelect }) {
 
   return (
     <Box
-      border="1px solid rgba(103, 77, 55, 0.16)"
-      borderRadius="28px"
-      bg="rgba(255, 251, 246, 0.9)"
+      border="1px solid rgba(15, 17, 23, 0.08)"
+      borderRadius="30px"
+      bg="rgba(255, 255, 255, 0.92)"
       overflow="hidden"
+      boxShadow="0 24px 64px rgba(15, 17, 23, 0.06)"
     >
       <Flex
         align={{ base: "start", md: "center" }}
@@ -43,11 +44,12 @@ export default function ReviewQueueList({ items, selectedId, onSelect }) {
         gap={3}
         px={{ base: 4, lg: 5 }}
         py={4}
-        borderBottom="1px solid rgba(103, 77, 55, 0.12)"
+        borderBottom="1px solid rgba(15, 17, 23, 0.08)"
         direction={{ base: "column", md: "row" }}
+        bg="linear-gradient(180deg, rgba(255, 240, 244, 0.6), rgba(255,255,255,0))"
       >
         <Box>
-          <Text fontSize="xs" fontWeight="700" letterSpacing="0.18em" textTransform="uppercase" color="sand.700">
+          <Text fontSize="xs" fontWeight="700" letterSpacing="0.18em" textTransform="uppercase" color="brand.500">
             Attention queue
           </Text>
           <Text mt={1} fontSize="lg" fontWeight="700" color="ink.900">
@@ -59,7 +61,7 @@ export default function ReviewQueueList({ items, selectedId, onSelect }) {
           px={3}
           py={1.5}
           borderRadius="full"
-          bg="rgba(24, 34, 47, 0.06)"
+          bg="rgba(15, 17, 23, 0.06)"
           color="ink.700"
         >
           {items.length} waiting
@@ -81,13 +83,13 @@ export default function ReviewQueueList({ items, selectedId, onSelect }) {
                 onSelect(item.id);
               }
             }}
-            borderTop="1px solid rgba(103, 77, 55, 0.08)"
-            bg={isSelected ? "rgba(31, 106, 91, 0.1)" : "transparent"}
+            borderTop="1px solid rgba(15, 17, 23, 0.06)"
+            bg={isSelected ? "linear-gradient(90deg, rgba(255, 66, 122, 0.10), rgba(28, 216, 231, 0.08))" : "transparent"}
             px={{ base: 4, lg: 5 }}
             py={4}
             cursor="pointer"
             transition="background 160ms ease"
-            _hover={{ bg: isSelected ? "rgba(31, 106, 91, 0.12)" : "rgba(255,255,255,0.64)" }}
+            _hover={{ bg: isSelected ? "linear-gradient(90deg, rgba(255, 66, 122, 0.12), rgba(28, 216, 231, 0.10))" : "rgba(15,17,23,0.03)" }}
           >
             <HStack justify="space-between" align="start">
               <VStack align="start" spacing={1} flex="1">

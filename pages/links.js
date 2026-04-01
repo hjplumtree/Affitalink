@@ -163,11 +163,11 @@ export default function LinksPage() {
   return (
     <RequireAuth>
       <VStack align="stretch" spacing={5}>
-        <SectionBox>
+        <SectionBox bg="linear-gradient(135deg, rgba(255,255,255,0.92), rgba(255, 240, 244, 0.84) 42%, rgba(236,255,255,0.84))">
           <Header
             eyebrow="Review workspace"
-            title="Review what changed before it leaks into production"
-            subtitle="AffitaLink keeps the queue first, the health signal visible, and the evidence close enough that you can decide without opening three extra tabs."
+            title="Catch the changes that deserve attention, right now"
+            subtitle="Bright signal, low drag. The queue stays in front, health stays visible, and each decision comes with just enough proof to move fast without guessing."
           />
           <HStack spacing={3} mt={6} flexWrap="wrap">
             <RouterLink
@@ -175,7 +175,7 @@ export default function LinksPage() {
               display="inline-flex"
               width="fit-content"
               bg="transparent"
-              border="1px solid rgba(103, 77, 55, 0.16)"
+              border="1px solid rgba(15, 17, 23, 0.12)"
             >
               Manage connectors
             </RouterLink>
@@ -191,7 +191,7 @@ export default function LinksPage() {
           />
         ) : (
           <SectionBox>
-            <Text fontSize="xs" fontWeight="700" letterSpacing="0.18em" textTransform="uppercase" color="sand.700">
+            <Text fontSize="xs" fontWeight="700" letterSpacing="0.18em" textTransform="uppercase" color="brand.500">
               Setup required
             </Text>
             <Text mt={3} fontSize="2xl" fontWeight="700" color="ink.900">
@@ -206,7 +206,7 @@ export default function LinksPage() {
               mt={4}
               display="inline-flex"
               width="fit-content"
-              border="1px solid rgba(31, 106, 91, 0.18)"
+              border="1px solid rgba(255, 66, 122, 0.16)"
             >
               Open connector settings
             </RouterLink>

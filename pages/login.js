@@ -60,11 +60,11 @@ export default function LoginPage() {
       <SectionBox>
         <Header
           eyebrow="Authentication"
-          title="Sign in to the workspace"
-          subtitle="Use your Supabase account so the API can resolve your workspace membership and keep every review action scoped correctly."
+          title="Sign in and get straight to the queue"
+          subtitle="Fast in, fast out. Use your Supabase account so the workspace, membership, and review actions stay scoped correctly."
         />
       </SectionBox>
-      <SectionBox>
+      <SectionBox bg="linear-gradient(135deg, rgba(255,255,255,0.94), rgba(255, 240, 244, 0.8), rgba(236,255,255,0.66))">
         <Stack spacing={5}>
           <HStack spacing={2}>
             <Button
@@ -93,7 +93,7 @@ export default function LoginPage() {
             />
           </FormControl>
           {error ? (
-            <Alert status="error" borderRadius={8}>
+            <Alert status="error" borderRadius={18}>
               <AlertIcon />
               {error}
             </Alert>

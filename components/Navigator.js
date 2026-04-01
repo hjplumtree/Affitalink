@@ -12,11 +12,13 @@ import {
   FaSignOutAlt,
 } from "react-icons/fa";
 import { useState } from "react";
-import { useAuth } from "./AuthProvider";
+import { useOptionalAuth } from "./AuthProvider";
 
 export default function Navigator({ ...styles }) {
   const [burgerMenuOpen, setBurgerMenuOpen] = useState(false);
-  const { user, signOut } = useAuth();
+  const auth = useOptionalAuth();
+  const user = auth?.user || null;
+  const signOut = auth?.signOut || (async () => {});
   return (
     <VStack
       alignItems="stretch"
@@ -24,9 +26,9 @@ export default function Navigator({ ...styles }) {
       p={3}
       pt={4}
       spacing={4}
-      bg="rgba(248, 244, 237, 0.95)"
-      borderRight="1px solid rgba(103, 77, 55, 0.14)"
-      backdropFilter="blur(20px)"
+      bg="rgba(255, 255, 255, 0.82)"
+      borderRight="1px solid rgba(15, 17, 23, 0.08)"
+      backdropFilter="blur(18px)"
       width={{ base: burgerMenuOpen ? "210px" : "55px", lg: "210px" }}
       {...styles}
       zIndex={100}
@@ -37,8 +39,8 @@ export default function Navigator({ ...styles }) {
             width="40px"
             height="40px"
             borderRadius="16px"
-            bg="white"
-            border="1px solid rgba(103, 77, 55, 0.14)"
+            bg="linear-gradient(135deg, rgba(255, 66, 122, 0.14), rgba(28, 216, 231, 0.16))"
+            border="1px solid rgba(255, 66, 122, 0.12)"
             display="grid"
             placeItems="center"
           >
@@ -61,9 +63,9 @@ export default function Navigator({ ...styles }) {
           as={burgerMenuOpen ? FaChevronLeft : FaChevronRight}
           position="absolute"
           right="-17px"
-          bg="rgba(255, 251, 246, 0.98)"
+          bg="rgba(255, 255, 255, 0.98)"
           color="ink.700"
-          border="1px solid rgba(103, 77, 55, 0.16)"
+          border="1px solid rgba(15, 17, 23, 0.12)"
           borderRadius="50%"
           display={{ lg: "none" }}
           cursor="pointer"
@@ -98,7 +100,7 @@ export default function Navigator({ ...styles }) {
           mt={4}
           mb={2}
           fontSize="sm"
-          color="sand.700"
+          color="brand.500"
           letterSpacing="0.18em"
         >
           CONNECT
@@ -125,7 +127,7 @@ export default function Navigator({ ...styles }) {
           mt={4}
           mb={2}
           fontSize="sm"
-          color="sand.700"
+          color="brand.500"
           letterSpacing="0.18em"
         >
           COPY
@@ -152,7 +154,7 @@ export default function Navigator({ ...styles }) {
           mt={4}
           mb={2}
           fontSize="sm"
-          color="sand.700"
+          color="brand.500"
           letterSpacing="0.18em"
         >
           ACCOUNT

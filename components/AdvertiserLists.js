@@ -31,7 +31,7 @@ export default function AdvertiserLists({ advertisers, onToggleAdvertiser }) {
               <Flex
                 key={advertiser.id}
                 py={4}
-                borderTop="1px solid rgba(103, 77, 55, 0.1)"
+                borderTop="1px solid rgba(15, 17, 23, 0.08)"
                 align="center"
                 gap={4}
               >
@@ -39,7 +39,7 @@ export default function AdvertiserLists({ advertisers, onToggleAdvertiser }) {
                   <Text fontSize="md" fontWeight="700" color="ink.900">
                     {advertiser.name}
                   </Text>
-                  <Badge mt={1} bg="rgba(24, 34, 47, 0.06)" color="ink.700">
+                  <Badge mt={1} bg="rgba(15, 17, 23, 0.06)" color="ink.700">
                     #{advertiser.id}
                   </Badge>
                 </Box>

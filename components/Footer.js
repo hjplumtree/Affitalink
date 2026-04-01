@@ -5,7 +5,7 @@ export default function Footer() {
   return (
     <VStack pt={10} mt="auto" mb={5} spacing={2}>
       <Text fontSize="sm" color="ink.500">
-        Built for operators who need to trust the queue.
+        Built for fast review, not dashboard theatre.
       </Text>
       <Flex color="ink.500" gap="3">
         <Link

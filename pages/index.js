@@ -9,8 +9,8 @@ export default function Home() {
       <SectionBox>
         <Header
           eyebrow="Overview"
-          title="Affiliate offer review, without spreadsheet drift"
-          subtitle="AffitaLink is now built around a review queue instead of a pile of cards. Connect a source, sync deliberately, and inspect the evidence before approving changes."
+          title="Affiliate offer review with more signal, less drag"
+          subtitle="Built for fast-moving operators. Connect a source, run sync when you want it, and clear the queue before stale copy or broken offers make it downstream."
         />
         <HStack mt={6} spacing={3} flexWrap="wrap">
           <RouterLink to="/links" display="inline-flex" width="fit-content">
@@ -21,14 +21,14 @@ export default function Home() {
             display="inline-flex"
             width="fit-content"
             bg="transparent"
-            border="1px solid rgba(103, 77, 55, 0.16)"
+            border="1px solid rgba(15, 17, 23, 0.12)"
           >
             Configure connectors
           </RouterLink>
         </HStack>
       </SectionBox>
       <SectionBox>
-        <Text fontSize="xs" fontWeight="700" letterSpacing="0.18em" textTransform="uppercase" color="sand.700">
+        <Text fontSize="xs" fontWeight="700" letterSpacing="0.18em" textTransform="uppercase" color="brand.500">
           Product loop
         </Text>
         <VStack align="stretch" mt={5} spacing={4}>
@@ -46,8 +46,8 @@ export default function Home() {
           </Text>
         </VStack>
       </SectionBox>
-      <SectionBox>
-        <Text fontSize="xs" fontWeight="700" letterSpacing="0.18em" textTransform="uppercase" color="sand.700">
+      <SectionBox bg="linear-gradient(135deg, rgba(255,255,255,0.92), rgba(255, 240, 244, 0.76), rgba(248,255,241,0.8))">
+        <Text fontSize="xs" fontWeight="700" letterSpacing="0.18em" textTransform="uppercase" color="brand.500">
           Network access
         </Text>
         <Text fontSize="lg" fontWeight="700" mt={3} color="ink.900">
@@ -75,7 +75,7 @@ export default function Home() {
           mt={5}
           display="inline-flex"
           width="fit-content"
-          border="1px solid rgba(31, 106, 91, 0.18)"
+          border="1px solid rgba(255, 66, 122, 0.16)"
         >
           Connect Network Site
         </RouterLink>

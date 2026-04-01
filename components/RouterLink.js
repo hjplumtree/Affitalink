@@ -20,9 +20,9 @@ export default function RouterLink({ to, children, ...props }) {
       <Link href={to} passHref>
         <ChakraLink
           {...styles}
-          bg="rgba(31, 106, 91, 0.12)"
-          color="brand.800"
-          border="1px solid rgba(31, 106, 91, 0.16)"
+          bg="linear-gradient(135deg, rgba(255, 66, 122, 0.14), rgba(28, 216, 231, 0.12))"
+          color="ink.900"
+          border="1px solid rgba(255, 66, 122, 0.16)"
         >
           {children}
         </ChakraLink>
@@ -32,7 +32,7 @@ export default function RouterLink({ to, children, ...props }) {
 
   return (
     <Link href={to} passHref>
-      <ChakraLink {...styles} color="ink.700" _hover={{ bg: "rgba(255,255,255,0.72)" }}>
+      <ChakraLink {...styles} color="ink.700" _hover={{ bg: "rgba(15,17,23,0.04)" }}>
         {children}
       </ChakraLink>
     </Link>

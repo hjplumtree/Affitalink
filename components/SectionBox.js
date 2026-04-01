@@ -4,13 +4,13 @@ export default function SectionBox({ children, ...styles }) {
   return (
     <Box
       width="clamp(0px, 100%, 1240px)"
-      borderRadius="28px"
+      borderRadius="30px"
       border="1px solid"
-      borderColor="rgba(103, 77, 55, 0.16)"
-      boxShadow="0 18px 60px rgba(24, 34, 47, 0.06)"
+      borderColor="rgba(15, 17, 23, 0.08)"
+      boxShadow="0 24px 70px rgba(15, 17, 23, 0.08)"
       p={{ base: 5, lg: 7 }}
-      bg="rgba(255, 251, 246, 0.86)"
-      backdropFilter="blur(20px)"
+      bg="rgba(255, 255, 255, 0.86)"
+      backdropFilter="blur(18px)"
       margin="0 auto"
       {...styles}
     >

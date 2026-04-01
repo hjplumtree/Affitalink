@@ -9,7 +9,7 @@ export default function Header({ title, subtitle, eyebrow, ...styles }) {
           fontWeight="700"
           letterSpacing="0.24em"
           textTransform="uppercase"
-          color="sand.700"
+          color="brand.500"
         >
           {eyebrow}
         </Text>
@@ -25,7 +25,7 @@ export default function Header({ title, subtitle, eyebrow, ...styles }) {
           {title}
         </Heading>
         {subtitle ? (
-          <Text mt={3} maxW="56ch" color="ink.600" fontSize={{ base: "sm", lg: "md" }}>
+          <Text mt={3} maxW="58ch" color="ink.600" fontSize={{ base: "sm", lg: "md" }}>
             {subtitle}
           </Text>
         ) : null}
