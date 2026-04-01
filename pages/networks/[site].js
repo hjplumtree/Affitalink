@@ -27,6 +27,11 @@ const TESTNET_INITIAL_AUTH = {
   test_sid_77777: "77777",
 };
 
+const ADVERTISERS_INITIAL_STATE = {
+  page: 0,
+  advertisers_list: [],
+};
+
 function getInitialAuth(network) {
   if (network === "cj") return CJ_INITIAL_AUTH;
   if (network === "rakuten") return RAKUTEN_INITIAL_AUTH;
@@ -40,18 +45,9 @@ export default function Site() {
   const toast = useToast();
   const { getAccessToken } = useAuth();
 
-  const advertisers_initialState = {
-    page: 0,
-    advertisers_list: [],
-  };
-
-  const [advertisers, setAdvertisers] = useState(advertisers_initialState);
+  const [advertisers, setAdvertisers] = useState(ADVERTISERS_INITIAL_STATE);
   const [auth, setAuth] = useState(null);
   const [connectorStatus, setConnectorStatus] = useState(null);
-
-  const initializeAuth = () => {
-    setAuth(getInitialAuth(network_site_name));
-  };
 
   const loadConnector = useCallback(async () => {
     if (!network_site_name) return;
@@ -59,7 +55,16 @@ export default function Site() {
     try {
       const response = await authFetch(getAccessToken, `/api/connectors/${network_site_name}`);
       const payload = await response.json();
-      const connector = payload.connector;
+      if (!response.ok) {
+        throw new Error(payload.error?.message || "Could not load source settings");
+      }
+
+      const connector = payload?.connector || {
+        auth: getInitialAuth(network_site_name),
+        merchants: [],
+        status: "not_connected",
+      };
+
       setAuth(connector.auth || getInitialAuth(network_site_name));
       setAdvertisers({
         page: 0,
@@ -71,6 +76,13 @@ export default function Site() {
           connector.status === "connected"
             ? "Source is saved and ready for manual sync."
             : "No saved source settings yet.",
+      });
+    } catch (error) {
+      setAuth(getInitialAuth(network_site_name));
+      setAdvertisers(ADVERTISERS_INITIAL_STATE);
+      setConnectorStatus({
+        status: "warning",
+        message: error.message || "Could not load source settings.",
       });
     } finally {
       setLoading(false);
@@ -137,8 +149,8 @@ export default function Site() {
     await authFetch(getAccessToken, `/api/connectors/${network_site_name}`, {
       method: "DELETE",
     });
-    setAdvertisers(advertisers_initialState);
-    initializeAuth();
+    setAdvertisers(ADVERTISERS_INITIAL_STATE);
+    setAuth(getInitialAuth(network_site_name));
     setConnectorStatus({
       status: "not_connected",
       message: "Source removed.",
