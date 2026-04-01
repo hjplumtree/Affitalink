@@ -76,7 +76,7 @@ export default function NetworkInput({
       />
       <FormControl isRequired mt={5}>
         <Text fontSize="sm" color="ink.600" mb={4}>
-          Save the credentials, verify the connector, then trim the merchant list below.
+          Save the credentials, verify the handshake, then trim the merchant list below.
         </Text>
         {inputs.map((input) => (
           <Box key={input[0]}>
@@ -178,8 +178,8 @@ export default function NetworkInput({
         <Alert status="warning" fontSize="sm" mt={5} borderRadius={20}>
           <AlertIcon />
           <Text>
-            Credentials are stored on the backend for manual sync. Remove them when this
-            source should stop feeding the queue.
+            Credentials are stored on the backend so manual sync can run server-side.
+            Remove them when this source should stop feeding the queue.
           </Text>
         </Alert>
       </FormControl>

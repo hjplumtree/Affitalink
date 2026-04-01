@@ -2,6 +2,18 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { getSupabaseBrowserClient } from "../lib/client/supabase";
 
 const AuthContext = createContext(null);
+const fallbackSupabase = getSupabaseBrowserClient();
+const fallbackAuthValue = {
+  supabase: fallbackSupabase,
+  session: null,
+  user: null,
+  loading: false,
+  async getAccessToken() {
+    const { data } = await fallbackSupabase.auth.getSession();
+    return data.session?.access_token || null;
+  },
+  async signOut() {},
+};
 
 export function AuthProvider({ children }) {
   const supabase = useMemo(() => getSupabaseBrowserClient(), []);
@@ -53,10 +65,7 @@ export function AuthProvider({ children }) {
 
 export function useAuth() {
   const value = useContext(AuthContext);
-  if (!value) {
-    throw new Error("useAuth must be used within AuthProvider");
-  }
-  return value;
+  return value || fallbackAuthValue;
 }
 
 export function useOptionalAuth() {

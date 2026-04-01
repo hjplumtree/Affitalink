@@ -26,7 +26,7 @@ export default function Navigator({ ...styles }) {
       p={3}
       pt={4}
       spacing={4}
-      bg="linear-gradient(180deg, #0f1117 0%, #151926 100%)"
+      bg="#10131c"
       borderRight="1px solid rgba(255, 255, 255, 0.06)"
       backdropFilter="blur(18px)"
       width={{ base: burgerMenuOpen ? "210px" : "55px", lg: "210px" }}
@@ -39,7 +39,7 @@ export default function Navigator({ ...styles }) {
             width="40px"
             height="40px"
             borderRadius="16px"
-            bg="linear-gradient(135deg, rgba(255, 66, 122, 0.92), rgba(28, 216, 231, 0.92))"
+            bg="brand.500"
             border="1px solid rgba(255, 255, 255, 0.12)"
             display="grid"
             placeItems="center"
@@ -51,7 +51,7 @@ export default function Navigator({ ...styles }) {
               AffitaLink
             </Text>
             <Text fontSize="xs" color="whiteAlpha.700">
-              Offer review workspace
+              Review ops console
             </Text>
           </Box>
         </HStack>
@@ -85,8 +85,24 @@ export default function Navigator({ ...styles }) {
           mb={4}
           px={3}
         >
-          Bright signal, fast review, fewer tabs.
+          Bright signal. Ranked queue. One clear next move.
         </Text>
+        <Box
+          display={{ base: burgerMenuOpen ? "block" : "none", lg: "block" }}
+          mx={3}
+          mb={4}
+          p={3}
+          borderRadius="18px"
+          bg="rgba(255,255,255,0.06)"
+          border="1px solid rgba(255,255,255,0.08)"
+        >
+          <Text fontSize="10px" color="whiteAlpha.600" letterSpacing="0.16em" textTransform="uppercase">
+            Focus
+          </Text>
+          <Text mt={1} fontSize="sm" color="white" fontWeight="700">
+            Review before drift becomes broken copy.
+          </Text>
+        </Box>
         <Divider borderColor="whiteAlpha.200" mb={4} />
         <Box as={Flex} align="center">
           <RouterLink

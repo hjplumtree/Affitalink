@@ -6,11 +6,11 @@ import { Text, VStack, SimpleGrid, Box } from "@chakra-ui/react";
 export default function index() {
   return (
     <VStack align="stretch" spacing={5}>
-      <SectionBox bg="linear-gradient(135deg, rgba(255,255,255,0.96), rgba(255, 240, 244, 0.82), rgba(236,255,255,0.84))">
+      <SectionBox bg="rgba(255,255,255,0.98)">
         <Header
           eyebrow="Sources"
-          title="Choose the feeds that keep the queue moving"
-          subtitle="This is the source wall. Connect what you trust, ignore what you do not need, and keep the review workspace focused on decisions instead of setup clutter."
+          title="Build a source wall that earns the queue's trust"
+          subtitle="Each connector should justify its place. Validate credentials, trim the watchlist, and keep operations focused on sources that actually deserve review attention."
         />
         <SimpleGrid columns={{ base: 1, md: 3 }} spacing={3} mt={7}>
           <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
@@ -18,7 +18,7 @@ export default function index() {
               Setup
             </Text>
             <Text mt={2} fontSize="sm" color="ink.700">
-              Credentials live here, away from the review queue.
+              Credentials and source validation live here, away from the queue.
             </Text>
           </Box>
           <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
@@ -34,7 +34,7 @@ export default function index() {
               Trust
             </Text>
             <Text mt={2} fontSize="sm" color="ink.700">
-              A connector is only useful if its sync results are believable.
+              A source is only useful when its sync results are believable.
             </Text>
           </Box>
         </SimpleGrid>
@@ -42,6 +42,9 @@ export default function index() {
       <SectionBox>
         <Text fontSize="xs" fontWeight="700" letterSpacing="0.18em" textTransform="uppercase" color="brand.500">
           Available connectors
+        </Text>
+        <Text mt={2} color="ink.600" maxW="48ch">
+          Start with the networks that matter today. Leave the rest off the critical path.
         </Text>
         <VStack marginTop={5} align="stretch" spacing={0}>
           <NetworkSiteList

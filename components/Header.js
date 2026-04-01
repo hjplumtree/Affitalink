@@ -2,7 +2,7 @@ import { Box, Heading, Text, VStack } from "@chakra-ui/react";
 
 export default function Header({ title, subtitle, eyebrow, ...styles }) {
   return (
-    <VStack align="start" spacing={2} w="100%">
+    <VStack align="start" spacing={3} w="100%">
       {eyebrow ? (
         <Text
           fontSize="11px"
@@ -16,16 +16,16 @@ export default function Header({ title, subtitle, eyebrow, ...styles }) {
       ) : null}
       <Box w="100%">
         <Heading
-          fontSize={{ base: "2xl", lg: "3xl" }}
-          lineHeight="1.05"
-          letterSpacing="-0.03em"
+          fontSize={{ base: "2xl", lg: "4xl" }}
+          lineHeight={{ base: "1.08", lg: "0.98" }}
+          letterSpacing="-0.04em"
           color="ink.900"
           {...styles}
         >
           {title}
         </Heading>
         {subtitle ? (
-          <Text mt={3} maxW="58ch" color="ink.600" fontSize={{ base: "sm", lg: "md" }}>
+          <Text mt={1} maxW="62ch" color="ink.600" fontSize={{ base: "sm", lg: "md" }} lineHeight="1.7">
             {subtitle}
           </Text>
         ) : null}

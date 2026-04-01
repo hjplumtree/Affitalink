@@ -149,15 +149,15 @@ export default function Site() {
     <RequireAuth>
       {auth ? (
         <VStack align="stretch" spacing={5}>
-          <SectionBox bg="linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255, 240, 244, 0.84), rgba(236,255,255,0.76))">
+          <SectionBox bg="rgba(255,255,255,0.98)">
             <Header
               eyebrow="Connector setup"
-              title={`Make ${network_site_name?.toUpperCase()} feel live, not fragile`}
+              title={`Make ${network_site_name?.toUpperCase()} feel live, not brittle`}
               subtitle="Save credentials, test the handshake, and choose only the merchants worth surfacing in the queue."
             />
             <Text mt={5} fontSize="sm" color="ink.600" maxW="48ch">
-              This setup screen stays separate from the review workspace on purpose. Configure
-              sources here, then return to the queue once the connector is trustworthy.
+              This screen stays separate from the review workspace on purpose. Configure
+              sources here, then return to the queue once the connector feels trustworthy.
             </Text>
             <SimpleGrid columns={{ base: 1, md: 3 }} spacing={3} mt={7}>
               <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">

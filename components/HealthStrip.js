@@ -49,7 +49,7 @@ export default function HealthStrip({
       py={4}
       borderRadius="26px"
       border="1px solid rgba(15, 17, 23, 0.08)"
-      bg="linear-gradient(135deg, rgba(255,255,255,0.96), rgba(255, 240, 244, 0.78) 48%, rgba(236,255,255,0.76))"
+      bg="rgba(255,255,255,0.96)"
       boxShadow="0 16px 34px rgba(15, 17, 23, 0.07)"
       direction={{ base: "column", lg: "row" }}
     >
@@ -68,7 +68,7 @@ export default function HealthStrip({
           </Flex>
           <Box>
             <Text fontSize="xs" letterSpacing="0.18em" textTransform="uppercase" color="brand.500">
-              Health
+              Sync health
             </Text>
             <Text fontWeight="700" color="ink.900">
               {tone.label}
@@ -81,9 +81,9 @@ export default function HealthStrip({
             {tone.message}
           </Text>
           <Text mt={1} fontSize="sm" color="ink.500">
-          {summary?.lastSyncAt
-            ? `Last sync: ${new Date(summary.lastSyncAt).toLocaleString()}.`
-            : "No manual sync has been run yet."}
+            {summary?.lastSyncAt
+              ? `Last sync: ${new Date(summary.lastSyncAt).toLocaleString()}.`
+              : "No manual sync has been run yet."}
           </Text>
         </Box>
       </Stack>
@@ -120,7 +120,7 @@ export default function HealthStrip({
           leftIcon={<FaSync />}
           variant="accent"
         >
-          Manual sync
+          Pull latest
         </Button>
       </HStack>
     </Flex>

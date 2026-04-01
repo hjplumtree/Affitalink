@@ -18,9 +18,15 @@ export default function LinksList({ links }) {
               wrap="wrap"
             >
               <VStack align="baseline" flexBasis="300px" flexGrow={1}>
-                <Code>{link["advertiser_name"]}</Code>
-                <Heading size="md">{link["link_name"]}</Heading>
-                <Text fontSize="sm">{link["description"]}</Text>
+                <Code borderRadius="full" px={3} py={1} bg="rgba(15,17,23,0.05)" color="ink.700">
+                  {link["advertiser_name"]}
+                </Code>
+                <Heading size="md" color="ink.900">
+                  {link["link_name"]}
+                </Heading>
+                <Text fontSize="sm" color="ink.600">
+                  {link["description"]}
+                </Text>
               </VStack>
               <VStack align="baseline" width="200px">
                 <CopyTextToClipboard title="Coupon code">

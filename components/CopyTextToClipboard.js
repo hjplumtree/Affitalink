@@ -29,13 +29,20 @@ export default function CopyTextToClipboard({ title, children }) {
 
   return (
     <VStack align="baseline" marginTop={8} width="100%">
-      <Heading size="xs">{title}</Heading>
+      <Heading size="xs" color="ink.900" letterSpacing="-0.02em">
+        {title}
+      </Heading>
 
       {/* When 'No Code Needed' or "No Image" received */}
       {children === "No Code Needed" || children === "No Image" ? (
-        <HStack {...styles} bg="#D6E0E8" border="2px solid #99AAB5">
+        <HStack
+          {...styles}
+          bg="rgba(15,17,23,0.05)"
+          border="1px solid rgba(15,17,23,0.12)"
+          borderRadius="16px"
+        >
           <Text
-            color="#95AFC4"
+            color="ink.500"
             whiteSpace="nowrap"
             overflow="hidden"
             textOverflow="ellipsis"
@@ -49,15 +56,16 @@ export default function CopyTextToClipboard({ title, children }) {
             onClick={handleClick}
             cursor="pointer"
             {...styles}
-            bg="#F1ECFE"
-            border="1px dashed #AD8DF7"
+            bg="rgba(255, 240, 244, 0.84)"
+            border="1px dashed rgba(255, 66, 122, 0.32)"
+            borderRadius="16px"
           >
-            <Icon as={FaCopy} color="#3A0CA3" />
+            <Icon as={FaCopy} color="brand.600" />
             <Text
               whiteSpace="nowrap"
               overflow="hidden"
               textOverflow="ellipsis"
-              color="#3A0CA3"
+              color="brand.700"
             >
               {children}
             </Text>

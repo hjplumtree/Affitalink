@@ -161,11 +161,11 @@ export default function LinksPage() {
   return (
     <RequireAuth>
       <VStack align="stretch" spacing={5}>
-        <SectionBox bg="linear-gradient(135deg, rgba(255,255,255,0.92), rgba(255, 240, 244, 0.84) 42%, rgba(236,255,255,0.84))">
+        <SectionBox bg="rgba(255,255,255,0.98)">
           <Header
             eyebrow="Review workspace"
-            title="Catch the changes that deserve attention, right now"
-            subtitle="Bright signal, low drag. The queue stays in front, health stays visible, and each decision comes with just enough proof to move fast without guessing."
+            title="Work the queue at the speed of trust"
+            subtitle="This page should feel immediate. Freshness stays visible, the queue stays ranked, and each decision gets a compact brief instead of a scavenger hunt across tabs."
           />
           <HStack spacing={3} mt={6} flexWrap="wrap">
             <RouterLink
@@ -196,7 +196,7 @@ export default function LinksPage() {
                 {items.length}
               </Text>
               <Text mt={1} fontSize="sm" color="ink.600">
-                review items in the active queue
+                changes waiting in the active line
               </Text>
             </Box>
             <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.04)">
@@ -207,7 +207,7 @@ export default function LinksPage() {
                 {connectors.length}
               </Text>
               <Text mt={1} fontSize="sm" color="ink.600">
-                connected sources available to sync
+                source feeds available to pull
               </Text>
             </Box>
             <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.04)">
@@ -218,7 +218,7 @@ export default function LinksPage() {
                 {selectedCount}
               </Text>
               <Text mt={1} fontSize="sm" color="ink.600">
-                selected merchants feeding this workspace
+                merchants actively feeding this workspace
               </Text>
             </Box>
           </SimpleGrid>

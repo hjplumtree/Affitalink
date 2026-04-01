@@ -27,10 +27,11 @@ export default function LinksHeader({
   };
 
   return (
-    <SectionBox>
+    <SectionBox bg="rgba(255,255,255,0.96)">
       <Header
-        title="LINKS"
-        subtitle="1-click copy tracking links, Promo codes!"
+        title="Link pull workspace"
+        subtitle="Choose a source, pull the latest links, and copy what you need without hunting through the network UI."
+        eyebrow="Links"
       />
       {networkSites.length !== 0 ? (
         <Box margin="0 auto" mt={3}>
@@ -50,11 +51,10 @@ export default function LinksHeader({
                 </Select>
               </Box>
               <Button
-                border="1px solid #3a0ca3"
-                color="#3a0ca3"
+                variant="accent"
                 onClick={handleClick}
               >
-                Fetch Links
+                Pull links
               </Button>
             </Flex>
           </Box>
@@ -78,19 +78,16 @@ export default function LinksHeader({
               Connect first!
             </AlertTitle>
             <AlertDescription>
-              In order to get the links, connect network first!
+              Connect a network source before trying to pull links.
             </AlertDescription>
             <RouterLink
               mt={7}
-              color="#F1ECFE"
-              bg="#3A0CA3"
-              borderRadius={5}
-              padding={3}
+              border="1px solid rgba(255, 66, 122, 0.16)"
               to="/networks"
               fontSize="md"
               fontWeight="bold"
             >
-              Click to connect
+              Connect a source
             </RouterLink>
           </Alert>
         </VStack>

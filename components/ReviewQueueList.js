@@ -46,17 +46,17 @@ export default function ReviewQueueList({ items, selectedId, onSelect }) {
         py={4}
         borderBottom="1px solid rgba(15, 17, 23, 0.08)"
         direction={{ base: "column", md: "row" }}
-        bg="linear-gradient(180deg, rgba(255, 240, 244, 0.6), rgba(255,255,255,0))"
+        bg="rgba(15,17,23,0.02)"
       >
         <Box>
           <Text fontSize="xs" fontWeight="700" letterSpacing="0.18em" textTransform="uppercase" color="brand.500">
             Attention queue
           </Text>
           <Text mt={1} fontSize="lg" fontWeight="700" color="ink.900">
-            Ranked for fast review
+            Highest signal first
           </Text>
           <Text mt={1} fontSize="sm" color="ink.600">
-            Open one item, inspect the diff, then move to the next.
+            Open the top item, decide quickly, then keep the line moving.
           </Text>
         </Box>
         <Badge
@@ -87,12 +87,12 @@ export default function ReviewQueueList({ items, selectedId, onSelect }) {
               }
             }}
             borderTop="1px solid rgba(15, 17, 23, 0.06)"
-            bg={isSelected ? "linear-gradient(90deg, rgba(255, 66, 122, 0.10), rgba(28, 216, 231, 0.08))" : "transparent"}
+            bg={isSelected ? "rgba(255, 66, 122, 0.08)" : "transparent"}
             px={{ base: 4, lg: 5 }}
             py={4}
             cursor="pointer"
             transition="background 160ms ease"
-            _hover={{ bg: isSelected ? "linear-gradient(90deg, rgba(255, 66, 122, 0.12), rgba(28, 216, 231, 0.10))" : "rgba(15,17,23,0.03)" }}
+            _hover={{ bg: isSelected ? "rgba(255, 66, 122, 0.12)" : "rgba(15,17,23,0.03)" }}
           >
             <HStack justify="space-between" align="start">
               <VStack align="start" spacing={1} flex="1">
@@ -120,7 +120,10 @@ export default function ReviewQueueList({ items, selectedId, onSelect }) {
                 </Text>
               </VStack>
               <Text fontSize="xs" color="ink.500" whiteSpace="nowrap" pl={3}>
-                {new Date(item.createdAt).toLocaleDateString()}
+                {new Date(item.createdAt).toLocaleDateString(undefined, {
+                  month: "short",
+                  day: "numeric",
+                })}
               </Text>
             </HStack>
           </Box>

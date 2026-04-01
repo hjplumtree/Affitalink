@@ -15,17 +15,39 @@ export default function AdvertiserLists({ advertisers, onToggleAdvertiser }) {
   const advertisersList = [...(advertisers?.advertisers_list || [])].sort((a, b) =>
     a.name.localeCompare(b.name)
   );
+  const selectedCount = advertisersList.filter((advertiser) => advertiser.selected).length;
 
   return (
     <SectionBox mt={5}>
       <Header
-        title="Advertisers"
+        title="Merchant watchlist"
         subtitle="Choose which merchants should be monitored during manual sync"
         eyebrow="Selection"
       />
       <Text mt={4} fontSize="sm" color="ink.600">
         Merchant selection is where you stop the queue from becoming a junk drawer.
       </Text>
+      <Flex
+        mt={4}
+        px={4}
+        py={3}
+        borderRadius="20px"
+        bg="rgba(15,17,23,0.04)"
+        justify="space-between"
+        align="center"
+      >
+        <Box>
+          <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="brand.500">
+            Watch coverage
+          </Text>
+          <Text fontSize="sm" color="ink.700">
+            {selectedCount} of {advertisersList.length} merchants selected
+          </Text>
+        </Box>
+        <Badge bg="rgba(255,66,122,0.10)" color="brand.700" px={3} py={1.5} borderRadius="full">
+          Active feed
+        </Badge>
+      </Flex>
 
       {advertisers ? (
         advertisersList.length !== 0 ? (
@@ -34,6 +56,7 @@ export default function AdvertiserLists({ advertisers, onToggleAdvertiser }) {
               <Flex
                 key={advertiser.id}
                 py={4}
+                px={2}
                 borderTop="1px solid rgba(15, 17, 23, 0.08)"
                 align="center"
                 gap={4}

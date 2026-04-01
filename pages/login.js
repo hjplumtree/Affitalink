@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { Alert, AlertIcon, Button, Box, FormControl, FormLabel, HStack, Input, Stack, Text, VStack, SimpleGrid } from "@chakra-ui/react";
+import { Alert, AlertIcon, Button, Box, FormControl, FormLabel, HStack, Input, Stack, Text, VStack, SimpleGrid, Grid } from "@chakra-ui/react";
 import SectionBox from "../components/SectionBox";
 import { useAuth } from "../components/AuthProvider";
 import Header from "../components/Header";
@@ -45,11 +45,11 @@ export default function LoginPage() {
 
   return (
     <VStack align="stretch" spacing={5}>
-      <SectionBox bg="linear-gradient(135deg, rgba(255,255,255,0.96), rgba(255, 240, 244, 0.88), rgba(236,255,255,0.88))">
+      <SectionBox bg="rgba(255,255,255,0.98)">
         <Header
           eyebrow="Authentication"
-          title="Sign in and get straight to the queue"
-          subtitle="Fast in, fast out. Use your Supabase account so the workspace, membership, and review actions stay scoped correctly."
+          title="Sign in fast, land exactly where the work is"
+          subtitle="This login flow is intentionally spare. Authenticate, resolve membership, and move straight into the review workspace without browser-local state pretending to be a backend."
         />
         <SimpleGrid columns={{ base: 1, md: 3 }} spacing={3} mt={7}>
           <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
@@ -78,9 +78,40 @@ export default function LoginPage() {
           </Box>
         </SimpleGrid>
       </SectionBox>
-      <SectionBox bg="linear-gradient(135deg, rgba(255,255,255,0.94), rgba(255, 240, 244, 0.8), rgba(236,255,255,0.66))">
-        <Stack spacing={5}>
-          <HStack spacing={2}>
+      <SectionBox bg="rgba(255,255,255,0.98)">
+        <Grid templateColumns={{ base: "1fr", lg: "0.9fr 1.1fr" }} gap={6}>
+          <Box
+            p={{ base: 5, lg: 6 }}
+            borderRadius="28px"
+            bg="#11141d"
+            color="white"
+          >
+            <Text fontSize="11px" letterSpacing="0.22em" textTransform="uppercase" color="whiteAlpha.600">
+              Before you enter
+            </Text>
+            <VStack align="stretch" spacing={4} mt={4}>
+              <Box>
+                <Text fontWeight="700">Auth decides API access</Text>
+                <Text fontSize="sm" color="whiteAlpha.700" mt={1}>
+                  Queue actions and connector writes are tied to the signed-in workspace.
+                </Text>
+              </Box>
+              <Box>
+                <Text fontWeight="700">One user, one clear scope</Text>
+                <Text fontSize="sm" color="whiteAlpha.700" mt={1}>
+                  This is an operations tool, not a public landing page with vague states.
+                </Text>
+              </Box>
+              <Box>
+                <Text fontWeight="700">No fake onboarding theatre</Text>
+                <Text fontSize="sm" color="whiteAlpha.700" mt={1}>
+                  Sign in, confirm membership, and get to the queue.
+                </Text>
+              </Box>
+            </VStack>
+          </Box>
+          <Stack spacing={5}>
+            <HStack spacing={2}>
             <Button
               variant={mode === "sign_in" ? "solid" : "outline"}
               onClick={() => setMode("sign_in")}
@@ -93,42 +124,43 @@ export default function LoginPage() {
             >
               Create account
             </Button>
-          </HStack>
-          <FormControl isRequired>
-            <FormLabel>Email</FormLabel>
-            <Input value={email} onChange={(event) => setEmail(event.target.value)} />
-          </FormControl>
-          <FormControl isRequired>
-            <FormLabel>Password</FormLabel>
-            <Input
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-            />
-          </FormControl>
-          {error ? (
-            <Alert status="error" borderRadius={18}>
-              <AlertIcon />
-              {error}
-            </Alert>
-          ) : null}
-          {message ? (
-            <Alert status="success" borderRadius={18}>
-              <AlertIcon />
-              {message}
-            </Alert>
-          ) : null}
-          <Button onClick={handleSubmit} isLoading={loading} variant="accent">
-            {mode === "sign_in" ? "Sign in" : "Create account"}
-          </Button>
-          <Box>
-            <Text fontSize="sm" color="ink.600">
-              {mode === "sign_in"
-                ? "Need an account? Switch to create account."
-                : "Already have an account? Switch back to sign in."}
-            </Text>
-          </Box>
-        </Stack>
+            </HStack>
+            <FormControl isRequired>
+              <FormLabel>Email</FormLabel>
+              <Input value={email} onChange={(event) => setEmail(event.target.value)} />
+            </FormControl>
+            <FormControl isRequired>
+              <FormLabel>Password</FormLabel>
+              <Input
+                type="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+              />
+            </FormControl>
+            {error ? (
+              <Alert status="error" borderRadius={18}>
+                <AlertIcon />
+                {error}
+              </Alert>
+            ) : null}
+            {message ? (
+              <Alert status="success" borderRadius={18}>
+                <AlertIcon />
+                {message}
+              </Alert>
+            ) : null}
+            <Button onClick={handleSubmit} isLoading={loading} variant="accent">
+              {mode === "sign_in" ? "Enter workspace" : "Create account"}
+            </Button>
+            <Box>
+              <Text fontSize="sm" color="ink.600">
+                {mode === "sign_in"
+                  ? "Need an account? Switch to create account."
+                  : "Already have an account? Switch back to sign in."}
+              </Text>
+            </Box>
+          </Stack>
+        </Grid>
       </SectionBox>
     </VStack>
   );

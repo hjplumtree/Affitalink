@@ -12,16 +12,18 @@ export default function NetworkSiteList({
   return (
     <Flex
       alignItems="center"
-      p={4}
+      p={5}
       borderTop="1px solid rgba(15, 17, 23, 0.08)"
       gap={4}
+      transition="background 180ms ease"
+      _hover={{ bg: "rgba(15,17,23,0.025)" }}
       {...styles}
     >
       <Flex
         width="48px"
         height="48px"
         borderRadius="16px"
-        bg="linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255, 240, 244, 0.68), rgba(236,255,255,0.6))"
+        bg="rgba(15,17,23,0.04)"
         align="center"
         justify="center"
         border="1px solid rgba(15, 17, 23, 0.08)"
@@ -29,7 +31,7 @@ export default function NetworkSiteList({
         <Image src={imageUrl} alt={name} width={30} height={30} />
       </Flex>
       <Box marginLeft={1}>
-        <Text fontWeight="700" color="ink.900">
+        <Text fontWeight="700" color="ink.900" fontSize="lg">
           {name}
         </Text>
         <Text fontSize="sm" color="ink.600">
@@ -37,8 +39,8 @@ export default function NetworkSiteList({
         </Text>
       </Box>
       {endpoint ? (
-        <RouterLink to={`/networks/${endpoint}`} marginLeft="auto">
-          Open
+        <RouterLink to={`/networks/${endpoint}`} marginLeft="auto" border="1px solid rgba(15,17,23,0.08)">
+          Configure
         </RouterLink>
       ) : (
         <Box

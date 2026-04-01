@@ -17,7 +17,7 @@ export default function RequireAuth({ children }) {
       <Center minH="60vh">
         <VStack spacing={3}>
           <Spinner />
-          <Text color="gray.600">Checking your session…</Text>
+          <Text color="ink.600">Checking your session…</Text>
         </VStack>
       </Center>
     );
@@ -25,4 +25,3 @@ export default function RequireAuth({ children }) {
 
   return children;
 }
-

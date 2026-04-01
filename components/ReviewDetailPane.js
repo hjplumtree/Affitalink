@@ -40,7 +40,7 @@ function DiffRow({ label, beforeValue, afterValue }) {
           border="1px solid rgba(255, 66, 122, 0.16)"
           borderRadius="18px"
           p={4}
-          bg="linear-gradient(135deg, rgba(255, 66, 122, 0.08), rgba(28, 216, 231, 0.08))"
+          bg="rgba(255, 66, 122, 0.08)"
         >
           <Text fontSize="xs" color="ink.500" mb={1}>
             After
@@ -87,7 +87,7 @@ export default function ReviewDetailPane({ item, onAction, acting, showBack, onB
       border="1px solid rgba(15, 17, 23, 0.08)"
       borderRadius="30px"
       p={{ base: 5, lg: 6 }}
-      bg="linear-gradient(180deg, rgba(255,255,255,0.96), rgba(236,255,255,0.36))"
+      bg="rgba(255,255,255,0.96)"
       minH="520px"
       boxShadow="0 24px 64px rgba(15, 17, 23, 0.06)"
     >
@@ -121,10 +121,10 @@ export default function ReviewDetailPane({ item, onAction, acting, showBack, onB
 
         <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.03)">
           <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500" mb={2}>
-            Why it matters
+            Decision brief
           </Text>
           <Text fontSize="lg" fontWeight="600" mb={2} color="ink.900">
-            Why it surfaced
+            Why this hit the queue
           </Text>
           <Text color="ink.700">{item.reason}</Text>
           <HStack spacing={2} mt={2}>
@@ -162,7 +162,7 @@ export default function ReviewDetailPane({ item, onAction, acting, showBack, onB
             Source evidence
           </Text>
           <Text fontSize="lg" fontWeight="600" mb={2} color="ink.900">
-            Source evidence
+            Verify before approving
           </Text>
           <Text fontSize="sm" color="ink.700">
             Latest seen: {afterSnapshot.lastSeenAt || "Unknown"}
@@ -193,7 +193,7 @@ export default function ReviewDetailPane({ item, onAction, acting, showBack, onB
             isLoading={acting === "approve"}
             variant="accent"
           >
-            Approve
+            Approve update
           </Button>
           <Button
             variant="outline"
@@ -201,7 +201,7 @@ export default function ReviewDetailPane({ item, onAction, acting, showBack, onB
             onClick={() => onAction("dismiss")}
             isLoading={acting === "dismiss"}
           >
-            Dismiss
+            Dismiss change
           </Button>
         </HStack>
       </VStack>
