@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { isEmpty } from "../lib/validate";
 
 import {
@@ -19,6 +19,8 @@ import {
   FormLabel,
   Alert,
   AlertIcon,
+  Text,
+  HStack,
 } from "@chakra-ui/react";
 import SectionBox from "./SectionBox";
 import Header from "./Header";
@@ -29,17 +31,14 @@ export default function NetworkInput({
   setAuth,
   fetchAdvertiserList,
   deleteDB,
+  connectorStatus,
+  helperText,
+  actionLabel = "Save and test",
 }) {
   const [show, setShow] = useState(false);
   const [inputError, setInputError] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef();
-
-  useEffect(() => {
-    if (isEmpty(inputs)) {
-      setInputError(false);
-    }
-  }, []);
 
   const handleInputChange = (e) => {
     setAuth((prevState) => {
@@ -72,7 +71,8 @@ export default function NetworkInput({
     <SectionBox>
       <Header
         title={networkName}
-        subtitle={`Enter correct information to Connect ${networkName}!`}
+        subtitle={helperText || `Enter credentials to connect ${networkName}.`}
+        eyebrow="Connector setup"
       />
       <FormControl isRequired mt={5}>
         {inputs.map((input) => (
@@ -112,19 +112,31 @@ export default function NetworkInput({
           </Box>
         ))}
         {inputError && (
-          <Alert status="error" borderRadius={5}>
+          <Alert status="error" borderRadius={18}>
             <AlertIcon />
             Please fill all the fields and connect again
           </Alert>
         )}
+        {connectorStatus && (
+          <Alert
+            status={connectorStatus.status === "connected" ? "success" : "warning"}
+            borderRadius={18}
+            mt={3}
+          >
+            <AlertIcon />
+            {connectorStatus.message}
+          </Alert>
+        )}
         <VStack mt={5} spacing={3} align="stretch">
-          <Button colorScheme="blue" onClick={handleConnect}>
-            Connect
-          </Button>
+          <HStack spacing={3} align="stretch" flexDirection={{ base: "column", md: "row" }}>
+            <Button onClick={handleConnect} flex="1">
+            {actionLabel}
+            </Button>
 
-          <Button variant="outline" colorScheme="red" onClick={onOpen}>
-            Delete
-          </Button>
+            <Button variant="outline" colorScheme="red" onClick={onOpen} flex="1">
+              Delete connector
+            </Button>
+          </HStack>
 
           <AlertDialog
             isOpen={isOpen}
@@ -134,11 +146,11 @@ export default function NetworkInput({
             <AlertDialogOverlay>
               <AlertDialogContent>
                 <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                  DELETE
+                  Delete connector
                 </AlertDialogHeader>
 
                 <AlertDialogBody>
-                  Are you sure you want to delete {networkName} infomation?
+                  Are you sure you want to delete {networkName} information?
                 </AlertDialogBody>
 
                 <AlertDialogFooter>
@@ -160,10 +172,12 @@ export default function NetworkInput({
             </AlertDialogOverlay>
           </AlertDialog>
         </VStack>
-        <Alert status="warning" fontSize="xs" mt={5}>
+        <Alert status="warning" fontSize="sm" mt={5} borderRadius={18}>
           <AlertIcon />
-          Information you provided will be saved in your computer. Make sure to
-          delete them if you need.
+          <Text>
+            Credentials are stored on the backend for manual sync. Remove them if the
+            source should no longer be trusted.
+          </Text>
         </Alert>
       </FormControl>
     </SectionBox>

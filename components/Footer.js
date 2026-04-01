@@ -3,23 +3,25 @@ import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa";
 
 export default function Footer() {
   return (
-    <VStack pt={10} mt="auto" mb={7}>
-      <Text>Made with happiness by HeJ</Text>
-      <Flex color="#5a5a66" gap="3">
+    <VStack pt={10} mt="auto" mb={5} spacing={2}>
+      <Text fontSize="sm" color="ink.500">
+        Built for operators who need to trust the queue.
+      </Text>
+      <Flex color="ink.500" gap="3">
         <Link
-          _hover={{ color: "#24292F" }}
+          _hover={{ color: "ink.900" }}
           href="https://github.com/hjplumtree"
         >
           <FaGithub />
         </Link>
         <Link
-          _hover={{ color: "#1DA1F2" }}
+          _hover={{ color: "brand.600" }}
           href="https://twitter.com/hjplumtree"
         >
           <FaTwitter />
         </Link>
         <Link
-          _hover={{ color: "#0077b5" }}
+          _hover={{ color: "brand.600" }}
           href="https://www.linkedin.com/in/hjplumtree/"
         >
           <FaLinkedin />

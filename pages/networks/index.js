@@ -1,63 +1,55 @@
 import Header from "../../components/Header";
 import NetworkSiteList from "../../components/NetworkSiteList";
 import SectionBox from "../../components/SectionBox";
-import { Box, VStack } from "@chakra-ui/react";
-import cj_logo from "../../public/cj.png";
-import rakuten_logo from "../../public/rakuten.png";
-import impact_logo from "../../public/impact_logo.png";
-import ebay_logo from "../../public/ebay_logo.png";
-import affitalink_logo from "../../public/logo.svg";
+import { Box, Text, VStack } from "@chakra-ui/react";
 
 export default function index() {
   return (
-    <SectionBox>
-      <Box>
+    <VStack align="stretch" spacing={5}>
+      <SectionBox>
         <Header
-          title="NETWORKS"
-          subtitle="Connect network sites to get links"
+          eyebrow="Sources"
+          title="Choose the sources that feed your queue"
+          subtitle="Connector setup lives away from the review workspace on purpose. Save credentials here, verify the connection, and then head back to the queue once the source is trustworthy."
         />
-        <VStack
-          marginTop={5}
-          p="20px 10px"
-          border="1px solid #F1ECFE"
-          align="stretch"
-          spacing={3}
-        >
+      </SectionBox>
+      <SectionBox>
+        <Text fontSize="xs" fontWeight="700" letterSpacing="0.18em" textTransform="uppercase" color="sand.700">
+          Available connectors
+        </Text>
+        <VStack marginTop={5} align="stretch" spacing={0}>
           <NetworkSiteList
-            imageUrl={rakuten_logo}
+            imageUrl="/rakuten.png"
             name="Rakuten"
             subtitle="Connect with Rakuten network"
             endpoint="rakuten"
           />
           <NetworkSiteList
-            imageUrl={cj_logo}
+            imageUrl="/cj.png"
             name="CJ"
             subtitle="Connect with CJ network"
             endpoint="cj"
           />
           <NetworkSiteList
-            imageUrl={impact_logo}
+            imageUrl="/impact_logo.png"
             name="Impact"
             subtitle="Connect with Impact network"
             endpoint={false}
           />
           <NetworkSiteList
-            imageUrl={ebay_logo}
+            imageUrl="/ebay_logo.png"
             name="eBay"
             subtitle="Connect with eBay network"
             endpoint={false}
           />
           <NetworkSiteList
-            imageUrl={affitalink_logo}
+            imageUrl="/logo.svg"
             name="TEST NETWORK"
             subtitle="EXPLORE with TEST NETWORK"
             endpoint="testnet"
-            bg="linear-gradient(150deg, rgba(108,9,181,1) 36%, rgba(58,12,163,1) 85%)"
-            color="#fff"
-            borderRadius={7}
           />
         </VStack>
-      </Box>
-    </SectionBox>
+      </SectionBox>
+    </VStack>
   );
 }

@@ -1,85 +1,252 @@
-import { useState, useEffect } from "react";
-import LinksHeader from "../components/LinksHeader";
-import LinksList from "../components/LinksList";
-import { VStack } from "@chakra-ui/react";
-import { fetchLinks } from "../lib/fetch";
-import { saveToDB } from "../lib/storage";
-import { fetchTestLinks } from "../lib/demoFetch";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/router";
+import {
+  Box,
+  HStack,
+  Text,
+  VStack,
+  useBreakpointValue,
+  useToast,
+} from "@chakra-ui/react";
 import Loading from "../components/Loading";
+import SectionBox from "../components/SectionBox";
+import Header from "../components/Header";
+import RouterLink from "../components/RouterLink";
+import HealthStrip from "../components/HealthStrip";
+import ReviewQueueList from "../components/ReviewQueueList";
+import ReviewDetailPane from "../components/ReviewDetailPane";
+import RequireAuth from "../components/RequireAuth";
+import { useAuth } from "../components/AuthProvider";
+import { authFetch } from "../lib/client/authFetch";
+
 export default function LinksPage() {
-  const [links, setLinks] = useState([]);
-  const [networkSites, setNetworkSites] = useState([]);
-  const [selectedNetwork, setSelectedNetwork] = useState(null);
+  const router = useRouter();
+  const toast = useToast();
+  const { getAccessToken } = useAuth();
+  const [items, setItems] = useState([]);
+  const [connectors, setConnectors] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [acting, setActing] = useState("");
+  const isMobile = useBreakpointValue({ base: true, lg: false });
 
-  useEffect(() => {
-    let sites = [];
-    for (const [key, value] of Object.entries(localStorage)) {
-      if (key === "ally-supports-cache") continue;
-      const parsedValue = JSON.parse(value);
-      if (!parsedValue["advertisers"]) continue;
-      sites.push({ name: key, info: parsedValue });
-    }
-    setNetworkSites(sites);
-    setSelectedNetwork(sites[0]);
+  const activeNetwork = useMemo(() => {
+    if (router.query.network) return router.query.network;
+    return connectors[0]?.network || "cj";
+  }, [connectors, router.query.network]);
 
-    if (sites.length === 0) return;
-    if ("offers" in JSON.parse(localStorage.getItem(sites[0].name))) {
-      const data = getOffersFromDB(sites[0].name);
-      setLinks(data);
-    }
-  }, []);
+  const selectedItemId = router.query.item || "";
 
-  const fetchOffers = () => {
+  const loadWorkspace = useCallback(async (network = activeNetwork) => {
     setLoading(true);
-    const { name, info } = selectedNetwork;
-    const { auth } = info;
-
-    let data = null;
-    (async () => {
-      const advertiser_ids = info["advertisers"]["advertisers_list"]
-        .filter((advertiser) => advertiser.isChecked)
-        .map((advertiser) => advertiser.id);
-      // test network
-      if (name === "testnet") {
-        data = await fetchTestLinks(advertiser_ids);
-      } else {
-        data = await fetchLinks({
-          auth: auth,
-          network: name,
-          ids: advertiser_ids,
-        });
-      }
-      setLinks(data);
+    try {
+      const [connectorsResponse, itemsResponse] = await Promise.all([
+        authFetch(getAccessToken, "/api/connectors"),
+        authFetch(getAccessToken, `/api/review-items?network=${network}`),
+      ]);
+      const connectorsPayload = await connectorsResponse.json();
+      const itemsPayload = await itemsResponse.json();
+      setConnectors(connectorsPayload.connectors || []);
+      setItems(itemsPayload.items || []);
+    } finally {
       setLoading(false);
-    })();
-  };
+    }
+  }, [activeNetwork, getAccessToken]);
 
   useEffect(() => {
-    if (!selectedNetwork) return;
-    saveToDB(selectedNetwork.name, "offers", links);
-  }, [links]);
+    if (!router.isReady) return;
+    loadWorkspace(activeNetwork);
+  }, [router.isReady, activeNetwork, loadWorkspace]);
+
+  const selectedItem = items.find((item) => item.id === selectedItemId) || null;
 
   useEffect(() => {
-    if (!selectedNetwork) return;
-    const data = getOffersFromDB(selectedNetwork.name);
-    setLinks(data);
-  }, [selectedNetwork]);
+    if (!router.isReady || isMobile || items.length === 0) return;
+    const itemStillExists = items.some((item) => item.id === selectedItemId);
+    if (selectedItemId && itemStillExists) return;
+    router.replace(
+      {
+        pathname: "/links",
+        query: { network: activeNetwork, item: items[0].id },
+      },
+      undefined,
+      { shallow: true }
+    );
+  }, [router.isReady, isMobile, selectedItemId, activeNetwork, items, router]);
 
-  const getOffersFromDB = (network_name) => {
-    const { offers } = { ...JSON.parse(localStorage.getItem(network_name)) };
-    return offers;
+  const handleNetworkChange = (network) => {
+    router.push(
+      {
+        pathname: "/links",
+        query: { network },
+      },
+      undefined,
+      { shallow: true }
+    );
   };
+
+  const handleSelect = (itemId) => {
+    router.push(
+      {
+        pathname: "/links",
+        query: { network: activeNetwork, item: itemId },
+      },
+      undefined,
+      { shallow: true }
+    );
+  };
+
+  const clearSelection = () => {
+    router.push(
+      {
+        pathname: "/links",
+        query: { network: activeNetwork },
+      },
+      undefined,
+      { shallow: true }
+    );
+  };
+
+  const handleSync = async () => {
+    setLoading(true);
+    try {
+      const response = await authFetch(getAccessToken, `/api/sync/${activeNetwork}`, {
+        method: "POST",
+      });
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload.error?.message || "Manual sync failed");
+      }
+      toast({
+        title:
+          payload.syncRun.status === "success"
+            ? "Manual sync complete"
+            : "Manual sync complete with warnings",
+        status: payload.syncRun.status === "success" ? "success" : "warning",
+        duration: 2200,
+      });
+      await loadWorkspace(activeNetwork);
+    } catch (error) {
+      toast({ title: error.message, status: "error", duration: 2500 });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAction = async (action) => {
+    if (!selectedItem) return;
+    setActing(action);
+    try {
+      const response = await authFetch(getAccessToken, `/api/review-items/${selectedItem.id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action }),
+      });
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload.error?.message || "Could not update review item");
+      }
+      await loadWorkspace(activeNetwork);
+      toast({
+        title: action === "approve" ? "Item approved" : "Item dismissed",
+        status: "success",
+        duration: 1800,
+      });
+    } catch (error) {
+      toast({ title: error.message, status: "error", duration: 2500 });
+    } finally {
+      setActing("");
+    }
+  };
+
+  const hasConnector = connectors.length > 0;
+
   return (
-    <VStack>
-      <LinksHeader
-        networkSites={networkSites}
-        setSelectedNetwork={setSelectedNetwork}
-        fetchOffers={fetchOffers}
-      />
-      {links && <LinksList links={links} />}
-
-      <Loading loading={loading} />
-    </VStack>
+    <RequireAuth>
+      <VStack align="stretch" spacing={5}>
+        <SectionBox>
+          <Header
+            eyebrow="Review workspace"
+            title="Review what changed before it leaks into production"
+            subtitle="AffitaLink keeps the queue first, the health signal visible, and the evidence close enough that you can decide without opening three extra tabs."
+          />
+          <HStack spacing={3} mt={6} flexWrap="wrap">
+            <RouterLink
+              to="/networks"
+              display="inline-flex"
+              width="fit-content"
+              bg="transparent"
+              border="1px solid rgba(103, 77, 55, 0.16)"
+            >
+              Manage connectors
+            </RouterLink>
+          </HStack>
+        </SectionBox>
+        {hasConnector ? (
+          <HealthStrip
+            connectors={connectors}
+            activeNetwork={activeNetwork}
+            onNetworkChange={handleNetworkChange}
+            onSync={handleSync}
+            syncing={loading}
+          />
+        ) : (
+          <SectionBox>
+            <Text fontSize="xs" fontWeight="700" letterSpacing="0.18em" textTransform="uppercase" color="sand.700">
+              Setup required
+            </Text>
+            <Text mt={3} fontSize="2xl" fontWeight="700" color="ink.900">
+              Connect a source first
+            </Text>
+            <Text color="ink.600" mt={2} maxW="44ch">
+              Save connector credentials and choose merchants before you can build a
+              review queue.
+            </Text>
+            <RouterLink
+              to="/networks"
+              mt={4}
+              display="inline-flex"
+              width="fit-content"
+              border="1px solid rgba(31, 106, 91, 0.18)"
+            >
+              Open connector settings
+            </RouterLink>
+          </SectionBox>
+        )}
+        {hasConnector ? (
+          isMobile && selectedItem ? (
+            <ReviewDetailPane
+              item={selectedItem}
+              onAction={handleAction}
+              acting={acting}
+              showBack
+              onBack={clearSelection}
+            />
+          ) : (
+            <Box
+              display="grid"
+              gridTemplateColumns={{ base: "1fr", xl: "minmax(340px, 0.92fr) minmax(0, 1.08fr)" }}
+              gap={5}
+              alignItems="start"
+            >
+              <Box minW={0}>
+                <ReviewQueueList
+                  items={items}
+                  selectedId={selectedItem?.id}
+                  onSelect={handleSelect}
+                />
+              </Box>
+              <Box display={{ base: "none", lg: "block" }} minW={0}>
+                <ReviewDetailPane
+                  item={selectedItem || items[0] || null}
+                  onAction={handleAction}
+                  acting={acting}
+                />
+              </Box>
+            </Box>
+          )
+        ) : null}
+        <Loading loading={loading} />
+      </VStack>
+    </RequireAuth>
   );
 }

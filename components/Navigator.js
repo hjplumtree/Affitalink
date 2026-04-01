@@ -1,4 +1,4 @@
-import { VStack, Box, Text, Icon, Flex } from "@chakra-ui/react";
+import { VStack, Box, Text, Icon, Flex, HStack } from "@chakra-ui/react";
 import RouterLink from "./RouterLink";
 import Image from "next/image";
 import logo from "../public/logo.svg";
@@ -8,33 +8,51 @@ import {
   FaHome,
   FaChevronLeft,
   FaChevronRight,
+  FaSignInAlt,
+  FaSignOutAlt,
 } from "react-icons/fa";
 import { useState } from "react";
+import { useAuth } from "./AuthProvider";
 
 export default function Navigator({ ...styles }) {
   const [burgerMenuOpen, setBurgerMenuOpen] = useState(false);
+  const { user, signOut } = useAuth();
   return (
     <VStack
-      alignItems="center"
+      alignItems="stretch"
       h="100%"
-      p={2}
-      pt={3}
-      spacing={3}
-      bg="#fff"
-      borderRight="1px solid #e5e5e5"
+      p={3}
+      pt={4}
+      spacing={4}
+      bg="rgba(248, 244, 237, 0.95)"
+      borderRight="1px solid rgba(103, 77, 55, 0.14)"
+      backdropFilter="blur(20px)"
       width={{ base: burgerMenuOpen ? "210px" : "55px", lg: "210px" }}
       {...styles}
       zIndex={100}
     >
-      <Box display="flex" mb={7} alignItems="center" width="100%">
-        <Image src={logo} alt="logo" width="33px" height="33px" />
-        <Text
-          display={{ base: burgerMenuOpen || "none", lg: "inline-block" }}
-          ml={2}
-          fontSize={20}
-        >
-          AffitaLink
-        </Text>
+      <Box display="flex" mb={5} alignItems="center" width="100%" position="relative">
+        <HStack spacing={3}>
+          <Box
+            width="40px"
+            height="40px"
+            borderRadius="16px"
+            bg="white"
+            border="1px solid rgba(103, 77, 55, 0.14)"
+            display="grid"
+            placeItems="center"
+          >
+            <Image src={logo} alt="logo" width="24px" height="24px" />
+          </Box>
+          <Box display={{ base: burgerMenuOpen || "none", lg: "block" }}>
+            <Text fontSize="lg" fontWeight="700" letterSpacing="-0.03em" color="ink.900">
+              AffitaLink
+            </Text>
+            <Text fontSize="xs" color="ink.500">
+              Offer review workspace
+            </Text>
+          </Box>
+        </HStack>
 
         <Icon
           w="24px"
@@ -43,16 +61,16 @@ export default function Navigator({ ...styles }) {
           as={burgerMenuOpen ? FaChevronLeft : FaChevronRight}
           position="absolute"
           right="-17px"
-          bg={"#fff"}
-          color="#000"
-          border="1px solid #e5e5e5"
+          bg="rgba(255, 251, 246, 0.98)"
+          color="ink.700"
+          border="1px solid rgba(103, 77, 55, 0.16)"
           borderRadius="50%"
           display={{ lg: "none" }}
           cursor="pointer"
           onClick={() => {
             setBurgerMenuOpen((menu) => !menu);
           }}
-          _hover={{ bg: "#D6E0E8" }}
+          _hover={{ bg: "white" }}
         />
       </Box>
 
@@ -80,7 +98,8 @@ export default function Navigator({ ...styles }) {
           mt={4}
           mb={2}
           fontSize="sm"
-          color="#95AFC4"
+          color="sand.700"
+          letterSpacing="0.18em"
         >
           CONNECT
         </Text>
@@ -106,7 +125,8 @@ export default function Navigator({ ...styles }) {
           mt={4}
           mb={2}
           fontSize="sm"
-          color="#95AFC4"
+          color="sand.700"
+          letterSpacing="0.18em"
         >
           COPY
         </Text>
@@ -123,9 +143,46 @@ export default function Navigator({ ...styles }) {
           <Text
             display={{ base: burgerMenuOpen || "none", lg: "inline-block" }}
           >
-            Links
+            Review Queue
           </Text>
         </RouterLink>
+
+        <Text
+          display={{ base: burgerMenuOpen || "none", lg: "inline-block" }}
+          mt={4}
+          mb={2}
+          fontSize="sm"
+          color="sand.700"
+          letterSpacing="0.18em"
+        >
+          ACCOUNT
+        </Text>
+        {user ? (
+          <Box
+            as="button"
+            width="100%"
+            textAlign="left"
+            onClick={signOut}
+            p={3}
+            borderRadius={14}
+            color="ink.700"
+            _hover={{ bg: "rgba(255,255,255,0.72)" }}
+          >
+            <Flex align="center" gap={3}>
+              <Icon width="18px" height="18px" as={FaSignOutAlt} />
+              <Text display={{ base: burgerMenuOpen || "none", lg: "inline-block" }}>
+                Sign out
+              </Text>
+            </Flex>
+          </Box>
+        ) : (
+          <RouterLink to="/login" mt={{ base: burgerMenuOpen || 3, lg: 0 }}>
+            <Icon width="18px" height="18px" as={FaSignInAlt} />
+            <Text display={{ base: burgerMenuOpen || "none", lg: "inline-block" }}>
+              Sign in
+            </Text>
+          </RouterLink>
+        )}
       </Box>
     </VStack>
   );
