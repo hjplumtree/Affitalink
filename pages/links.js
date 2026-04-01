@@ -184,7 +184,7 @@ export default function LinksPage() {
               bg="transparent"
               border="1px solid rgba(15, 17, 23, 0.12)"
             >
-              Manage connectors
+              Manage sources
             </RouterLink>
           </HStack>
           <SimpleGrid columns={{ base: 1, md: 3 }} spacing={3} mt={7}>
@@ -196,7 +196,7 @@ export default function LinksPage() {
                 {items.length}
               </Text>
               <Text mt={1} fontSize="sm" color="ink.600">
-                changes waiting in the active line
+                changes waiting for review
               </Text>
             </Box>
             <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.04)">
@@ -207,7 +207,7 @@ export default function LinksPage() {
                 {connectors.length}
               </Text>
               <Text mt={1} fontSize="sm" color="ink.600">
-                source feeds available to pull
+                connected sources in this workspace
               </Text>
             </Box>
             <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.04)">
@@ -218,7 +218,7 @@ export default function LinksPage() {
                 {selectedCount}
               </Text>
               <Text mt={1} fontSize="sm" color="ink.600">
-                merchants actively feeding this workspace
+                selected merchants being monitored
               </Text>
             </Box>
           </SimpleGrid>
@@ -240,7 +240,7 @@ export default function LinksPage() {
               Connect a source first
             </Text>
             <Text color="ink.600" mt={2} maxW="44ch">
-              Save connector credentials and choose merchants before you can build a
+              Save source credentials and choose merchants before you can build a
               review queue.
             </Text>
             <RouterLink

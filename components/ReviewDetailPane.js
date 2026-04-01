@@ -120,7 +120,7 @@ export default function ReviewDetailPane({ item, onAction, acting, showBack, onB
 
         <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.03)">
           <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500" mb={2}>
-            Decision brief
+            Review summary
           </Text>
           <Text fontSize="lg" fontWeight="600" mb={2} color="ink.900">
             Why this changed
@@ -161,7 +161,7 @@ export default function ReviewDetailPane({ item, onAction, acting, showBack, onB
             Source evidence
           </Text>
           <Text fontSize="lg" fontWeight="600" mb={2} color="ink.900">
-            Source details
+            Latest source details
           </Text>
           <Text fontSize="sm" color="ink.700">
             Latest seen: {afterSnapshot.lastSeenAt || "Unknown"}
@@ -192,7 +192,7 @@ export default function ReviewDetailPane({ item, onAction, acting, showBack, onB
             isLoading={acting === "approve"}
             variant="accent"
           >
-            Approve update
+            Approve change
           </Button>
           <Button
             variant="outline"

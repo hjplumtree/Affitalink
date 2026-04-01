@@ -51,7 +51,7 @@ export default function Navigator({ ...styles }) {
               AffitaLink
             </Text>
             <Text fontSize="xs" color="rgba(255,255,255,0.76)">
-              Review ops console
+              Offer review workspace
             </Text>
           </Box>
         </HStack>
@@ -85,7 +85,7 @@ export default function Navigator({ ...styles }) {
           mb={4}
           px={3}
         >
-          Check sources, sync offers, review changes.
+          Connect sources, sync offers, review changes.
         </Text>
         <Box
           display={{ base: burgerMenuOpen ? "block" : "none", lg: "block" }}
@@ -119,7 +119,7 @@ export default function Navigator({ ...styles }) {
             <Text
               display={{ base: burgerMenuOpen ? "inline-block" : "none", lg: "inline-block" }}
             >
-              Home
+              Overview
             </Text>
           </RouterLink>
         </Box>
@@ -185,8 +185,8 @@ export default function Navigator({ ...styles }) {
           />
           <Text
             display={{ base: burgerMenuOpen ? "inline-block" : "none", lg: "inline-block" }}
-          >
-            Queue
+            >
+            Review queue
           </Text>
         </RouterLink>
 

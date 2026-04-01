@@ -31,17 +31,17 @@ export default function index() {
           </Box>
           <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
             <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="lime.700">
-              Trust
+              Checks
             </Text>
             <Text mt={2} fontSize="sm" color="ink.700">
-              A source is only useful when its sync results are believable.
+              A source is only useful when the connection works and the sync results look right.
             </Text>
           </Box>
         </SimpleGrid>
       </SectionBox>
       <SectionBox>
         <Text fontSize="xs" fontWeight="700" letterSpacing="0.18em" textTransform="uppercase" color="brand.500">
-          Available connectors
+          Available sources
         </Text>
         <Text mt={2} color="ink.600" maxW="48ch">
           Start with the networks you actively use. Leave the rest disconnected.
@@ -50,25 +50,25 @@ export default function index() {
           <NetworkSiteList
             imageUrl="/rakuten.png"
             name="Rakuten"
-            subtitle="Connect with Rakuten network"
+            subtitle="Add your Rakuten account"
             endpoint="rakuten"
           />
           <NetworkSiteList
             imageUrl="/cj.png"
             name="CJ"
-            subtitle="Connect with CJ network"
+            subtitle="Add your CJ account"
             endpoint="cj"
           />
           <NetworkSiteList
             imageUrl="/impact_logo.png"
             name="Impact"
-            subtitle="Connect with Impact network"
+            subtitle="Support planned"
             endpoint={false}
           />
           <NetworkSiteList
             imageUrl="/ebay_logo.png"
             name="eBay"
-            subtitle="Connect with eBay network"
+            subtitle="Support planned"
             endpoint={false}
           />
           <NetworkSiteList

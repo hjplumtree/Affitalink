@@ -50,7 +50,7 @@ export default function Home() {
               </Box>
               <Box>
                 <Text fontSize="sm" color="whiteAlpha.600">03</Text>
-                <Text fontSize="lg" fontWeight="700">Pull latest, inspect diff, clear queue</Text>
+                <Text fontSize="lg" fontWeight="700">Sync offers, inspect changes, clear the queue</Text>
               </Box>
             </VStack>
           </Box>
@@ -64,7 +64,7 @@ export default function Home() {
               Pull now, not later
             </Text>
             <Text mt={1} fontSize="sm" color="ink.600">
-              Manual sync keeps freshness explicit. No fake certainty, no hidden schedule.
+              Manual sync makes freshness explicit. You choose when to pull the latest data.
             </Text>
           </Box>
           <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.04)">
@@ -75,7 +75,7 @@ export default function Home() {
               Rank the changes that matter
             </Text>
             <Text mt={1} fontSize="sm" color="ink.600">
-              The queue should surface offer drift, not become a landfill for minor churn.
+              The queue should highlight meaningful changes instead of every small fluctuation.
             </Text>
           </Box>
           <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.04)">
@@ -110,7 +110,7 @@ export default function Home() {
                 2. Trim the watchlist hard
               </Text>
               <Text mt={1} fontSize="sm" color="ink.600">
-                Watch only merchants that deserve review attention. Everything else is drag.
+                Watch only the merchants you actually manage. Everything else adds noise.
               </Text>
             </Box>
             <Box>
@@ -132,7 +132,7 @@ export default function Home() {
               Most affiliate tools send you across exports, dashboards, and merchant pages. This keeps the work in one queue with a clear next step.
             </Text>
             <Text fontSize="sm" color="ink.700">
-              That matters because stale affiliate data quietly turns into bad copy, wrong links, and wasted time.
+              That matters because stale offer data quietly turns into outdated copy, wrong links, and wasted time.
             </Text>
           </VStack>
         </SectionBox>
@@ -149,7 +149,7 @@ export default function Home() {
         </Text>
         <Text fontSize="sm">
           If you are already a partner with CJ or Rakuten, connect right away and start
-          using the review queue instead of checking each network manually.
+          using the review queue instead of checking each source by hand.
         </Text>
         <Text fontSize="sm" mt={2}>
           More about partner programs:{" "}
@@ -168,7 +168,7 @@ export default function Home() {
           width="fit-content"
           border="1px solid rgba(139, 77, 255, 0.16)"
         >
-          Configure sources
+          Open source settings
         </RouterLink>
       </SectionBox>
     </VStack>

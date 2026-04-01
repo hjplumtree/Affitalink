@@ -66,7 +66,7 @@ export default function ReviewQueueList({ items, selectedId, onSelect }) {
           bg="rgba(15, 17, 23, 0.06)"
           color="ink.700"
         >
-          {items.length} waiting
+          {items.length} open
         </Badge>
       </Flex>
       <VStack align="stretch" spacing={0}>

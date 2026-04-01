@@ -54,26 +54,26 @@ export default function LoginPage() {
         <SimpleGrid columns={{ base: 1, md: 3 }} spacing={3} mt={7}>
           <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
             <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500">
-              Fast
+              Direct
             </Text>
             <Text mt={2} fontSize="sm" color="ink.700">
-              Log in, land in the queue, move through decisions.
+              Sign in and go straight to the work that needs review.
             </Text>
           </Box>
           <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
             <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500">
-              Scoped
+              Access
             </Text>
             <Text mt={2} fontSize="sm" color="ink.700">
-              Membership decides which workspace and APIs you can touch.
+              Your workspace membership controls which data and actions you can access.
             </Text>
           </Box>
           <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
             <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="lime.700">
-              Safe
+              Workspace
             </Text>
             <Text mt={2} fontSize="sm" color="ink.700">
-              Review actions stay tied to the right workspace, not browser-local guesswork.
+              Review actions stay attached to the right workspace instead of local browser state.
             </Text>
           </Box>
         </SimpleGrid>
@@ -93,13 +93,13 @@ export default function LoginPage() {
               <Box>
                 <Text fontWeight="700">Auth decides API access</Text>
                 <Text fontSize="sm" color="whiteAlpha.700" mt={1}>
-                  Queue actions and connector writes are tied to the signed-in workspace.
+                  Queue actions and source updates are tied to the signed-in workspace.
                 </Text>
               </Box>
               <Box>
-                <Text fontWeight="700">One user, one clear scope</Text>
+                <Text fontWeight="700">Clear workspace access</Text>
                 <Text fontSize="sm" color="whiteAlpha.700" mt={1}>
-                  This is an operations tool, not a public landing page with vague states.
+                  Sign in only gives access to the workspaces your account belongs to.
                 </Text>
               </Box>
               <Box>

@@ -82,13 +82,13 @@ export default function AdvertiserLists({ advertisers, onToggleAdvertiser }) {
         ) : (
           <Alert status="info" mt={5} borderRadius={18}>
             <AlertIcon />
-            Save valid connector credentials to load merchants here
+            Save valid source credentials to load merchants here.
           </Alert>
         )
       ) : (
         <Alert status="error" mt={5} borderRadius={18}>
           <AlertIcon />
-          Check the connector details and try again.
+          Check the source details and try again.
         </Alert>
       )}
     </SectionBox>

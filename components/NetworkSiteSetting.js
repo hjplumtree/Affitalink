@@ -72,7 +72,7 @@ export default function NetworkInput({
       <Header
         title={networkName}
         subtitle={helperText || `Enter credentials to connect ${networkName}.`}
-        eyebrow="Connector setup"
+        eyebrow="Source settings"
       />
       <FormControl isRequired mt={5}>
         <Text fontSize="sm" color="ink.600" mb={4}>
@@ -137,7 +137,7 @@ export default function NetworkInput({
             </Button>
 
             <Button variant="outline" colorScheme="red" onClick={onOpen} flex="1">
-              Delete connector
+              Delete source
             </Button>
           </HStack>
 
@@ -149,7 +149,7 @@ export default function NetworkInput({
             <AlertDialogOverlay>
               <AlertDialogContent>
                 <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                  Delete connector
+                  Delete source
                 </AlertDialogHeader>
 
                 <AlertDialogBody>
@@ -178,8 +178,8 @@ export default function NetworkInput({
         <Alert status="warning" fontSize="sm" mt={5} borderRadius={20}>
           <AlertIcon />
           <Text>
-            Credentials are stored on the backend so manual sync can run server-side.
-            Remove them when this source should stop feeding the queue.
+            Credentials are stored on the backend so manual sync can run on the server.
+            Remove them when you no longer want this source feeding the queue.
           </Text>
         </Alert>
       </FormControl>

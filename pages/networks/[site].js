@@ -69,8 +69,8 @@ export default function Site() {
         status: connector.status,
         message:
           connector.status === "connected"
-            ? "Connector is saved and ready for manual sync."
-            : "No valid connector saved yet.",
+            ? "Source is saved and ready for manual sync."
+            : "No saved source settings yet.",
       });
     } finally {
       setLoading(false);
@@ -93,7 +93,7 @@ export default function Site() {
       });
       const payload = await response.json();
       if (!response.ok) {
-        throw new Error(payload.error?.message || "Could not validate connector");
+        throw new Error(payload.error?.message || "Could not validate source settings");
       }
       setAdvertisers({
         page: 0,
@@ -104,7 +104,7 @@ export default function Site() {
         message: "Credentials look valid. Merchants are ready to review.",
       });
       toast({
-        title: "Connector saved",
+        title: "Source saved",
         status: "success",
         duration: 2000,
       });
@@ -141,7 +141,7 @@ export default function Site() {
     initializeAuth();
     setConnectorStatus({
       status: "not_connected",
-      message: "Connector removed.",
+      message: "Source removed.",
     });
   };
 
@@ -151,7 +151,7 @@ export default function Site() {
         <VStack align="stretch" spacing={5}>
           <SectionBox bg="rgba(255,255,255,0.98)">
             <Header
-              eyebrow="Connector setup"
+              eyebrow="Source settings"
               title={`Set up ${network_site_name?.toUpperCase()}`}
               subtitle="Save credentials, test the connection, and choose which merchants should appear in the review queue."
             />
@@ -161,10 +161,10 @@ export default function Site() {
             <SimpleGrid columns={{ base: 1, md: 3 }} spacing={3} mt={7}>
               <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
                 <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500">
-                  Validate
+                  Test
                 </Text>
                 <Text mt={2} fontSize="sm" color="ink.700">
-                  Test the credential handshake before trusting the feed.
+                  Test the saved credentials before trusting this source.
                 </Text>
               </Box>
               <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
@@ -172,7 +172,7 @@ export default function Site() {
                   Select
                 </Text>
                 <Text mt={2} fontSize="sm" color="ink.700">
-                  Turn merchants on only when they deserve queue space.
+                  Turn on only the merchants you want to monitor.
                 </Text>
               </Box>
               <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
@@ -180,7 +180,7 @@ export default function Site() {
                   Return
                 </Text>
                 <Text mt={2} fontSize="sm" color="ink.700">
-                  Go back to the review workspace once the connector feels stable.
+                  Go back to the review workspace once this source is working.
                 </Text>
               </Box>
             </SimpleGrid>

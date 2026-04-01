@@ -40,7 +40,7 @@ export default function NetworkSiteList({
       </Box>
       {endpoint ? (
         <RouterLink to={`/networks/${endpoint}`} marginLeft="auto" border="1px solid rgba(15,17,23,0.08)">
-          Configure
+          Open settings
         </RouterLink>
       ) : (
         <Box
