@@ -2,6 +2,7 @@ import {
   Badge,
   Box,
   Button,
+  Divider,
   Flex,
   HStack,
   Icon,
@@ -60,8 +61,8 @@ export default function HealthStrip({
             borderRadius="full"
             align="center"
             justify="center"
-            bg="rgba(31, 106, 91, 0.1)"
-            color="brand.700"
+            bg="rgba(15, 17, 23, 0.08)"
+            color="ink.900"
           >
             <Icon as={statusIcon} boxSize={4} />
           </Flex>
@@ -74,6 +75,7 @@ export default function HealthStrip({
             </Text>
           </Box>
         </HStack>
+        <Divider orientation="vertical" borderColor="rgba(15,17,23,0.08)" display={{ base: "none", md: "block" }} h="42px" />
         <Box flex="1">
           <Text fontSize="sm" color="ink.700">
             {tone.message}
@@ -116,6 +118,7 @@ export default function HealthStrip({
           isLoading={syncing}
           loadingText="Syncing"
           leftIcon={<FaSync />}
+          variant="accent"
         >
           Manual sync
         </Button>

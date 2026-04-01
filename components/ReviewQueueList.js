@@ -53,7 +53,10 @@ export default function ReviewQueueList({ items, selectedId, onSelect }) {
             Attention queue
           </Text>
           <Text mt={1} fontSize="lg" fontWeight="700" color="ink.900">
-            Review the most meaningful changes first
+            Ranked for fast review
+          </Text>
+          <Text mt={1} fontSize="sm" color="ink.600">
+            Open one item, inspect the diff, then move to the next.
           </Text>
         </Box>
         <Badge
@@ -116,7 +119,7 @@ export default function ReviewQueueList({ items, selectedId, onSelect }) {
                   {item.reason}
                 </Text>
               </VStack>
-              <Text fontSize="xs" color="ink.500" whiteSpace="nowrap">
+              <Text fontSize="xs" color="ink.500" whiteSpace="nowrap" pl={3}>
                 {new Date(item.createdAt).toLocaleDateString()}
               </Text>
             </HStack>

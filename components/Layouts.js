@@ -11,6 +11,7 @@ function Layouts({ children, ...styles }) {
       height="100%"
       ml={{ base: "50px", lg: "210px" }}
       bg="transparent"
+      maxW="1600px"
       {...styles}
     >
       {children}

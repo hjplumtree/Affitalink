@@ -75,6 +75,9 @@ export default function NetworkInput({
         eyebrow="Connector setup"
       />
       <FormControl isRequired mt={5}>
+        <Text fontSize="sm" color="ink.600" mb={4}>
+          Save the credentials, verify the connector, then trim the merchant list below.
+        </Text>
         {inputs.map((input) => (
           <Box key={input[0]}>
             <FormLabel htmlFor={input[0]}>
@@ -87,7 +90,7 @@ export default function NetworkInput({
                   id={input[0]}
                   onChange={handleInputChange}
                   type={show ? "text" : "password"}
-                  placeholder="Enter token"
+                  placeholder="Paste token"
                   value={auth["token"]}
                   data-name="token"
                   mb={3}
@@ -99,14 +102,14 @@ export default function NetworkInput({
                 </InputRightElement>
               </InputGroup>
             ) : (
-              <Input
-                id={input[0]}
-                onChange={handleInputChange}
-                type="text"
-                placeholder={`Enter ${input[0].split("_").join(" ")}`}
-                value={auth[input[0]]}
-                data-name={input[0]}
-                mb={3}
+                <Input
+                  id={input[0]}
+                  onChange={handleInputChange}
+                  type="text"
+                  placeholder={`Paste ${input[0].split("_").join(" ")}`}
+                  value={auth[input[0]]}
+                  data-name={input[0]}
+                  mb={3}
               />
             )}
           </Box>
@@ -129,8 +132,8 @@ export default function NetworkInput({
         )}
         <VStack mt={5} spacing={3} align="stretch">
           <HStack spacing={3} align="stretch" flexDirection={{ base: "column", md: "row" }}>
-            <Button onClick={handleConnect} flex="1">
-            {actionLabel}
+            <Button onClick={handleConnect} flex="1" variant="accent">
+              {actionLabel}
             </Button>
 
             <Button variant="outline" colorScheme="red" onClick={onOpen} flex="1">
@@ -175,8 +178,8 @@ export default function NetworkInput({
         <Alert status="warning" fontSize="sm" mt={5} borderRadius={20}>
           <AlertIcon />
           <Text>
-            Credentials are stored on the backend for manual sync. Remove them if the
-            source should no longer be trusted.
+            Credentials are stored on the backend for manual sync. Remove them when this
+            source should stop feeding the queue.
           </Text>
         </Alert>
       </FormControl>

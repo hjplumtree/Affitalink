@@ -20,9 +20,9 @@ export default function RouterLink({ to, children, ...props }) {
       <Link href={to} passHref>
         <ChakraLink
           {...styles}
-          bg="linear-gradient(135deg, rgba(255, 66, 122, 0.14), rgba(28, 216, 231, 0.12))"
+          bg="linear-gradient(135deg, rgba(255, 66, 122, 0.18), rgba(28, 216, 231, 0.16))"
           color="ink.900"
-          border="1px solid rgba(255, 66, 122, 0.16)"
+          border="1px solid rgba(255, 66, 122, 0.22)"
         >
           {children}
         </ChakraLink>

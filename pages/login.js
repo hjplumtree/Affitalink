@@ -1,18 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import {
-  Alert,
-  AlertIcon,
-  Button,
-  Box,
-  FormControl,
-  FormLabel,
-  HStack,
-  Input,
-  Stack,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
+import { Alert, AlertIcon, Button, Box, FormControl, FormLabel, HStack, Input, Stack, Text, VStack, SimpleGrid } from "@chakra-ui/react";
 import SectionBox from "../components/SectionBox";
 import { useAuth } from "../components/AuthProvider";
 import Header from "../components/Header";
@@ -57,12 +45,38 @@ export default function LoginPage() {
 
   return (
     <VStack align="stretch" spacing={5}>
-      <SectionBox>
+      <SectionBox bg="linear-gradient(135deg, rgba(255,255,255,0.96), rgba(255, 240, 244, 0.88), rgba(236,255,255,0.88))">
         <Header
           eyebrow="Authentication"
           title="Sign in and get straight to the queue"
           subtitle="Fast in, fast out. Use your Supabase account so the workspace, membership, and review actions stay scoped correctly."
         />
+        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={3} mt={7}>
+          <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
+            <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500">
+              Fast
+            </Text>
+            <Text mt={2} fontSize="sm" color="ink.700">
+              Log in, land in the queue, move through decisions.
+            </Text>
+          </Box>
+          <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
+            <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="aqua.600">
+              Scoped
+            </Text>
+            <Text mt={2} fontSize="sm" color="ink.700">
+              Membership decides which workspace and APIs you can touch.
+            </Text>
+          </Box>
+          <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
+            <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="lime.700">
+              Safe
+            </Text>
+            <Text mt={2} fontSize="sm" color="ink.700">
+              Review actions stay tied to the right workspace, not browser-local guesswork.
+            </Text>
+          </Box>
+        </SimpleGrid>
       </SectionBox>
       <SectionBox bg="linear-gradient(135deg, rgba(255,255,255,0.94), rgba(255, 240, 244, 0.8), rgba(236,255,255,0.66))">
         <Stack spacing={5}>
@@ -104,7 +118,7 @@ export default function LoginPage() {
               {message}
             </Alert>
           ) : null}
-          <Button onClick={handleSubmit} isLoading={loading}>
+          <Button onClick={handleSubmit} isLoading={loading} variant="accent">
             {mode === "sign_in" ? "Sign in" : "Create account"}
           </Button>
           <Box>

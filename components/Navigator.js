@@ -1,4 +1,4 @@
-import { VStack, Box, Text, Icon, Flex, HStack } from "@chakra-ui/react";
+import { VStack, Box, Text, Icon, Flex, HStack, Divider } from "@chakra-ui/react";
 import RouterLink from "./RouterLink";
 import Image from "next/image";
 import logo from "../public/logo.svg";
@@ -26,8 +26,8 @@ export default function Navigator({ ...styles }) {
       p={3}
       pt={4}
       spacing={4}
-      bg="rgba(255, 255, 255, 0.82)"
-      borderRight="1px solid rgba(15, 17, 23, 0.08)"
+      bg="linear-gradient(180deg, #0f1117 0%, #151926 100%)"
+      borderRight="1px solid rgba(255, 255, 255, 0.06)"
       backdropFilter="blur(18px)"
       width={{ base: burgerMenuOpen ? "210px" : "55px", lg: "210px" }}
       {...styles}
@@ -39,18 +39,18 @@ export default function Navigator({ ...styles }) {
             width="40px"
             height="40px"
             borderRadius="16px"
-            bg="linear-gradient(135deg, rgba(255, 66, 122, 0.14), rgba(28, 216, 231, 0.16))"
-            border="1px solid rgba(255, 66, 122, 0.12)"
+            bg="linear-gradient(135deg, rgba(255, 66, 122, 0.92), rgba(28, 216, 231, 0.92))"
+            border="1px solid rgba(255, 255, 255, 0.12)"
             display="grid"
             placeItems="center"
           >
             <Image src={logo} alt="logo" width="24px" height="24px" />
           </Box>
-          <Box display={{ base: burgerMenuOpen || "none", lg: "block" }}>
-            <Text fontSize="lg" fontWeight="700" letterSpacing="-0.03em" color="ink.900">
+          <Box display={{ base: burgerMenuOpen ? "block" : "none", lg: "block" }}>
+            <Text fontSize="lg" fontWeight="700" letterSpacing="-0.03em" color="white">
               AffitaLink
             </Text>
-            <Text fontSize="xs" color="ink.500">
+            <Text fontSize="xs" color="whiteAlpha.700">
               Offer review workspace
             </Text>
           </Box>
@@ -63,9 +63,9 @@ export default function Navigator({ ...styles }) {
           as={burgerMenuOpen ? FaChevronLeft : FaChevronRight}
           position="absolute"
           right="-17px"
-          bg="rgba(255, 255, 255, 0.98)"
-          color="ink.700"
-          border="1px solid rgba(15, 17, 23, 0.12)"
+          bg="rgba(21, 25, 38, 0.98)"
+          color="white"
+          border="1px solid rgba(255, 255, 255, 0.12)"
           borderRadius="50%"
           display={{ lg: "none" }}
           cursor="pointer"
@@ -77,6 +77,17 @@ export default function Navigator({ ...styles }) {
       </Box>
 
       <Box w="100%">
+        <Text
+          display={{ base: burgerMenuOpen ? "block" : "none", lg: "block" }}
+          fontSize="xs"
+          color="whiteAlpha.700"
+          lineHeight="1.5"
+          mb={4}
+          px={3}
+        >
+          Bright signal, fast review, fewer tabs.
+        </Text>
+        <Divider borderColor="whiteAlpha.200" mb={4} />
         <Box as={Flex} align="center">
           <RouterLink
             to="/"
@@ -85,10 +96,12 @@ export default function Navigator({ ...styles }) {
               base: burgerMenuOpen ? "stretch" : "center",
               lg: "stretch",
             }}
+            color="whiteAlpha.900"
+            _hover={{ bg: "rgba(255,255,255,0.08)" }}
           >
             <Icon width="18px" height="18px" as={FaHome} />
             <Text
-              display={{ base: burgerMenuOpen || "none", lg: "inline-block" }}
+              display={{ base: burgerMenuOpen ? "inline-block" : "none", lg: "inline-block" }}
             >
               Home
             </Text>
@@ -96,16 +109,21 @@ export default function Navigator({ ...styles }) {
         </Box>
 
         <Text
-          display={{ base: burgerMenuOpen || "none", lg: "inline-block" }}
+          display={{ base: burgerMenuOpen ? "inline-block" : "none", lg: "inline-block" }}
           mt={4}
           mb={2}
-          fontSize="sm"
-          color="brand.500"
+          fontSize="xs"
+          color="whiteAlpha.500"
           letterSpacing="0.18em"
         >
           CONNECT
         </Text>
-        <RouterLink to="/networks" mt={{ base: burgerMenuOpen || 3, lg: 0 }}>
+        <RouterLink
+          to="/networks"
+          mt={{ base: burgerMenuOpen ? 3 : 0, lg: 0 }}
+          color="whiteAlpha.900"
+          _hover={{ bg: "rgba(255,255,255,0.08)" }}
+        >
           <Icon
             width="18px"
             height="18px"
@@ -116,23 +134,28 @@ export default function Navigator({ ...styles }) {
             }}
           />
           <Text
-            display={{ base: burgerMenuOpen || "none", lg: "inline-block" }}
+            display={{ base: burgerMenuOpen ? "inline-block" : "none", lg: "inline-block" }}
           >
             Networks
           </Text>
         </RouterLink>
 
         <Text
-          display={{ base: burgerMenuOpen || "none", lg: "inline-block" }}
+          display={{ base: burgerMenuOpen ? "inline-block" : "none", lg: "inline-block" }}
           mt={4}
           mb={2}
-          fontSize="sm"
-          color="brand.500"
+          fontSize="xs"
+          color="whiteAlpha.500"
           letterSpacing="0.18em"
         >
           COPY
         </Text>
-        <RouterLink to="/links" mt={{ base: burgerMenuOpen || 3, lg: 0 }}>
+        <RouterLink
+          to="/links"
+          mt={{ base: burgerMenuOpen ? 3 : 0, lg: 0 }}
+          color="whiteAlpha.900"
+          _hover={{ bg: "rgba(255,255,255,0.08)" }}
+        >
           <Icon
             width="18px"
             height="18px"
@@ -143,18 +166,18 @@ export default function Navigator({ ...styles }) {
             }}
           />
           <Text
-            display={{ base: burgerMenuOpen || "none", lg: "inline-block" }}
+            display={{ base: burgerMenuOpen ? "inline-block" : "none", lg: "inline-block" }}
           >
             Review Queue
           </Text>
         </RouterLink>
 
         <Text
-          display={{ base: burgerMenuOpen || "none", lg: "inline-block" }}
+          display={{ base: burgerMenuOpen ? "inline-block" : "none", lg: "inline-block" }}
           mt={4}
           mb={2}
-          fontSize="sm"
-          color="brand.500"
+          fontSize="xs"
+          color="whiteAlpha.500"
           letterSpacing="0.18em"
         >
           ACCOUNT
@@ -167,20 +190,25 @@ export default function Navigator({ ...styles }) {
             onClick={signOut}
             p={3}
             borderRadius={14}
-            color="ink.700"
-            _hover={{ bg: "rgba(255,255,255,0.72)" }}
+            color="whiteAlpha.900"
+            _hover={{ bg: "rgba(255,255,255,0.08)" }}
           >
             <Flex align="center" gap={3}>
               <Icon width="18px" height="18px" as={FaSignOutAlt} />
-              <Text display={{ base: burgerMenuOpen || "none", lg: "inline-block" }}>
+              <Text display={{ base: burgerMenuOpen ? "inline-block" : "none", lg: "inline-block" }}>
                 Sign out
               </Text>
             </Flex>
           </Box>
         ) : (
-          <RouterLink to="/login" mt={{ base: burgerMenuOpen || 3, lg: 0 }}>
+          <RouterLink
+            to="/login"
+            mt={{ base: burgerMenuOpen ? 3 : 0, lg: 0 }}
+            color="whiteAlpha.900"
+            _hover={{ bg: "rgba(255,255,255,0.08)" }}
+          >
             <Icon width="18px" height="18px" as={FaSignInAlt} />
-            <Text display={{ base: burgerMenuOpen || "none", lg: "inline-block" }}>
+            <Text display={{ base: burgerMenuOpen ? "inline-block" : "none", lg: "inline-block" }}>
               Sign in
             </Text>
           </RouterLink>

@@ -1,17 +1,43 @@
 import Header from "../../components/Header";
 import NetworkSiteList from "../../components/NetworkSiteList";
 import SectionBox from "../../components/SectionBox";
-import { Box, Text, VStack } from "@chakra-ui/react";
+import { Text, VStack, SimpleGrid, Box } from "@chakra-ui/react";
 
 export default function index() {
   return (
     <VStack align="stretch" spacing={5}>
-      <SectionBox>
+      <SectionBox bg="linear-gradient(135deg, rgba(255,255,255,0.96), rgba(255, 240, 244, 0.82), rgba(236,255,255,0.84))">
         <Header
           eyebrow="Sources"
           title="Choose the feeds that keep the queue moving"
           subtitle="This is the source wall. Connect what you trust, ignore what you do not need, and keep the review workspace focused on decisions instead of setup clutter."
         />
+        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={3} mt={7}>
+          <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
+            <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500">
+              Setup
+            </Text>
+            <Text mt={2} fontSize="sm" color="ink.700">
+              Credentials live here, away from the review queue.
+            </Text>
+          </Box>
+          <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
+            <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="aqua.600">
+              Selection
+            </Text>
+            <Text mt={2} fontSize="sm" color="ink.700">
+              Choose only the merchants worth monitoring.
+            </Text>
+          </Box>
+          <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
+            <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="lime.700">
+              Trust
+            </Text>
+            <Text mt={2} fontSize="sm" color="ink.700">
+              A connector is only useful if its sync results are believable.
+            </Text>
+          </Box>
+        </SimpleGrid>
       </SectionBox>
       <SectionBox>
         <Text fontSize="xs" fontWeight="700" letterSpacing="0.18em" textTransform="uppercase" color="brand.500">

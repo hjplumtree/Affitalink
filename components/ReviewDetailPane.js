@@ -119,7 +119,7 @@ export default function ReviewDetailPane({ item, onAction, acting, showBack, onB
           </Text>
         </VStack>
 
-        <Box>
+        <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.03)">
           <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500" mb={2}>
             Why it matters
           </Text>
@@ -157,7 +157,7 @@ export default function ReviewDetailPane({ item, onAction, acting, showBack, onB
           />
         </VStack>
 
-        <Box>
+        <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.03)">
           <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500" mb={2}>
             Source evidence
           </Text>
@@ -191,6 +191,7 @@ export default function ReviewDetailPane({ item, onAction, acting, showBack, onB
           <Button
             onClick={() => onAction("approve")}
             isLoading={acting === "approve"}
+            variant="accent"
           >
             Approve
           </Button>

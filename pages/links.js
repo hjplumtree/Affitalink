@@ -1,13 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
-import {
-  Box,
-  HStack,
-  Text,
-  VStack,
-  useBreakpointValue,
-  useToast,
-} from "@chakra-ui/react";
+import { Box, HStack, Text, VStack, useBreakpointValue, useToast, SimpleGrid } from "@chakra-ui/react";
 import Loading from "../components/Loading";
 import SectionBox from "../components/SectionBox";
 import Header from "../components/Header";
@@ -159,6 +152,11 @@ export default function LinksPage() {
   };
 
   const hasConnector = connectors.length > 0;
+  const selectedCount = connectors.reduce(
+    (count, connector) =>
+      count + (connector.merchants || []).filter((merchant) => merchant.selected).length,
+    0
+  );
 
   return (
     <RequireAuth>
@@ -171,6 +169,15 @@ export default function LinksPage() {
           />
           <HStack spacing={3} mt={6} flexWrap="wrap">
             <RouterLink
+              to="/links"
+              display="inline-flex"
+              width="fit-content"
+              bg="transparent"
+              border="1px solid rgba(15, 17, 23, 0.12)"
+            >
+              Queue home
+            </RouterLink>
+            <RouterLink
               to="/networks"
               display="inline-flex"
               width="fit-content"
@@ -180,6 +187,41 @@ export default function LinksPage() {
               Manage connectors
             </RouterLink>
           </HStack>
+          <SimpleGrid columns={{ base: 1, md: 3 }} spacing={3} mt={7}>
+            <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.04)">
+              <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500">
+                Waiting now
+              </Text>
+              <Text mt={2} fontSize="2xl" fontWeight="700" color="ink.900">
+                {items.length}
+              </Text>
+              <Text mt={1} fontSize="sm" color="ink.600">
+                review items in the active queue
+              </Text>
+            </Box>
+            <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.04)">
+              <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="aqua.600">
+                Sources live
+              </Text>
+              <Text mt={2} fontSize="2xl" fontWeight="700" color="ink.900">
+                {connectors.length}
+              </Text>
+              <Text mt={1} fontSize="sm" color="ink.600">
+                connected sources available to sync
+              </Text>
+            </Box>
+            <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.04)">
+              <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="lime.700">
+                Merchants watched
+              </Text>
+              <Text mt={2} fontSize="2xl" fontWeight="700" color="ink.900">
+                {selectedCount}
+              </Text>
+              <Text mt={1} fontSize="sm" color="ink.600">
+                selected merchants feeding this workspace
+              </Text>
+            </Box>
+          </SimpleGrid>
         </SectionBox>
         {hasConnector ? (
           <HealthStrip

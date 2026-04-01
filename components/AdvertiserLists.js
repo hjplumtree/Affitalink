@@ -23,6 +23,9 @@ export default function AdvertiserLists({ advertisers, onToggleAdvertiser }) {
         subtitle="Choose which merchants should be monitored during manual sync"
         eyebrow="Selection"
       />
+      <Text mt={4} fontSize="sm" color="ink.600">
+        Merchant selection is where you stop the queue from becoming a junk drawer.
+      </Text>
 
       {advertisers ? (
         advertisersList.length !== 0 ? (

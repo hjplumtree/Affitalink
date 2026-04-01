@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useCallback, useState, useEffect } from "react";
 import NetworkSiteSetting from "../../components/NetworkSiteSetting";
 import AdvertiserLists from "../../components/AdvertiserLists";
-import { Box, Text, VStack, useToast } from "@chakra-ui/react";
+import { Text, VStack, useToast, SimpleGrid, Box } from "@chakra-ui/react";
 import Loading from "../../components/Loading";
 import RequireAuth from "../../components/RequireAuth";
 import { useAuth } from "../../components/AuthProvider";
@@ -149,7 +149,7 @@ export default function Site() {
     <RequireAuth>
       {auth ? (
         <VStack align="stretch" spacing={5}>
-          <SectionBox>
+          <SectionBox bg="linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255, 240, 244, 0.84), rgba(236,255,255,0.76))">
             <Header
               eyebrow="Connector setup"
               title={`Make ${network_site_name?.toUpperCase()} feel live, not fragile`}
@@ -159,6 +159,32 @@ export default function Site() {
               This setup screen stays separate from the review workspace on purpose. Configure
               sources here, then return to the queue once the connector is trustworthy.
             </Text>
+            <SimpleGrid columns={{ base: 1, md: 3 }} spacing={3} mt={7}>
+              <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
+                <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500">
+                  Validate
+                </Text>
+                <Text mt={2} fontSize="sm" color="ink.700">
+                  Test the credential handshake before trusting the feed.
+                </Text>
+              </Box>
+              <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
+                <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="aqua.600">
+                  Select
+                </Text>
+                <Text mt={2} fontSize="sm" color="ink.700">
+                  Turn merchants on only when they deserve queue space.
+                </Text>
+              </Box>
+              <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
+                <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="lime.700">
+                  Return
+                </Text>
+                <Text mt={2} fontSize="sm" color="ink.700">
+                  Go back to the review workspace once the connector feels stable.
+                </Text>
+              </Box>
+            </SimpleGrid>
           </SectionBox>
 
           <NetworkSiteSetting
