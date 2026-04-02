@@ -1,26 +1,25 @@
-import { ChakraProvider } from "@chakra-ui/react";
 import Layouts from "../components/Layouts";
 import Navigator from "../components/Navigator";
-import { Flex } from "@chakra-ui/react";
 import Head from "next/head";
 import { AuthProvider } from "../components/AuthProvider";
-import theme from "../lib/theme";
+import { ToastProvider } from "../components/ToastProvider";
+import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }) {
   return (
-    <ChakraProvider theme={theme}>
-      <AuthProvider>
+    <AuthProvider>
+      <ToastProvider>
         <Head>
           <link rel="icon" href="/logo.svg" />
         </Head>
-        <Flex>
-          <Navigator position="fixed" />
-          <Layouts minHeight="100vh">
+        <div className="flex">
+          <Navigator />
+          <Layouts>
             <Component {...pageProps} />
           </Layouts>
-        </Flex>
-      </AuthProvider>
-    </ChakraProvider>
+        </div>
+      </ToastProvider>
+    </AuthProvider>
   );
 }
 

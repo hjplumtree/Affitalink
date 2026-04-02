@@ -1,20 +1,10 @@
-import {
-  Badge,
-  Box,
-  Button,
-  Code,
-  Flex,
-  HStack,
-  Input,
-  Link,
-  Select,
-  SimpleGrid,
-  Stack,
-  Text,
-  VStack,
-  useToast,
-} from "@chakra-ui/react";
 import { useMemo, useState } from "react";
+import { Check, Copy, ExternalLink, Search } from "lucide-react";
+import { useToastMessage } from "./ToastProvider";
+import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import { Input } from "./ui/input";
 
 function formatDate(value) {
   if (!value) return "No date";
@@ -58,6 +48,18 @@ function buildOfferCopyText(offer) {
   ].join("\n");
 }
 
+function OfferStat({ label, value, action }) {
+  return (
+    <div className="rounded-[22px] border border-border bg-muted/60 p-3">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">{label}</p>
+      <div className="mt-2 flex items-start justify-between gap-3">
+        <p className="text-sm font-semibold leading-6 text-foreground">{value}</p>
+        {action}
+      </div>
+    </div>
+  );
+}
+
 export default function OfferCatalog({
   offers,
   networks,
@@ -68,7 +70,7 @@ export default function OfferCatalog({
 }) {
   const [search, setSearch] = useState("");
   const [expandedModes, setExpandedModes] = useState({});
-  const toast = useToast();
+  const toast = useToastMessage();
 
   const copyValue = async (value, label) => {
     if (!value) return;
@@ -122,40 +124,36 @@ export default function OfferCatalog({
 
   if (offers.length === 0) {
     return (
-      <Box
-        border="1px solid rgba(15, 17, 23, 0.08)"
-        borderRadius="30px"
-        p={{ base: 5, lg: 6 }}
-        bg="rgba(255,255,255,0.92)"
-      >
-        <Text fontSize="xs" fontWeight="700" letterSpacing="0.18em" textTransform="uppercase" color="brand.500">
-          No offers yet
-        </Text>
-        <Text mt={3} fontSize="2xl" fontWeight="700" color="ink.900">
-          Connect a source and run a sync first
-        </Text>
-        <Text mt={2} color="ink.600" maxW="44ch">
-          This page will show your standardized coupon and sale data after the first successful update check.
-        </Text>
-      </Box>
+      <Card className="border-white/60 bg-white/95">
+        <CardHeader>
+          <Badge className="w-fit">No offers yet</Badge>
+          <CardTitle>Connect a source and run a sync first</CardTitle>
+          <CardDescription className="max-w-2xl text-base">
+            This page will show your standardized coupon and sale data after the first successful update check.
+          </CardDescription>
+        </CardHeader>
+      </Card>
     );
   }
 
   return (
-    <VStack align="stretch" spacing={4}>
-      <Flex
-        align={{ base: "stretch", lg: "center" }}
-        justify="space-between"
-        gap={3}
-        direction={{ base: "column", lg: "row" }}
-      >
-        <Stack direction={{ base: "column", md: "row" }} spacing={3}>
-          <Select
+    <div className="space-y-4">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-col gap-3 md:flex-row">
+          <label className="flex h-12 items-center gap-3 rounded-full border border-border bg-white px-4 text-sm shadow-sm">
+            <Search className="h-4 w-4 text-muted-foreground" />
+            <Input
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Search merchant, title, or coupon"
+              className="h-auto border-0 bg-transparent p-0 shadow-none focus-visible:ring-0"
+            />
+          </label>
+          <select
             value={activeNetwork}
             onChange={(event) => onNetworkChange(event.target.value)}
-            width={{ base: "100%", md: "180px" }}
-            borderRadius="full"
             aria-label="Filter offers by source"
+            className="h-12 rounded-full border border-border bg-white px-4 text-sm font-medium text-foreground shadow-sm outline-none focus:ring-2 focus:ring-ring"
           >
             <option value="all">All sources</option>
             {networks.map((network) => (
@@ -163,222 +161,175 @@ export default function OfferCatalog({
                 {network.toUpperCase()}
               </option>
             ))}
-          </Select>
-          <Input
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search merchant, title, or coupon"
-            borderRadius="full"
-            width={{ base: "100%", md: "320px" }}
-          />
-        </Stack>
-        <HStack spacing={2} flexWrap="wrap">
-          <Badge px={3} py={1.5} borderRadius="full" bg="rgba(15,17,23,0.06)" color="ink.700">
-            {filteredOffers.length} offers
-          </Badge>
-          <Badge px={3} py={1.5} borderRadius="full" bg="rgba(139,77,255,0.10)" color="brand.700">
-            {selectedOffers.length} selected
-          </Badge>
-        </HStack>
-      </Flex>
+          </select>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Badge variant="outline">{filteredOffers.length} offers</Badge>
+          <Badge>{selectedOffers.length} selected</Badge>
+        </div>
+      </div>
 
-      <Box
-        border="1px solid rgba(15, 17, 23, 0.08)"
-        borderRadius="24px"
-        bg="rgba(255,255,255,0.94)"
-        p={4}
-      >
-        <Flex
-          justify="space-between"
-          align={{ base: "stretch", md: "center" }}
-          gap={3}
-          direction={{ base: "column", md: "row" }}
-        >
-          <Box>
-            <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500">
+      <Card className="border-white/60 bg-white/95">
+        <CardContent className="flex flex-col gap-4 p-5 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
               Publishing shortlist
-            </Text>
-            <Text mt={1} fontSize="sm" color="ink.600">
-              Select the offers you want to move into the coupon site. `Updates` is for review, `Offers` is for picking what survives.
-            </Text>
-          </Box>
-          <HStack spacing={2} flexWrap="wrap">
-            <Button size="sm" variant="outline" onClick={() => copySelected("block")} isDisabled={selectedOffers.length === 0}>
+            </p>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
+              Select the offers you want to move into the coupon site. Updates is for review. Offers is where you pick what survives.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button variant="outline" onClick={() => copySelected("block")} disabled={selectedOffers.length === 0}>
               Copy selected block
             </Button>
-            <Button size="sm" variant="outline" onClick={() => copySelected("json")} isDisabled={selectedOffers.length === 0}>
+            <Button variant="outline" onClick={() => copySelected("json")} disabled={selectedOffers.length === 0}>
               Copy selected JSON
             </Button>
-          </HStack>
-        </Flex>
-      </Box>
+          </div>
+        </CardContent>
+      </Card>
 
-      <VStack align="stretch" spacing={3}>
+      <div className="space-y-3">
         {filteredOffers.map((offer) => {
           const expandedMode = expandedModes[offer.id] || null;
           const isSelected = selectedIds.includes(offer.id);
           const payloadJson = JSON.stringify(buildOfferPayload(offer), null, 2);
 
           return (
-            <Box
+            <Card
               key={offer.id}
-              border="1px solid rgba(15, 17, 23, 0.08)"
-              borderRadius="24px"
-              bg={isSelected ? "rgba(139,77,255,0.06)" : "rgba(255,255,255,0.94)"}
-              p={{ base: 4, lg: 5 }}
-              boxShadow="0 12px 30px rgba(15,17,23,0.04)"
+              className={isSelected ? "border-primary/30 bg-primary/[0.045] shadow-lift" : "border-white/60 bg-white/95"}
             >
-              <VStack align="stretch" spacing={3}>
-                <Flex
-                  justify="space-between"
-                  align={{ base: "stretch", lg: "start" }}
-                  gap={3}
-                  direction={{ base: "column", lg: "row" }}
-                >
-                  <Box minW={0} flex="1">
-                    <HStack spacing={2} mb={2} flexWrap="wrap">
-                      <Badge colorScheme="purple">{offer.network?.toUpperCase()}</Badge>
-                      {offer.couponCode ? (
-                        <Badge bg="rgba(139,77,255,0.10)" color="brand.700">
-                          {offer.couponCode}
-                        </Badge>
-                      ) : (
-                        <Badge bg="rgba(15,17,23,0.06)" color="ink.700">
-                          No code
-                        </Badge>
-                      )}
-                      <Badge bg="rgba(15,17,23,0.06)" color="ink.700">
-                        {formatDate(offer.updatedAt || offer.lastSeenAt)}
+              <CardContent className="space-y-4 p-5">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                  <div className="min-w-0 flex-1">
+                    <div className="mb-3 flex flex-wrap gap-2">
+                      <Badge>{offer.network?.toUpperCase()}</Badge>
+                      <Badge variant="outline">{formatDate(offer.updatedAt || offer.lastSeenAt)}</Badge>
+                      <Badge variant={offer.couponCode ? "default" : "secondary"}>
+                        {offer.couponCode || "No code"}
                       </Badge>
-                    </HStack>
-                    <Text fontSize="lg" fontWeight="700" color="ink.900" noOfLines={1}>
+                    </div>
+                    <p className="truncate font-display text-xl font-bold tracking-[-0.03em] text-foreground">
                       {offer.merchantName}
-                    </Text>
-                    <Text mt={1} color="ink.800" fontWeight="600" noOfLines={2}>
+                    </p>
+                    <p className="mt-1 text-base font-semibold leading-7 text-foreground">
                       {offer.title}
-                    </Text>
+                    </p>
                     {offer.description ? (
-                      <Text mt={1} fontSize="sm" color="ink.600" noOfLines={2}>
+                      <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
                         {offer.description}
-                      </Text>
+                      </p>
                     ) : null}
-                  </Box>
+                  </div>
 
-                  <Stack direction={{ base: "column", md: "row" }} spacing={2}>
+                  <div className="flex flex-wrap gap-2 lg:max-w-[360px] lg:justify-end">
                     <Button
-                      size="sm"
-                      variant={isSelected ? "accent" : "outline"}
+                      variant={isSelected ? "default" : "outline"}
                       onClick={() => onToggleSelect(offer.id)}
                     >
-                      {isSelected ? "Selected" : "Select"}
+                      {isSelected ? (
+                        <>
+                          <Check className="mr-2 h-4 w-4" />
+                          Selected
+                        </>
+                      ) : (
+                        "Select"
+                      )}
                     </Button>
-                    <Button size="sm" variant="outline" onClick={() => copyValue(buildOfferCopyText(offer), "Offer block")}>
+                    <Button variant="outline" onClick={() => copyValue(buildOfferCopyText(offer), "Offer block")}>
                       Copy block
                     </Button>
-                    <Button size="sm" variant="outline" onClick={() => copyValue(payloadJson, "Offer JSON")}>
+                    <Button variant="outline" onClick={() => copyValue(payloadJson, "Offer JSON")}>
                       Copy JSON
                     </Button>
-                  </Stack>
-                </Flex>
+                  </div>
+                </div>
 
-                <SimpleGrid columns={{ base: 1, md: 4 }} spacing={3}>
-                  <Box p={3} borderRadius="16px" bg="rgba(15,17,23,0.04)">
-                    <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="brand.500">
-                      Coupon
-                    </Text>
-                    <HStack mt={2} justify="space-between" align="start">
-                      <Text fontSize="sm" color="ink.800" fontWeight="600" noOfLines={2}>
-                        {offer.couponCode || "No code needed"}
-                      </Text>
-                      <Button size="xs" variant="ghost" onClick={() => copyValue(offer.couponCode || "No code needed", "Coupon code")}>
+                <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                  <OfferStat
+                    label="Coupon"
+                    value={offer.couponCode || "No code needed"}
+                    action={
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => copyValue(offer.couponCode || "No code needed", "Coupon code")}
+                      >
+                        <Copy className="mr-2 h-4 w-4" />
                         Copy
                       </Button>
-                    </HStack>
-                  </Box>
-                  <Box p={3} borderRadius="16px" bg="rgba(15,17,23,0.04)">
-                    <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="brand.500">
-                      Starts
-                    </Text>
-                    <Text mt={2} fontSize="sm" color="ink.800">
-                      {formatDate(offer.startsAt)}
-                    </Text>
-                  </Box>
-                  <Box p={3} borderRadius="16px" bg="rgba(15,17,23,0.04)">
-                    <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="brand.500">
-                      Ends
-                    </Text>
-                    <Text mt={2} fontSize="sm" color="ink.800">
-                      {formatDate(offer.endsAt)}
-                    </Text>
-                  </Box>
-                  <Box p={3} borderRadius="16px" bg="rgba(15,17,23,0.04)">
-                    <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="brand.500">
-                      Links
-                    </Text>
-                    <Stack mt={2} direction="row" spacing={2} flexWrap="wrap">
+                    }
+                  />
+                  <OfferStat label="Starts" value={formatDate(offer.startsAt)} />
+                  <OfferStat label="Ends" value={formatDate(offer.endsAt)} />
+                  <div className="rounded-[22px] border border-border bg-muted/60 p-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">Links</p>
+                    <div className="mt-2 flex flex-wrap gap-2">
                       {offer.destinationUrl ? (
-                        <Button size="xs" variant="ghost" onClick={() => copyValue(offer.destinationUrl, "Destination URL")}>
+                        <Button size="sm" variant="ghost" onClick={() => copyValue(offer.destinationUrl, "Destination URL")}>
                           Copy destination
                         </Button>
                       ) : null}
                       {offer.sourceUrl ? (
-                        <Button size="xs" variant="ghost" onClick={() => copyValue(offer.sourceUrl, "Source URL")}>
+                        <Button size="sm" variant="ghost" onClick={() => copyValue(offer.sourceUrl, "Source URL")}>
                           Copy source
                         </Button>
                       ) : null}
-                    </Stack>
-                  </Box>
-                </SimpleGrid>
+                    </div>
+                  </div>
+                </div>
 
-                <HStack spacing={2} flexWrap="wrap">
-                  <Button size="xs" variant={expandedMode === "block" ? "accent" : "outline"} onClick={() => toggleExpandedMode(offer.id, "block")}>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    size="sm"
+                    variant={expandedMode === "block" ? "default" : "outline"}
+                    onClick={() => toggleExpandedMode(offer.id, "block")}
+                  >
                     {expandedMode === "block" ? "Hide block" : "Show block"}
                   </Button>
-                  <Button size="xs" variant={expandedMode === "json" ? "accent" : "outline"} onClick={() => toggleExpandedMode(offer.id, "json")}>
+                  <Button
+                    size="sm"
+                    variant={expandedMode === "json" ? "default" : "outline"}
+                    onClick={() => toggleExpandedMode(offer.id, "json")}
+                  >
                     {expandedMode === "json" ? "Hide JSON" : "Show JSON"}
                   </Button>
                   {offer.destinationUrl ? (
-                    <Button as={Link} href={offer.destinationUrl} isExternal size="xs" variant="outline">
-                      Open destination
-                    </Button>
+                    <a href={offer.destinationUrl} target="_blank" rel="noreferrer">
+                      <Button size="sm" variant="outline">
+                        <ExternalLink className="mr-2 h-4 w-4" />
+                        Open destination
+                      </Button>
+                    </a>
                   ) : null}
                   {offer.sourceUrl ? (
-                    <Button as={Link} href={offer.sourceUrl} isExternal size="xs" variant="outline">
-                      Open source
-                    </Button>
+                    <a href={offer.sourceUrl} target="_blank" rel="noreferrer">
+                      <Button size="sm" variant="outline">
+                        <ExternalLink className="mr-2 h-4 w-4" />
+                        Open source
+                      </Button>
+                    </a>
                   ) : null}
-                </HStack>
+                </div>
 
                 {expandedMode === "block" ? (
-                  <Code
-                    display="block"
-                    whiteSpace="pre-wrap"
-                    borderRadius="18px"
-                    p={4}
-                    bg="rgba(24, 34, 47, 0.04)"
-                    color="ink.800"
-                  >
+                  <pre className="overflow-x-auto rounded-[22px] border border-border bg-muted/70 p-4 text-sm leading-6 text-foreground">
                     {buildOfferCopyText(offer)}
-                  </Code>
+                  </pre>
                 ) : null}
 
                 {expandedMode === "json" ? (
-                  <Code
-                    display="block"
-                    whiteSpace="pre-wrap"
-                    borderRadius="18px"
-                    p={4}
-                    bg="rgba(24, 34, 47, 0.04)"
-                    color="ink.800"
-                  >
+                  <pre className="overflow-x-auto rounded-[22px] border border-border bg-muted/70 p-4 text-sm leading-6 text-foreground">
                     {payloadJson}
-                  </Code>
+                  </pre>
                 ) : null}
-              </VStack>
-            </Box>
+              </CardContent>
+            </Card>
           );
         })}
-      </VStack>
-    </VStack>
+      </div>
+    </div>
   );
 }

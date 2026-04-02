@@ -1,79 +1,40 @@
-import {
-  Badge,
-  Box,
-  Button,
-  Code,
-  Divider,
-  HStack,
-  IconButton,
-  Link,
-  Stack,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
-import { FaArrowLeft } from "react-icons/fa";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { REVIEW_ITEM_STATE } from "../lib/client/reviewState";
+import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 
 function DiffRow({ label, beforeValue, afterValue }) {
   return (
-    <Box>
-      <Text fontSize="xs" textTransform="uppercase" color="brand.500" mb={2} letterSpacing="0.16em">
-        {label}
-      </Text>
-      <Stack direction={{ base: "column", md: "row" }} spacing={3}>
-        <Box
-          flex="1"
-          border="1px solid rgba(15, 17, 23, 0.10)"
-          borderRadius="18px"
-          p={4}
-          bg="rgba(24, 34, 47, 0.03)"
-        >
-          <Text fontSize="xs" color="ink.500" mb={1}>
-            Before
-          </Text>
-          <Text fontSize="sm" color="ink.800">
-            {beforeValue || "—"}
-          </Text>
-        </Box>
-        <Box
-          flex="1"
-          border="1px solid rgba(139, 77, 255, 0.16)"
-          borderRadius="18px"
-          p={4}
-          bg="rgba(139, 77, 255, 0.08)"
-        >
-          <Text fontSize="xs" color="ink.500" mb={1}>
-            After
-          </Text>
-          <Text fontSize="sm" color="ink.900">
-            {afterValue || "—"}
-          </Text>
-        </Box>
-      </Stack>
-    </Box>
+    <div className="space-y-3">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">{label}</p>
+      <div className="grid gap-3 md:grid-cols-2">
+        <div className="rounded-[20px] border border-border bg-muted/60 p-4">
+          <p className="text-xs text-muted-foreground">Before</p>
+          <p className="mt-1 text-sm leading-6 text-foreground">{beforeValue || "—"}</p>
+        </div>
+        <div className="rounded-[20px] border border-primary/20 bg-primary/[0.08] p-4">
+          <p className="text-xs text-muted-foreground">After</p>
+          <p className="mt-1 text-sm leading-6 text-foreground">{afterValue || "—"}</p>
+        </div>
+      </div>
+    </div>
   );
 }
 
 export default function ReviewDetailPane({ item, onAction, acting, showBack, onBack }) {
   if (!item) {
     return (
-      <Box
-        border="1px solid rgba(15, 17, 23, 0.08)"
-        borderRadius="30px"
-        p={{ base: 5, lg: 6 }}
-        bg="rgba(255, 255, 255, 0.92)"
-        minH="520px"
-      >
-        <Text fontSize="xs" fontWeight="700" letterSpacing="0.18em" textTransform="uppercase" color="brand.500">
-          Update details
-        </Text>
-        <Text mt={3} fontSize="2xl" fontWeight="700" color="ink.900">
-          Select an update
-        </Text>
-        <Text color="ink.600" mt={2} maxW="46ch">
-          Open an update from the list to compare the old values with the latest values from the source.
-        </Text>
-      </Box>
+      <Card className="min-h-[520px] border-white/60 bg-white/95">
+        <CardHeader>
+          <Badge className="w-fit">Update details</Badge>
+          <CardTitle>Select an update</CardTitle>
+          <CardDescription className="max-w-2xl text-base leading-7">
+            Open an update from the list to compare the old values with the latest values from the source.
+          </CardDescription>
+        </CardHeader>
+      </Card>
     );
   }
 
@@ -82,63 +43,45 @@ export default function ReviewDetailPane({ item, onAction, acting, showBack, onB
   const afterSnapshot = item.afterSnapshot || {};
 
   return (
-    <Box
-      border="1px solid rgba(15, 17, 23, 0.08)"
-      borderRadius="30px"
-      p={{ base: 5, lg: 6 }}
-      bg="rgba(255,255,255,0.96)"
-      minH="520px"
-      boxShadow="0 24px 64px rgba(15, 17, 23, 0.06)"
-    >
-      <VStack align="stretch" spacing={5}>
-        <VStack align="start" spacing={2}>
+    <Card className="min-h-[520px] border-white/60 bg-white/95 shadow-sm">
+      <CardContent className="space-y-5 p-5 lg:p-6">
+        <div className="space-y-3">
           {showBack ? (
-            <IconButton
-              aria-label="Back to queue"
-              icon={<FaArrowLeft />}
-              variant="ghost"
-              size="md"
-              borderRadius="full"
-              onClick={onBack}
-            />
+            <Button type="button" variant="ghost" size="sm" onClick={onBack} className="w-fit">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to queue
+            </Button>
           ) : null}
-          <HStack spacing={2}>
-            <Badge px={2.5} py={1} borderRadius="full" colorScheme={state.tone}>
-              {state.eyebrow}
-            </Badge>
-            <Badge px={2.5} py={1} borderRadius="full" bg="rgba(24, 34, 47, 0.06)" color="ink.700">
-              {item.connector?.toUpperCase()}
-            </Badge>
-          </HStack>
-          <Text fontSize={{ base: "2xl", lg: "3xl" }} fontWeight="700" letterSpacing="-0.03em" color="ink.900">
-            {item.merchantName}
-          </Text>
-          <Text color="ink.700" fontSize="md">
-            {item.title}
-          </Text>
-        </VStack>
+          <div className="flex flex-wrap gap-2">
+            <Badge>{state.eyebrow}</Badge>
+            <Badge variant="outline">{item.connector?.toUpperCase()}</Badge>
+          </div>
+          <div>
+            <h2 className="font-display text-3xl font-bold tracking-[-0.03em] text-foreground">
+              {item.merchantName}
+            </h2>
+            <p className="mt-1 text-base text-foreground/85">{item.title}</p>
+          </div>
+        </div>
 
-        <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.03)">
-          <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500" mb={2}>
+        <div className="rounded-[24px] bg-muted/60 p-4">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
             Update summary
-          </Text>
-          <Text fontSize="lg" fontWeight="600" mb={2} color="ink.900">
-            Why this update was flagged
-          </Text>
-          <Text color="ink.700">{item.reason}</Text>
-          <HStack spacing={2} mt={2}>
-            <Badge colorScheme={state.tone}>Confidence: {item.confidence}</Badge>
-            <Badge bg="rgba(24, 34, 47, 0.06)" color="ink.700">
+          </p>
+          <p className="mt-2 text-lg font-semibold text-foreground">Why this update was flagged</p>
+          <p className="mt-2 text-sm leading-6 text-foreground/85">{item.reason}</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <Badge>Confidence: {item.confidence}</Badge>
+            <Badge variant="outline">
               Created {new Date(item.createdAt).toLocaleString()}
             </Badge>
-          </HStack>
-        </Box>
+          </div>
+        </div>
 
-        <Divider borderColor="rgba(15, 17, 23, 0.08)" />
-        <VStack align="stretch" spacing={3}>
-          <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500">
+        <div className="space-y-4 border-t border-border pt-5">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
             Changed fields
-          </Text>
+          </p>
           <DiffRow
             label="Coupon code"
             beforeValue={beforeSnapshot.couponCode}
@@ -154,56 +97,48 @@ export default function ReviewDetailPane({ item, onAction, acting, showBack, onB
             beforeValue={beforeSnapshot.destinationUrl}
             afterValue={afterSnapshot.destinationUrl}
           />
-        </VStack>
+        </div>
 
-        <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.03)">
-          <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500" mb={2}>
+        <div className="rounded-[24px] bg-muted/60 p-4">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
             Source evidence
-          </Text>
-          <Text fontSize="lg" fontWeight="600" mb={2} color="ink.900">
-            Latest source details
-          </Text>
-          <Text fontSize="sm" color="ink.700">
+          </p>
+          <p className="mt-2 text-lg font-semibold text-foreground">Latest source details</p>
+          <p className="mt-2 text-sm text-foreground/85">
             Latest seen: {afterSnapshot.lastSeenAt || "Unknown"}
-          </Text>
+          </p>
           {afterSnapshot.sourceUrl ? (
-            <Link href={afterSnapshot.sourceUrl} color="brand.600" isExternal fontWeight="600">
-              Open source link
-            </Link>
+            <div className="mt-3">
+              <Link href={afterSnapshot.sourceUrl} target="_blank" rel="noreferrer" className="text-sm font-semibold text-primary">
+                Open source link
+              </Link>
+            </div>
           ) : null}
           {afterSnapshot.destinationUrl ? (
-            <Code
-              display="block"
-              mt={3}
-              whiteSpace="pre-wrap"
-              borderRadius="18px"
-              p={4}
-              bg="rgba(24, 34, 47, 0.04)"
-              color="ink.800"
-            >
+            <pre className="mt-3 overflow-x-auto rounded-[20px] border border-border bg-white p-4 text-sm leading-6 text-foreground">
               {afterSnapshot.destinationUrl}
-            </Code>
+            </pre>
           ) : null}
-        </Box>
+        </div>
 
-        <HStack spacing={3} pt={2}>
+        <div className="flex flex-wrap gap-3 pt-2">
           <Button
+            type="button"
             onClick={() => onAction("approve")}
-            isLoading={acting === "approve"}
-            variant="accent"
+            disabled={acting === "approve" || acting === "dismiss"}
           >
-            Keep update
+            {acting === "approve" ? "Keeping..." : "Keep update"}
           </Button>
           <Button
+            type="button"
             variant="outline"
-            colorScheme="red"
             onClick={() => onAction("dismiss")}
-            isLoading={acting === "dismiss"}
+            disabled={acting === "approve" || acting === "dismiss"}
           >
-            Dismiss update
+            {acting === "dismiss" ? "Dismissing..." : "Dismiss update"}
           </Button>
-        </HStack>
-      </VStack>
-    </Box>
+        </div>
+      </CardContent>
+    </Card>
   );
 }

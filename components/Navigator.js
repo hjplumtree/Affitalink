@@ -1,260 +1,118 @@
-import { VStack, Box, Text, Icon, Flex, HStack, Divider } from "@chakra-ui/react";
-import RouterLink from "./RouterLink";
 import Image from "next/image";
-import logo from "../public/logo.svg";
 import {
-  FaNetworkWired,
-  FaLink,
-  FaHome,
-  FaTags,
   FaChevronLeft,
   FaChevronRight,
+  FaHome,
+  FaLink,
+  FaNetworkWired,
   FaSignInAlt,
   FaSignOutAlt,
+  FaTags,
 } from "react-icons/fa";
 import { useState } from "react";
+import logo from "../public/logo.svg";
+import RouterLink from "./RouterLink";
 import { useOptionalAuth } from "./AuthProvider";
+import { cn } from "../lib/utils";
 
-export default function Navigator({ ...styles }) {
+export default function Navigator({ className, style }) {
   const [burgerMenuOpen, setBurgerMenuOpen] = useState(false);
   const auth = useOptionalAuth();
   const user = auth?.user || null;
   const signOut = auth?.signOut || (async () => {});
+
   return (
-    <VStack
-      alignItems="stretch"
-      h="100%"
-      p={3}
-      pt={4}
-      spacing={4}
-      bg="#12131a"
-      borderRight="1px solid rgba(255, 255, 255, 0.06)"
-      backdropFilter="blur(18px)"
-      width={{ base: burgerMenuOpen ? "210px" : "55px", lg: "210px" }}
-      {...styles}
-      zIndex={100}
+    <aside
+      className={cn(
+        "fixed left-0 top-0 z-[100] h-full border-r border-white/10 bg-[#12131a] p-3 pt-4 backdrop-blur-xl transition-all",
+        burgerMenuOpen ? "w-[210px]" : "w-[55px]",
+        "lg:w-[210px]",
+        className
+      )}
+      style={style}
     >
-      <Box display="flex" mb={5} alignItems="center" width="100%" position="relative">
-        <HStack spacing={3}>
-          <Box
-            width="40px"
-            height="40px"
-            borderRadius="16px"
-            bg="rgba(255,255,255,0.06)"
-            border="1px solid rgba(255, 255, 255, 0.10)"
-            display="grid"
-            placeItems="center"
-          >
-            <Image src={logo} alt="logo" width="24px" height="24px" />
-          </Box>
-          <Box display={{ base: burgerMenuOpen ? "block" : "none", lg: "block" }}>
-            <Text fontSize="lg" fontWeight="700" letterSpacing="-0.03em" color="white">
-              AffitaLink
-            </Text>
-            <Text fontSize="xs" color="rgba(255,255,255,0.76)">
-              Affiliate offers dashboard
-            </Text>
-          </Box>
-        </HStack>
+      <div className="relative mb-5 flex w-full items-center">
+        <div className="flex items-center gap-3">
+          <div className="grid h-10 w-10 place-items-center rounded-2xl border border-white/10 bg-white/5">
+            <Image src={logo} alt="logo" width={24} height={24} />
+          </div>
+          <div className={cn("hidden lg:block", burgerMenuOpen && "block")}>
+            <p className="text-lg font-bold tracking-[-0.03em] text-white">AffitaLink</p>
+            <p className="text-xs text-white/75">Affiliate offers dashboard</p>
+          </div>
+        </div>
 
-        <Icon
-          w="24px"
-          h="24px"
-          p="6px"
-          as={burgerMenuOpen ? FaChevronLeft : FaChevronRight}
-          position="absolute"
-          right="-17px"
-          bg="rgba(21, 25, 38, 0.98)"
-          color="white"
-          border="1px solid rgba(255, 255, 255, 0.12)"
-          borderRadius="50%"
-          display={{ lg: "none" }}
-          cursor="pointer"
-          onClick={() => {
-            setBurgerMenuOpen((menu) => !menu);
-          }}
-          _hover={{ bg: "white" }}
-        />
-      </Box>
-
-      <Box w="100%">
-        <Text
-          display={{ base: burgerMenuOpen ? "block" : "none", lg: "block" }}
-          fontSize="xs"
-          color="rgba(255,255,255,0.78)"
-          lineHeight="1.5"
-          mb={4}
-          px={3}
+        <button
+          type="button"
+          className="absolute -right-[17px] grid h-6 w-6 place-items-center rounded-full border border-white/10 bg-[rgba(21,25,38,0.98)] text-white lg:hidden"
+          onClick={() => setBurgerMenuOpen((menu) => !menu)}
         >
+          {burgerMenuOpen ? <FaChevronLeft className="h-3.5 w-3.5" /> : <FaChevronRight className="h-3.5 w-3.5" />}
+        </button>
+      </div>
+
+      <div className="w-full">
+        <p className={cn("mb-4 px-3 text-xs leading-5 text-white/80", !burgerMenuOpen && "hidden", "lg:block")}>
           Collect offers from affiliate networks and keep them in one format.
-        </Text>
-        <Box
-          display={{ base: burgerMenuOpen ? "block" : "none", lg: "block" }}
-          mx={3}
-          mb={4}
-          p={3}
-          borderRadius="18px"
-          bg="rgba(255,255,255,0.05)"
-          border="1px solid rgba(255,255,255,0.10)"
-        >
-          <Text fontSize="10px" color="rgba(255,255,255,0.62)" letterSpacing="0.16em" textTransform="uppercase">
-            Workspace
-          </Text>
-          <Text mt={1} fontSize="sm" color="white" fontWeight="700">
+        </p>
+        <div className={cn("mx-3 mb-4 rounded-[18px] border border-white/10 bg-white/5 p-3", !burgerMenuOpen && "hidden", "lg:block")}>
+          <p className="text-[10px] uppercase tracking-[0.16em] text-white/60">Workspace</p>
+          <p className="mt-1 text-sm font-bold text-white">
             Sync sources, check updates, publish cleaner offer data.
-          </Text>
-        </Box>
-        <Divider borderColor="whiteAlpha.200" mb={4} />
-        <Box as={Flex} align="center">
-          <RouterLink
-            to="/"
-            width="100%"
-            justifyContent={{
-              base: burgerMenuOpen ? "stretch" : "center",
-              lg: "stretch",
-            }}
-            color="whiteAlpha.900"
-            _hover={{ bg: "rgba(255,255,255,0.08)" }}
-          >
-            <Icon width="18px" height="18px" as={FaHome} />
-            <Text
-              display={{ base: burgerMenuOpen ? "inline-block" : "none", lg: "inline-block" }}
-            >
-              Overview
-            </Text>
-          </RouterLink>
-        </Box>
+          </p>
+        </div>
+        <div className="mb-4 h-px bg-white/10" />
 
-        <Text
-          display={{ base: burgerMenuOpen ? "inline-block" : "none", lg: "inline-block" }}
-          mt={4}
-          mb={2}
-          fontSize="xs"
-          color="rgba(255,255,255,0.54)"
-          letterSpacing="0.18em"
-          fontWeight="700"
+        <RouterLink
+          to="/"
+          className={cn(!burgerMenuOpen && "justify-center lg:justify-start", "text-white")}
         >
+          <FaHome className="h-[18px] w-[18px]" />
+          <span className={cn(!burgerMenuOpen && "hidden", "lg:inline")}>Overview</span>
+        </RouterLink>
+
+        <p className={cn("mb-2 mt-4 text-xs font-bold tracking-[0.18em] text-white/55", !burgerMenuOpen && "hidden", "lg:block")}>
           SETUP
-        </Text>
-        <RouterLink
-          to="/networks"
-          mt={{ base: burgerMenuOpen ? 3 : 0, lg: 0 }}
-          color="whiteAlpha.900"
-          _hover={{ bg: "rgba(255,255,255,0.08)" }}
-        >
-          <Icon
-            width="18px"
-            height="18px"
-            as={FaNetworkWired}
-            justifyContent={{
-              base: burgerMenuOpen ? "stretch" : "center",
-              lg: "stretch",
-            }}
-          />
-          <Text
-            display={{ base: burgerMenuOpen ? "inline-block" : "none", lg: "inline-block" }}
-          >
-            Sources
-          </Text>
+        </p>
+        <RouterLink to="/networks" className={cn(!burgerMenuOpen && "justify-center lg:justify-start", "text-white")}>
+          <FaNetworkWired className="h-[18px] w-[18px]" />
+          <span className={cn(!burgerMenuOpen && "hidden", "lg:inline")}>Sources</span>
         </RouterLink>
 
-        <Text
-          display={{ base: burgerMenuOpen ? "inline-block" : "none", lg: "inline-block" }}
-          mt={4}
-          mb={2}
-          fontSize="xs"
-          color="rgba(255,255,255,0.54)"
-          letterSpacing="0.18em"
-          fontWeight="700"
-        >
+        <p className={cn("mb-2 mt-4 text-xs font-bold tracking-[0.18em] text-white/55", !burgerMenuOpen && "hidden", "lg:block")}>
           OFFERS
-        </Text>
-        <RouterLink
-          to="/offers"
-          mt={{ base: burgerMenuOpen ? 3 : 0, lg: 0 }}
-          color="whiteAlpha.900"
-          _hover={{ bg: "rgba(255,255,255,0.08)" }}
-        >
-          <Icon
-            width="18px"
-            height="18px"
-            as={FaTags}
-            justifyContent={{
-              base: burgerMenuOpen ? "stretch" : "center",
-              lg: "stretch",
-            }}
-          />
-          <Text
-            display={{ base: burgerMenuOpen ? "inline-block" : "none", lg: "inline-block" }}
-          >
-            Offers
-          </Text>
+        </p>
+        <RouterLink to="/offers" className={cn(!burgerMenuOpen && "justify-center lg:justify-start", "text-white")}>
+          <FaTags className="h-[18px] w-[18px]" />
+          <span className={cn(!burgerMenuOpen && "hidden", "lg:inline")}>Offers</span>
         </RouterLink>
-        <RouterLink
-          to="/links"
-          mt={3}
-          color="whiteAlpha.900"
-          _hover={{ bg: "rgba(255,255,255,0.08)" }}
-        >
-          <Icon
-            width="18px"
-            height="18px"
-            as={FaLink}
-            justifyContent={{
-              base: burgerMenuOpen ? "stretch" : "center",
-              lg: "stretch",
-            }}
-          />
-          <Text
-            display={{ base: burgerMenuOpen ? "inline-block" : "none", lg: "inline-block" }}
-            >
-            Updates
-          </Text>
+        <RouterLink to="/links" className={cn("mt-3 text-white", !burgerMenuOpen && "justify-center lg:justify-start")}>
+          <FaLink className="h-[18px] w-[18px]" />
+          <span className={cn(!burgerMenuOpen && "hidden", "lg:inline")}>Updates</span>
         </RouterLink>
 
-        <Text
-          display={{ base: burgerMenuOpen ? "inline-block" : "none", lg: "inline-block" }}
-          mt={4}
-          mb={2}
-          fontSize="xs"
-          color="rgba(255,255,255,0.54)"
-          letterSpacing="0.18em"
-          fontWeight="700"
-        >
+        <p className={cn("mb-2 mt-4 text-xs font-bold tracking-[0.18em] text-white/55", !burgerMenuOpen && "hidden", "lg:block")}>
           ACCOUNT
-        </Text>
+        </p>
         {user ? (
-          <Box
-            as="button"
-            width="100%"
-            textAlign="left"
+          <button
+            type="button"
             onClick={signOut}
-            p={3}
-            borderRadius={14}
-            color="whiteAlpha.900"
-            _hover={{ bg: "rgba(255,255,255,0.08)" }}
+            className={cn(
+              "flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left text-sm font-semibold text-white transition-colors hover:bg-white/10",
+              !burgerMenuOpen && "justify-center lg:justify-start"
+            )}
           >
-            <Flex align="center" gap={3}>
-              <Icon width="18px" height="18px" as={FaSignOutAlt} />
-              <Text display={{ base: burgerMenuOpen ? "inline-block" : "none", lg: "inline-block" }}>
-                Sign out
-              </Text>
-            </Flex>
-          </Box>
+            <FaSignOutAlt className="h-[18px] w-[18px]" />
+            <span className={cn(!burgerMenuOpen && "hidden", "lg:inline")}>Sign out</span>
+          </button>
         ) : (
-          <RouterLink
-            to="/login"
-            mt={{ base: burgerMenuOpen ? 3 : 0, lg: 0 }}
-            color="whiteAlpha.900"
-            _hover={{ bg: "rgba(255,255,255,0.08)" }}
-          >
-            <Icon width="18px" height="18px" as={FaSignInAlt} />
-            <Text display={{ base: burgerMenuOpen ? "inline-block" : "none", lg: "inline-block" }}>
-              Sign in
-            </Text>
+          <RouterLink to="/login" className={cn(!burgerMenuOpen && "justify-center lg:justify-start", "text-white")}>
+            <FaSignInAlt className="h-[18px] w-[18px]" />
+            <span className={cn(!burgerMenuOpen && "hidden", "lg:inline")}>Sign in</span>
           </RouterLink>
         )}
-      </Box>
-    </VStack>
+      </div>
+    </aside>
   );
 }

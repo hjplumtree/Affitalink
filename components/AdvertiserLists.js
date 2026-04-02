@@ -1,15 +1,5 @@
-import {
-  VStack,
-  Text,
-  Alert,
-  AlertIcon,
-  Flex,
-  Box,
-  Switch,
-  Badge,
-} from "@chakra-ui/react";
-import Header from "./Header";
-import SectionBox from "./SectionBox";
+import { Badge } from "./ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 
 export default function AdvertiserLists({ advertisers, onToggleAdvertiser }) {
   const advertisersList = [...(advertisers?.advertisers_list || [])].sort((a, b) =>
@@ -18,79 +8,75 @@ export default function AdvertiserLists({ advertisers, onToggleAdvertiser }) {
   const selectedCount = advertisersList.filter((advertiser) => advertiser.selected).length;
 
   return (
-    <SectionBox mt={5}>
-      <Header
-        title="Merchant watchlist"
-        subtitle="Choose which merchants should be monitored during manual sync"
-        eyebrow="Selection"
-      />
-      <Text mt={4} fontSize="sm" color="ink.600">
-        Select only the merchants you want to review.
-      </Text>
-      <Flex
-        mt={4}
-        px={4}
-        py={3}
-        borderRadius="20px"
-        bg="rgba(15,17,23,0.04)"
-        justify="space-between"
-        align="center"
-      >
-        <Box>
-          <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="brand.500">
-            Watch coverage
-          </Text>
-          <Text fontSize="sm" color="ink.700">
-            {selectedCount} of {advertisersList.length} merchants selected
-          </Text>
-        </Box>
-        <Badge bg="rgba(139,77,255,0.10)" color="brand.700" px={3} py={1.5} borderRadius="full">
-          Active feed
-        </Badge>
-      </Flex>
+    <Card className="border-white/60 bg-white/95">
+      <CardHeader className="space-y-4">
+        <Badge className="w-fit">Selection</Badge>
+        <div>
+          <CardTitle>Merchant watchlist</CardTitle>
+          <CardDescription className="mt-2 text-base leading-7">
+            Choose which merchants should be monitored during manual sync.
+          </CardDescription>
+        </div>
+        <div className="flex flex-col gap-3 rounded-[24px] bg-muted p-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">Watch coverage</p>
+            <p className="mt-1 text-sm text-foreground/85">
+              {selectedCount} of {advertisersList.length} merchants selected
+            </p>
+          </div>
+          <Badge className="w-fit">Active feed</Badge>
+        </div>
+      </CardHeader>
 
-      {advertisers ? (
-        advertisersList.length !== 0 ? (
-          <VStack align="stretch" justifyContent="center" mt={5} spacing={0}>
-            {advertisersList.map((advertiser) => (
-              <Flex
-                key={advertiser.id}
-                py={4}
-                px={2}
-                borderTop="1px solid rgba(15, 17, 23, 0.08)"
-                align="center"
-                gap={4}
-              >
-                <Box>
-                  <Text fontSize="md" fontWeight="700" color="ink.900">
-                    {advertiser.name}
-                  </Text>
-                  <Badge mt={1} bg="rgba(15, 17, 23, 0.06)" color="ink.700">
-                    #{advertiser.id}
-                  </Badge>
-                </Box>
-
-                <Switch
-                  colorScheme="green"
-                  ml="auto"
-                  isChecked={advertiser.selected}
-                  onChange={() => onToggleAdvertiser(advertiser.id)}
-                />
-              </Flex>
-            ))}
-          </VStack>
+      <CardContent className="pt-0">
+        {advertisers ? (
+          advertisersList.length !== 0 ? (
+            <div className="divide-y divide-border">
+              {advertisersList.map((advertiser) => (
+                <label
+                  key={advertiser.id}
+                  className="flex cursor-pointer items-center gap-4 px-2 py-4"
+                >
+                  <div>
+                    <p className="text-base font-semibold text-foreground">{advertiser.name}</p>
+                    <Badge variant="outline" className="mt-1 w-fit">
+                      #{advertiser.id}
+                    </Badge>
+                  </div>
+                  <span className="ml-auto flex items-center gap-3">
+                    <span className="text-sm text-muted-foreground">
+                      {advertiser.selected ? "Watching" : "Off"}
+                    </span>
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={advertiser.selected}
+                      onClick={() => onToggleAdvertiser(advertiser.id)}
+                      className={`relative h-7 w-12 rounded-full transition-colors ${
+                        advertiser.selected ? "bg-primary" : "bg-border"
+                      }`}
+                    >
+                      <span
+                        className={`absolute top-1 h-5 w-5 rounded-full bg-white transition-transform ${
+                          advertiser.selected ? "translate-x-6" : "translate-x-1"
+                        }`}
+                      />
+                    </button>
+                  </span>
+                </label>
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-[20px] border border-border bg-muted/60 px-4 py-3 text-sm text-foreground/85">
+              Save valid source credentials to load merchants here.
+            </div>
+          )
         ) : (
-          <Alert status="info" mt={5} borderRadius={18}>
-            <AlertIcon />
-            Save valid source credentials to load merchants here.
-          </Alert>
-        )
-      ) : (
-        <Alert status="error" mt={5} borderRadius={18}>
-          <AlertIcon />
-          Check the source details and try again.
-        </Alert>
-      )}
-    </SectionBox>
+          <div className="rounded-[20px] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            Check the source details and try again.
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }

@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { Center, Spinner, Text, VStack } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useAuth } from "./AuthProvider";
 
@@ -14,12 +13,12 @@ export default function RequireAuth({ children }) {
 
   if (loading || !user) {
     return (
-      <Center minH="60vh">
-        <VStack spacing={3}>
-          <Spinner />
-          <Text color="ink.600">Checking your session…</Text>
-        </VStack>
-      </Center>
+      <div className="grid min-h-[60vh] place-items-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-primary" />
+          <p className="text-sm text-muted-foreground">Checking your session...</p>
+        </div>
+      </div>
     );
   }
 

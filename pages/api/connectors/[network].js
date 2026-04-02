@@ -9,7 +9,9 @@ const {
 const { resolveRequestContext } = require("../../../lib/server/requestAuth.cjs");
 
 function sendError(res, error) {
-  const statusCode = error.type === "validation" ? 400 : error.type === "auth" ? 401 : 500;
+  const statusCode =
+    error.statusCode ||
+    (error.type === "validation" ? 400 : error.type === "auth" ? 401 : 500);
   return res.status(statusCode).json({
     ok: false,
     error: {
@@ -58,11 +60,12 @@ export default async function handler(req, res) {
 
     return res.status(405).json({ ok: false, error: { message: "Method not allowed" } });
   } catch (error) {
-    return sendError(
-      res,
+    const typed =
       error instanceof ConnectorError
         ? error
-        : new ConnectorError("unknown", error.message || "Unexpected error")
-    );
+        : Object.assign(new ConnectorError("unknown", error.message || "Unexpected error"), {
+            statusCode: error.statusCode,
+          });
+    return sendError(res, typed);
   }
 }

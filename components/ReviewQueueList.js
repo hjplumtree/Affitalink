@@ -1,134 +1,74 @@
-import { Badge, Box, Flex, HStack, Text, VStack } from "@chakra-ui/react";
 import { REVIEW_ITEM_STATE } from "../lib/client/reviewState";
+import { Badge } from "./ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 
 export default function ReviewQueueList({ items, selectedId, onSelect }) {
   if (items.length === 0) {
     return (
-      <Box
-        border="1px solid rgba(15, 17, 23, 0.08)"
-        borderRadius="30px"
-        p={{ base: 5, lg: 6 }}
-        bg="rgba(255, 255, 255, 0.92)"
-      >
-        <Text
-          fontSize="xs"
-          fontWeight="700"
-          letterSpacing="0.18em"
-          textTransform="uppercase"
-          color="brand.500"
-        >
-          No new updates
-        </Text>
-        <Text mt={3} fontSize="2xl" fontWeight="700" letterSpacing="-0.03em" color="ink.900">
-          No offer changes to review
-        </Text>
-        <Text color="ink.600" mt={2} maxW="42ch">
-          Nothing new came in from the selected source. Run another update check when you want the latest changes.
-        </Text>
-      </Box>
+      <Card className="border-white/60 bg-white/95">
+        <CardHeader>
+          <Badge className="w-fit">No new updates</Badge>
+          <CardTitle>No offer changes to review</CardTitle>
+          <CardDescription className="max-w-xl text-base leading-7">
+            Nothing new came in from the selected source. Run another update check when you want the latest changes.
+          </CardDescription>
+        </CardHeader>
+      </Card>
     );
   }
 
   return (
-    <Box
-      border="1px solid rgba(15, 17, 23, 0.08)"
-      borderRadius="30px"
-      bg="rgba(255, 255, 255, 0.92)"
-      overflow="hidden"
-      boxShadow="0 24px 64px rgba(15, 17, 23, 0.06)"
-    >
-      <Flex
-        align={{ base: "start", md: "center" }}
-        justify="space-between"
-        gap={3}
-        px={{ base: 4, lg: 5 }}
-        py={4}
-        borderBottom="1px solid rgba(15, 17, 23, 0.08)"
-        direction={{ base: "column", md: "row" }}
-        bg="rgba(15,17,23,0.02)"
-      >
-        <Box>
-          <Text fontSize="xs" fontWeight="700" letterSpacing="0.18em" textTransform="uppercase" color="brand.500">
-            Offer updates
-          </Text>
-          <Text mt={1} fontSize="lg" fontWeight="700" color="ink.900">
-            Changes to review
-          </Text>
-          <Text mt={1} fontSize="sm" color="ink.600">
-            Pick an update, compare the fields that changed, then keep or dismiss it.
-          </Text>
-        </Box>
-        <Badge
-          alignSelf={{ base: "start", md: "center" }}
-          px={3}
-          py={1.5}
-          borderRadius="full"
-          bg="rgba(15, 17, 23, 0.06)"
-          color="ink.700"
-        >
-          {items.length} pending
-        </Badge>
-      </Flex>
-      <VStack align="stretch" spacing={0}>
-      {items.map((item) => {
-        const state = REVIEW_ITEM_STATE[item.changeType] || REVIEW_ITEM_STATE.changed;
-        const isSelected = item.id === selectedId;
-        return (
-          <Box
-            key={item.id}
-            role="button"
-            tabIndex={0}
-            onClick={() => onSelect(item.id)}
-            onKeyDown={(event) => {
-              if (event.key === "Enter" || event.key === " ") {
-                event.preventDefault();
-                onSelect(item.id);
-              }
-            }}
-            borderTop="1px solid rgba(15, 17, 23, 0.06)"
-            bg={isSelected ? "rgba(139, 77, 255, 0.08)" : "transparent"}
-            px={{ base: 4, lg: 5 }}
-            py={4}
-            cursor="pointer"
-            transition="background 160ms ease"
-            _hover={{ bg: isSelected ? "rgba(139, 77, 255, 0.12)" : "rgba(15,17,23,0.03)" }}
-          >
-            <HStack justify="space-between" align="start">
-              <VStack align="start" spacing={1} flex="1">
-                <HStack spacing={2}>
-                  <Badge
-                    px={2.5}
-                    py={1}
-                    borderRadius="full"
-                    colorScheme={state.tone}
-                  >
-                    {state.eyebrow}
-                  </Badge>
-                  <Text fontSize="xs" color="ink.500" letterSpacing="0.12em" textTransform="uppercase">
-                    {item.connector?.toUpperCase()}
-                  </Text>
-                </HStack>
-                <Text fontWeight="700" fontSize="md" color="ink.900" noOfLines={1}>
-                  {item.merchantName}
-                </Text>
-                <Text fontSize="sm" color="ink.700" noOfLines={1}>
-                  {item.title}
-                </Text>
-                <Text fontSize="xs" color="ink.500" noOfLines={1}>
-                  {item.reason}
-                </Text>
-              </VStack>
-              <Text fontSize="xs" color="ink.500" whiteSpace="nowrap" pl={3}>
-                {new Date(item.createdAt).toLocaleDateString(undefined, {
-                  month: "short",
-                  day: "numeric",
-                })}
-              </Text>
-            </HStack>
-          </Box>
-        );
-      })}
-      </VStack>
-    </Box>
+    <Card className="overflow-hidden border-white/60 bg-white/95 shadow-sm">
+      <CardHeader className="border-b border-border bg-muted/40">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div>
+            <Badge className="w-fit">Offer updates</Badge>
+            <CardTitle className="mt-3 text-2xl">Changes to review</CardTitle>
+            <CardDescription className="mt-2 text-base leading-7">
+              Pick an update, compare the fields that changed, then keep or dismiss it.
+            </CardDescription>
+          </div>
+          <Badge variant="outline" className="w-fit md:self-start">
+            {items.length} pending
+          </Badge>
+        </div>
+      </CardHeader>
+      <CardContent className="p-0">
+        <div className="divide-y divide-border">
+          {items.map((item) => {
+            const state = REVIEW_ITEM_STATE[item.changeType] || REVIEW_ITEM_STATE.changed;
+            const isSelected = item.id === selectedId;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => onSelect(item.id)}
+                className={`flex w-full items-start justify-between gap-3 px-4 py-4 text-left transition-colors lg:px-5 ${
+                  isSelected ? "bg-primary/[0.08]" : "bg-transparent hover:bg-muted/70"
+                }`}
+              >
+                <div className="min-w-0 flex-1">
+                  <div className="mb-2 flex flex-wrap items-center gap-2">
+                    <Badge>{state.eyebrow}</Badge>
+                    <p className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
+                      {item.connector?.toUpperCase()}
+                    </p>
+                  </div>
+                  <p className="truncate text-base font-semibold text-foreground">{item.merchantName}</p>
+                  <p className="mt-1 truncate text-sm text-foreground/85">{item.title}</p>
+                  <p className="mt-1 truncate text-xs text-muted-foreground">{item.reason}</p>
+                </div>
+                <p className="whitespace-nowrap pl-3 text-xs text-muted-foreground">
+                  {new Date(item.createdAt).toLocaleDateString(undefined, {
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </p>
+              </button>
+            );
+          })}
+        </div>
+      </CardContent>
+    </Card>
   );
 }

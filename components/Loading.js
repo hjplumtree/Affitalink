@@ -1,12 +1,9 @@
-import { Modal, ModalOverlay, ModalContent, Spinner } from "@chakra-ui/react";
-
 export default function Loading({ loading }) {
+  if (!loading) return null;
+
   return (
-    <Modal isOpen={loading} isCentered>
-      <ModalOverlay bg="rgba(15, 17, 23, 0.16)" backdropFilter="blur(8px)" />
-      <ModalContent width="fit-content" bg="transparent" boxShadow="none">
-        <Spinner thickness="3px" speed="0.7s" color="brand.500" size="xl" />
-      </ModalContent>
-    </Modal>
+    <div className="fixed inset-0 z-[180] grid place-items-center bg-[rgba(15,17,23,0.16)] backdrop-blur-[8px]">
+      <div className="h-12 w-12 animate-spin rounded-full border-[3px] border-primary/20 border-t-primary" />
+    </div>
   );
 }

@@ -1,60 +1,30 @@
-import { Flex, Box, Text } from "@chakra-ui/react";
-import RouterLink from "./RouterLink";
 import Image from "next/image";
+import Link from "next/link";
+import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
 
 export default function NetworkSiteList({
   imageUrl,
   name,
   subtitle,
   endpoint,
-  ...styles
 }) {
   return (
-    <Flex
-      alignItems="center"
-      p={5}
-      borderTop="1px solid rgba(15, 17, 23, 0.08)"
-      gap={4}
-      transition="background 180ms ease"
-      _hover={{ bg: "rgba(15,17,23,0.025)" }}
-      {...styles}
-    >
-      <Flex
-        width="48px"
-        height="48px"
-        borderRadius="16px"
-        bg="rgba(15,17,23,0.04)"
-        align="center"
-        justify="center"
-        border="1px solid rgba(15, 17, 23, 0.08)"
-      >
+    <div className="flex items-center gap-4 border-t border-border px-5 py-5 transition-colors hover:bg-muted/40">
+      <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-border bg-muted">
         <Image src={imageUrl} alt={name} width={30} height={30} />
-      </Flex>
-      <Box marginLeft={1}>
-        <Text fontWeight="700" color="ink.900" fontSize="lg">
-          {name}
-        </Text>
-        <Text fontSize="sm" color="ink.600">
-          {subtitle}
-        </Text>
-      </Box>
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="font-display text-xl font-bold tracking-[-0.03em] text-foreground">{name}</p>
+        <p className="text-sm text-muted-foreground">{subtitle}</p>
+      </div>
       {endpoint ? (
-        <RouterLink to={`/networks/${endpoint}`} marginLeft="auto" border="1px solid rgba(15,17,23,0.08)">
-          Open settings
-        </RouterLink>
+        <Link href={`/networks/${endpoint}`}>
+          <Button variant="outline">Open settings</Button>
+        </Link>
       ) : (
-        <Box
-          p={2}
-          borderRadius={999}
-          marginLeft="auto"
-          bg="rgba(172, 232, 44, 0.16)"
-          border="1px solid rgba(172, 232, 44, 0.24)"
-        >
-          <Text fontSize="xs" color="lime.800" fontWeight="700">
-            Coming soon
-          </Text>
-        </Box>
+        <Badge>Coming soon</Badge>
       )}
-    </Flex>
+    </div>
   );
 }

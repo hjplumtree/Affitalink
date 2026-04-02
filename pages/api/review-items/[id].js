@@ -17,8 +17,11 @@ export default async function handler(req, res) {
     const typed =
       error instanceof ConnectorError
         ? error
-        : new ConnectorError("unknown", error.message || "Unexpected error");
-    const statusCode = typed.type === "validation" ? 400 : 500;
+        : Object.assign(new ConnectorError("unknown", error.message || "Unexpected error"), {
+            statusCode: error.statusCode,
+          });
+    const statusCode =
+      typed.statusCode || (typed.type === "validation" ? 400 : typed.type === "auth" ? 401 : 500);
     return res.status(statusCode).json({
       ok: false,
       error: { type: typed.type, message: typed.message },

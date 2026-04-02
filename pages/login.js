@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { Alert, AlertIcon, Button, Box, FormControl, FormLabel, HStack, Input, Stack, Text, VStack, SimpleGrid, Grid } from "@chakra-ui/react";
-import SectionBox from "../components/SectionBox";
+import { ArrowRight, KeyRound, ShieldCheck, Users } from "lucide-react";
 import { useAuth } from "../components/AuthProvider";
-import Header from "../components/Header";
+import { Badge } from "../components/ui/badge";
+import { Button } from "../components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
+import { Input } from "../components/ui/input";
+import { Separator } from "../components/ui/separator";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -44,124 +47,160 @@ export default function LoginPage() {
   };
 
   return (
-    <VStack align="stretch" spacing={5}>
-      <SectionBox bg="rgba(255,255,255,0.98)">
-        <Header
-          eyebrow="Authentication"
-          title="Sign in to your workspace"
-          subtitle="Use your account to open offer updates and manage source settings for this workspace."
-        />
-        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={3} mt={7}>
-          <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
-            <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500">
-              Direct
-            </Text>
-            <Text mt={2} fontSize="sm" color="ink.700">
-              Sign in and go straight to the work that needs review.
-            </Text>
-          </Box>
-          <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
-            <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500">
+    <div className="space-y-6">
+      <Card className="border-white/60 bg-white/95">
+        <CardHeader className="space-y-5">
+          <Badge className="w-fit">Authentication</Badge>
+          <div className="space-y-3">
+            <CardTitle className="text-4xl">Sign in to your workspace</CardTitle>
+            <CardDescription className="max-w-3xl text-base leading-7">
+              Use your account to open offer updates, check source health, and manage the
+              affiliate sources attached to your workspace.
+            </CardDescription>
+          </div>
+          <div className="grid gap-3 md:grid-cols-3">
+            <div className="rounded-[24px] bg-muted p-5">
+              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                <ArrowRight className="h-5 w-5" />
+              </div>
+              <p className="font-semibold">Go straight to the work</p>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                Sign in and jump back into updates, offers, and source settings without local-only state.
+              </p>
+            </div>
+            <div className="rounded-[24px] bg-muted p-5">
+              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                <ShieldCheck className="h-5 w-5" />
+              </div>
+              <p className="font-semibold">Access stays scoped</p>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                Workspace membership controls which data and actions your account can touch.
+              </p>
+            </div>
+            <div className="rounded-[24px] bg-muted p-5">
+              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                <Users className="h-5 w-5" />
+              </div>
+              <p className="font-semibold">Reviews stay attached</p>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                Offer review actions stay tied to the right workspace instead of a single browser.
+              </p>
+            </div>
+          </div>
+        </CardHeader>
+      </Card>
+
+      <div className="grid gap-6 lg:grid-cols-[0.92fr_1.08fr]">
+        <Card className="border-transparent bg-[#11141d] text-white shadow-lift">
+          <CardHeader>
+            <Badge variant="outline" className="w-fit border-white/15 text-white/70">
               Access
-            </Text>
-            <Text mt={2} fontSize="sm" color="ink.700">
-              Your workspace membership controls which data and actions you can access.
-            </Text>
-          </Box>
-          <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
-            <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="lime.700">
-              Workspace
-            </Text>
-            <Text mt={2} fontSize="sm" color="ink.700">
-              Review actions stay attached to the right workspace instead of local browser state.
-            </Text>
-          </Box>
-        </SimpleGrid>
-      </SectionBox>
-      <SectionBox bg="rgba(255,255,255,0.98)">
-        <Grid templateColumns={{ base: "1fr", lg: "0.9fr 1.1fr" }} gap={6}>
-          <Box
-            p={{ base: 5, lg: 6 }}
-            borderRadius="28px"
-            bg="#11141d"
-            color="white"
-          >
-            <Text fontSize="11px" letterSpacing="0.22em" textTransform="uppercase" color="whiteAlpha.600">
-              Access
-            </Text>
-            <VStack align="stretch" spacing={4} mt={4}>
-              <Box>
-                <Text fontWeight="700">Auth decides API access</Text>
-                <Text fontSize="sm" color="whiteAlpha.700" mt={1}>
-                  Queue actions and source updates are tied to the signed-in workspace.
-                </Text>
-              </Box>
-              <Box>
-                <Text fontWeight="700">Clear workspace access</Text>
-                <Text fontSize="sm" color="whiteAlpha.700" mt={1}>
-                  Sign in only gives access to the workspaces your account belongs to.
-                </Text>
-              </Box>
-              <Box>
-                <Text fontWeight="700">No extra steps</Text>
-                <Text fontSize="sm" color="whiteAlpha.700" mt={1}>
-                  Sign in and get back to work.
-                </Text>
-              </Box>
-            </VStack>
-          </Box>
-          <Stack spacing={5}>
-            <HStack spacing={2}>
-            <Button
-              variant={mode === "sign_in" ? "solid" : "outline"}
-              onClick={() => setMode("sign_in")}
-            >
-              Sign in
-            </Button>
-            <Button
-              variant={mode === "sign_up" ? "solid" : "outline"}
-              onClick={() => setMode("sign_up")}
-            >
-              Create account
-            </Button>
-            </HStack>
-            <FormControl isRequired>
-              <FormLabel>Email</FormLabel>
-              <Input value={email} onChange={(event) => setEmail(event.target.value)} />
-            </FormControl>
-            <FormControl isRequired>
-              <FormLabel>Password</FormLabel>
+            </Badge>
+            <CardTitle className="text-white">Auth decides what the dashboard unlocks</CardTitle>
+            <CardDescription className="text-white/70">
+              Source updates, queue actions, and offer selection are all tied to the signed-in workspace.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-5">
+            <div>
+              <p className="font-semibold">Clear workspace access</p>
+              <p className="mt-1 text-sm leading-6 text-white/70">
+                Sign in only reveals the workspaces your account belongs to.
+              </p>
+            </div>
+            <Separator className="bg-white/10" />
+            <div>
+              <p className="font-semibold">No extra admin steps</p>
+              <p className="mt-1 text-sm leading-6 text-white/70">
+                Once your account is in a workspace, you can get back to reviewing and moving offers.
+              </p>
+            </div>
+            <Separator className="bg-white/10" />
+            <div className="flex items-start gap-3 rounded-[24px] border border-white/10 bg-white/5 p-4">
+              <div className="mt-0.5 flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10 text-white">
+                <KeyRound className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="font-semibold">Current redirect</p>
+                <p className="mt-1 text-sm leading-6 text-white/70">
+                  After sign-in you will be sent to <span className="font-medium text-white">{next}</span>.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-white/60 bg-white/95">
+          <CardHeader className="space-y-4">
+            <div className="flex flex-wrap gap-2">
+              <Button
+                type="button"
+                variant={mode === "sign_in" ? "default" : "outline"}
+                onClick={() => setMode("sign_in")}
+              >
+                Sign in
+              </Button>
+              <Button
+                type="button"
+                variant={mode === "sign_up" ? "default" : "outline"}
+                onClick={() => setMode("sign_up")}
+              >
+                Create account
+              </Button>
+            </div>
+            <div>
+              <CardTitle>{mode === "sign_in" ? "Enter workspace" : "Create workspace access"}</CardTitle>
+              <CardDescription>
+                {mode === "sign_in"
+                  ? "Use the account already connected to your workspace."
+                  : "Create a new account. If email confirmation is enabled, you may need to verify first."}
+              </CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-5">
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-foreground" htmlFor="email">
+                Email
+              </label>
               <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-foreground" htmlFor="password">
+                Password
+              </label>
+              <Input
+                id="password"
                 type="password"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
               />
-            </FormControl>
+            </div>
             {error ? (
-              <Alert status="error" borderRadius={18}>
-                <AlertIcon />
+              <div className="rounded-[22px] border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
                 {error}
-              </Alert>
+              </div>
             ) : null}
             {message ? (
-              <Alert status="success" borderRadius={18}>
-                <AlertIcon />
+              <div className="rounded-[22px] border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
                 {message}
-              </Alert>
+              </div>
             ) : null}
-            <Button onClick={handleSubmit} isLoading={loading} variant="accent">
-              {mode === "sign_in" ? "Enter workspace" : "Create account"}
+            <Button className="w-full" onClick={handleSubmit} disabled={loading}>
+              {loading ? "Working..." : mode === "sign_in" ? "Enter workspace" : "Create account"}
             </Button>
-            <Box>
-              <Text fontSize="sm" color="ink.600">
-                {mode === "sign_in"
-                  ? "Need an account? Switch to create account."
-                  : "Already have an account? Switch back to sign in."}
-              </Text>
-            </Box>
-          </Stack>
-        </Grid>
-      </SectionBox>
-    </VStack>
+            <p className="text-sm leading-6 text-muted-foreground">
+              {mode === "sign_in"
+                ? "Need an account? Switch to create account."
+                : "Already have an account? Switch back to sign in."}
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
   );
 }

@@ -1,26 +1,28 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/router";
-import { Box, HStack, Text, VStack, useBreakpointValue, useToast, SimpleGrid } from "@chakra-ui/react";
 import Loading from "../components/Loading";
-import SectionBox from "../components/SectionBox";
-import Header from "../components/Header";
-import RouterLink from "../components/RouterLink";
 import HealthStrip from "../components/HealthStrip";
 import ReviewQueueList from "../components/ReviewQueueList";
 import ReviewDetailPane from "../components/ReviewDetailPane";
 import RequireAuth from "../components/RequireAuth";
 import { useAuth } from "../components/AuthProvider";
 import { authFetch } from "../lib/client/authFetch";
+import { Badge } from "../components/ui/badge";
+import { Button } from "../components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
+import { useToastMessage } from "../components/ToastProvider";
+import { useIsMobile } from "../lib/client/useIsMobile";
 
 export default function LinksPage() {
   const router = useRouter();
-  const toast = useToast();
+  const toast = useToastMessage();
   const { getAccessToken } = useAuth();
   const [items, setItems] = useState([]);
   const [connectors, setConnectors] = useState([]);
   const [loading, setLoading] = useState(false);
   const [acting, setActing] = useState("");
-  const isMobile = useBreakpointValue({ base: true, lg: false });
+  const isMobile = useIsMobile();
 
   const activeNetwork = useMemo(() => {
     if (router.query.network) return router.query.network;
@@ -160,69 +162,43 @@ export default function LinksPage() {
 
   return (
     <RequireAuth>
-      <VStack align="stretch" spacing={5}>
-        <SectionBox bg="rgba(255,255,255,0.98)">
-          <Header
-            eyebrow="Offer updates"
-            title="Check incoming changes from your affiliate sources"
-            subtitle="This page shows coupons and sale updates that changed since the last sync so you can decide what should be kept."
-          />
-          <HStack spacing={3} mt={6} flexWrap="wrap">
-            <RouterLink
-              to="/links"
-              display="inline-flex"
-              width="fit-content"
-              bg="transparent"
-              border="1px solid rgba(15, 17, 23, 0.12)"
-            >
-              Refresh updates
-            </RouterLink>
-            <RouterLink
-              to="/networks"
-              display="inline-flex"
-              width="fit-content"
-              bg="transparent"
-              border="1px solid rgba(15, 17, 23, 0.12)"
-            >
-              Manage sources
-            </RouterLink>
-          </HStack>
-          <SimpleGrid columns={{ base: 1, md: 3 }} spacing={3} mt={7}>
-            <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.04)">
-              <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500">
-                Updates
-              </Text>
-              <Text mt={2} fontSize="2xl" fontWeight="700" color="ink.900">
-                {items.length}
-              </Text>
-              <Text mt={1} fontSize="sm" color="ink.600">
-                incoming offer changes waiting for review
-              </Text>
-            </Box>
-            <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.04)">
-              <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500">
-                Sources
-              </Text>
-              <Text mt={2} fontSize="2xl" fontWeight="700" color="ink.900">
-                {connectors.length}
-              </Text>
-              <Text mt={1} fontSize="sm" color="ink.600">
-                connected sources in this workspace
-              </Text>
-            </Box>
-            <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.04)">
-              <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="lime.700">
-                Merchants watched
-              </Text>
-              <Text mt={2} fontSize="2xl" fontWeight="700" color="ink.900">
-                {selectedCount}
-              </Text>
-              <Text mt={1} fontSize="sm" color="ink.600">
-                selected merchants being monitored
-              </Text>
-            </Box>
-          </SimpleGrid>
-        </SectionBox>
+      <div className="space-y-5">
+        <Card className="border-white/60 bg-white/95">
+          <CardHeader className="space-y-5">
+            <Badge className="w-fit">Offer updates</Badge>
+            <div className="space-y-3">
+              <CardTitle className="text-4xl">Check incoming changes from your affiliate sources</CardTitle>
+              <CardDescription className="max-w-3xl text-base leading-7">
+                This workspace shows coupons and sale updates that changed since the last sync so you can decide what should be kept and what should be ignored.
+              </CardDescription>
+            </div>
+            <div className="grid gap-3 md:grid-cols-3">
+              <div className="rounded-[24px] bg-muted p-5">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">Updates</p>
+                <p className="mt-2 font-display text-3xl font-bold tracking-[-0.03em]">{items.length}</p>
+                <p className="mt-1 text-sm text-muted-foreground">incoming offer changes waiting for review</p>
+              </div>
+              <div className="rounded-[24px] bg-muted p-5">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">Sources</p>
+                <p className="mt-2 font-display text-3xl font-bold tracking-[-0.03em]">{connectors.length}</p>
+                <p className="mt-1 text-sm text-muted-foreground">connected sources in this workspace</p>
+              </div>
+              <div className="rounded-[24px] bg-muted p-5">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">Merchants watched</p>
+                <p className="mt-2 font-display text-3xl font-bold tracking-[-0.03em]">{selectedCount}</p>
+                <p className="mt-1 text-sm text-muted-foreground">selected merchants being monitored</p>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="flex flex-wrap gap-2 pt-0">
+            <Link href="/links">
+              <Button variant="outline">Refresh updates</Button>
+            </Link>
+            <Link href="/networks">
+              <Button variant="outline">Manage sources</Button>
+            </Link>
+          </CardContent>
+        </Card>
         {hasConnector ? (
           <HealthStrip
             connectors={connectors}
@@ -232,27 +208,20 @@ export default function LinksPage() {
             syncing={loading}
           />
         ) : (
-          <SectionBox>
-            <Text fontSize="xs" fontWeight="700" letterSpacing="0.18em" textTransform="uppercase" color="brand.500">
-              Setup required
-            </Text>
-            <Text mt={3} fontSize="2xl" fontWeight="700" color="ink.900">
-              Connect a source first
-            </Text>
-            <Text color="ink.600" mt={2} maxW="44ch">
-              Save source credentials and choose merchants before you can build a
-              stream of offer updates.
-            </Text>
-            <RouterLink
-              to="/networks"
-              mt={4}
-              display="inline-flex"
-              width="fit-content"
-              border="1px solid rgba(139, 77, 255, 0.16)"
-            >
-              Open source settings
-            </RouterLink>
-          </SectionBox>
+          <Card className="border-white/60 bg-white/95">
+            <CardHeader>
+              <Badge className="w-fit">Setup required</Badge>
+              <CardTitle>Connect a source first</CardTitle>
+              <CardDescription className="max-w-2xl text-base leading-7">
+                Save source credentials and choose merchants before you can build a stream of offer updates.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link href="/networks">
+                <Button>Open source settings</Button>
+              </Link>
+            </CardContent>
+          </Card>
         )}
         {hasConnector ? (
           isMobile && selectedItem ? (
@@ -264,31 +233,26 @@ export default function LinksPage() {
               onBack={clearSelection}
             />
           ) : (
-            <Box
-              display="grid"
-              gridTemplateColumns={{ base: "1fr", xl: "minmax(340px, 0.92fr) minmax(0, 1.08fr)" }}
-              gap={5}
-              alignItems="start"
-            >
-              <Box minW={0}>
+            <div className="grid items-start gap-5 xl:grid-cols-[minmax(340px,0.92fr)_minmax(0,1.08fr)]">
+              <div className="min-w-0">
                 <ReviewQueueList
                   items={items}
                   selectedId={selectedItem?.id}
                   onSelect={handleSelect}
                 />
-              </Box>
-              <Box display={{ base: "none", lg: "block" }} minW={0}>
+              </div>
+              <div className="hidden min-w-0 lg:block">
                 <ReviewDetailPane
                   item={selectedItem || items[0] || null}
                   onAction={handleAction}
                   acting={acting}
                 />
-              </Box>
-            </Box>
+              </div>
+            </div>
           )
         ) : null}
         <Loading loading={loading} />
-      </VStack>
+      </div>
     </RequireAuth>
   );
 }

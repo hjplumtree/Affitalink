@@ -1,29 +1,10 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { isEmpty } from "../lib/validate";
-
-import {
-  Box,
-  Input,
-  InputGroup,
-  InputRightElement,
-  Button,
-  VStack,
-  FormControl,
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogContent,
-  AlertDialogOverlay,
-  useDisclosure,
-  FormLabel,
-  Alert,
-  AlertIcon,
-  Text,
-  HStack,
-} from "@chakra-ui/react";
-import SectionBox from "./SectionBox";
-import Header from "./Header";
+import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import { Input } from "./ui/input";
 
 export default function NetworkInput({
   networkName,
@@ -37,8 +18,6 @@ export default function NetworkInput({
 }) {
   const [show, setShow] = useState(false);
   const [inputError, setInputError] = useState(false);
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const cancelRef = useRef();
 
   const handleInputChange = (e) => {
     setAuth((prevState) => {
@@ -46,10 +25,6 @@ export default function NetworkInput({
       newState[e.target.dataset.name] = e.target.value;
       return newState;
     });
-  };
-
-  const handleShow = () => {
-    setShow(!show);
   };
 
   const inputs = Object.entries(auth);
@@ -64,125 +39,95 @@ export default function NetworkInput({
   };
 
   const handleDelete = () => {
-    deleteDB();
+    if (window.confirm(`Delete the saved settings for ${networkName}?`)) {
+      deleteDB();
+    }
   };
 
   return (
-    <SectionBox>
-      <Header
-        title={networkName}
-        subtitle={helperText || `Enter credentials to connect ${networkName}.`}
-        eyebrow="Source settings"
-      />
-      <FormControl isRequired mt={5}>
-        <Text fontSize="sm" color="ink.600" mb={4}>
+    <Card className="border-white/60 bg-white/95">
+      <CardHeader className="space-y-4">
+        <Badge className="w-fit">Source settings</Badge>
+        <div>
+          <CardTitle>{networkName}</CardTitle>
+          <CardDescription className="mt-2 text-base leading-7">
+            {helperText || `Enter credentials to connect ${networkName}.`}
+          </CardDescription>
+        </div>
+        <p className="text-sm text-muted-foreground">
           Save the credentials, test the connection, then choose merchants below.
-        </Text>
+        </p>
+      </CardHeader>
+      <CardContent className="space-y-5">
         {inputs.map((input) => (
-          <Box key={input[0]}>
-            <FormLabel htmlFor={input[0]}>
+          <div key={input[0]} className="space-y-2">
+            <label htmlFor={input[0]} className="text-sm font-semibold text-foreground">
               {input[0].split("_").join(" ").toUpperCase()}
-            </FormLabel>
-
+            </label>
             {input[0] === "token" ? (
-              <InputGroup>
+              <div className="relative">
                 <Input
                   id={input[0]}
                   onChange={handleInputChange}
                   type={show ? "text" : "password"}
                   placeholder="Paste token"
-                  value={auth["token"]}
+                  value={auth.token}
                   data-name="token"
-                  mb={3}
+                  className="pr-14"
                 />
-                <InputRightElement width="4.5rem">
-                  <Button h="1.75rem" size="sm" onClick={handleShow}>
-                    {show ? "Hide" : "Show"}
-                  </Button>
-                </InputRightElement>
-              </InputGroup>
+                <button
+                  type="button"
+                  onClick={() => setShow((current) => !current)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                  aria-label={show ? "Hide token" : "Show token"}
+                >
+                  {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
             ) : (
-                <Input
-                  id={input[0]}
-                  onChange={handleInputChange}
-                  type="text"
-                  placeholder={`Paste ${input[0].split("_").join(" ")}`}
-                  value={auth[input[0]]}
-                  data-name={input[0]}
-                  mb={3}
+              <Input
+                id={input[0]}
+                onChange={handleInputChange}
+                type="text"
+                placeholder={`Paste ${input[0].split("_").join(" ")}`}
+                value={auth[input[0]]}
+                data-name={input[0]}
               />
             )}
-          </Box>
+          </div>
         ))}
-        {inputError && (
-          <Alert status="error" borderRadius={20}>
-            <AlertIcon />
+
+        {inputError ? (
+          <div className="rounded-[20px] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
             Fill in every field, then try again.
-          </Alert>
-        )}
-        {connectorStatus && (
-          <Alert
-            status={connectorStatus.status === "connected" ? "success" : "warning"}
-            borderRadius={20}
-            mt={3}
+          </div>
+        ) : null}
+
+        {connectorStatus ? (
+          <div
+            className={`rounded-[20px] px-4 py-3 text-sm ${
+              connectorStatus.status === "connected"
+                ? "border border-emerald-200 bg-emerald-50 text-emerald-700"
+                : "border border-amber-200 bg-amber-50 text-amber-800"
+            }`}
           >
-            <AlertIcon />
             {connectorStatus.message}
-          </Alert>
-        )}
-        <VStack mt={5} spacing={3} align="stretch">
-          <HStack spacing={3} align="stretch" flexDirection={{ base: "column", md: "row" }}>
-            <Button onClick={handleConnect} flex="1" variant="accent">
-              {actionLabel}
-            </Button>
+          </div>
+        ) : null}
 
-            <Button variant="outline" colorScheme="red" onClick={onOpen} flex="1">
-              Delete source
-            </Button>
-          </HStack>
+        <div className="flex flex-col gap-3 md:flex-row">
+          <Button type="button" onClick={handleConnect} className="md:flex-1">
+            {actionLabel}
+          </Button>
+          <Button type="button" variant="outline" onClick={handleDelete} className="md:flex-1">
+            Delete source
+          </Button>
+        </div>
 
-          <AlertDialog
-            isOpen={isOpen}
-            LeastDestructiveRef={cancelRef}
-            onClose={onClose}
-          >
-            <AlertDialogOverlay>
-              <AlertDialogContent>
-                <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                  Delete source
-                </AlertDialogHeader>
-
-                <AlertDialogBody>
-                  Delete the saved settings for {networkName}?
-                </AlertDialogBody>
-
-                <AlertDialogFooter>
-                  <Button ref={cancelRef} onClick={onClose}>
-                    Cancel
-                  </Button>
-                  <Button
-                    colorScheme="red"
-                    onClick={() => {
-                      onClose();
-                      handleDelete();
-                    }}
-                    ml={3}
-                  >
-                    Delete
-                  </Button>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialogOverlay>
-          </AlertDialog>
-        </VStack>
-        <Alert status="warning" fontSize="sm" mt={5} borderRadius={20}>
-          <AlertIcon />
-          <Text>
-            Credentials are stored on the backend so manual sync can run on the server.
-            Remove them when you no longer want this source feeding the queue.
-          </Text>
-        </Alert>
-      </FormControl>
-    </SectionBox>
+        <div className="rounded-[20px] border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-900">
+          Credentials are stored on the backend so manual sync can run on the server. Remove them when you no longer want this source feeding the queue.
+        </div>
+      </CardContent>
+    </Card>
   );
 }

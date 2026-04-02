@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Box, SimpleGrid, Text, VStack } from "@chakra-ui/react";
-import Header from "../components/Header";
+import Link from "next/link";
 import OfferCatalog from "../components/OfferCatalog";
 import RequireAuth from "../components/RequireAuth";
-import SectionBox from "../components/SectionBox";
-import RouterLink from "../components/RouterLink";
 import { useAuth } from "../components/AuthProvider";
 import { authFetch } from "../lib/client/authFetch";
+import { Badge } from "../components/ui/badge";
+import { Button } from "../components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 
 export default function OffersPage() {
   const { getAccessToken } = useAuth();
@@ -44,64 +44,43 @@ export default function OffersPage() {
 
   return (
     <RequireAuth>
-      <VStack align="stretch" spacing={5}>
-        <SectionBox bg="rgba(255,255,255,0.98)">
-          <Header
-            eyebrow="Offers"
-            title="View affiliate coupons and sale offers in one format"
-            subtitle="This is the main output of the dashboard. It brings active offers from every connected source into one consistent list."
-          />
-          <SimpleGrid columns={{ base: 1, md: 3 }} spacing={3} mt={7}>
-            <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.04)">
-              <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500">
-                Active offers
-              </Text>
-              <Text mt={2} fontSize="2xl" fontWeight="700" color="ink.900">
-                {offers.length}
-              </Text>
-              <Text mt={1} fontSize="sm" color="ink.600">
-                standardized offers currently available
-              </Text>
-            </Box>
-            <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.04)">
-              <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500">
-                Merchants
-              </Text>
-              <Text mt={2} fontSize="2xl" fontWeight="700" color="ink.900">
-                {merchantCount}
-              </Text>
-              <Text mt={1} fontSize="sm" color="ink.600">
-                merchants currently represented
-              </Text>
-            </Box>
-            <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.04)">
-              <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="lime.700">
-                Selected now
-              </Text>
-              <Text mt={2} fontSize="2xl" fontWeight="700" color="ink.900">
-                {selectedCount}
-              </Text>
-              <Text mt={1} fontSize="sm" color="ink.600">
-                offers picked to move into the coupon site
-              </Text>
-            </Box>
-          </SimpleGrid>
-          <VStack align="start" mt={6} spacing={3}>
-            <RouterLink to="/links" display="inline-flex" width="fit-content">
-              Open updates
-            </RouterLink>
-            <RouterLink
-              to="/networks"
-              display="inline-flex"
-              width="fit-content"
-              bg="transparent"
-              border="1px solid rgba(15, 17, 23, 0.12)"
-            >
-              Manage sources
-            </RouterLink>
-          </VStack>
-        </SectionBox>
-
+      <div className="space-y-5">
+        <Card className="border-white/60 bg-white/95">
+          <CardHeader className="space-y-5">
+            <Badge className="w-fit">Offers</Badge>
+            <div className="space-y-3">
+              <CardTitle className="text-4xl">View affiliate coupons and sale offers in one format</CardTitle>
+              <CardDescription className="max-w-3xl text-base leading-7">
+                This is the reusable offer dataset. It pulls active offers from every connected source into one consistent list so you can decide what actually moves into the coupon site.
+              </CardDescription>
+            </div>
+            <div className="grid gap-3 md:grid-cols-3">
+              <div className="rounded-[24px] bg-muted p-5">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">Active offers</p>
+                <p className="mt-2 font-display text-3xl font-bold tracking-[-0.03em]">{offers.length}</p>
+                <p className="mt-1 text-sm text-muted-foreground">standardized offers currently available</p>
+              </div>
+              <div className="rounded-[24px] bg-muted p-5">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">Merchants</p>
+                <p className="mt-2 font-display text-3xl font-bold tracking-[-0.03em]">{merchantCount}</p>
+                <p className="mt-1 text-sm text-muted-foreground">merchants currently represented</p>
+              </div>
+              <div className="rounded-[24px] bg-muted p-5">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">Selected now</p>
+                <p className="mt-2 font-display text-3xl font-bold tracking-[-0.03em]">{selectedCount}</p>
+                <p className="mt-1 text-sm text-muted-foreground">offers picked to move into the coupon site</p>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="flex flex-wrap gap-2 pt-0">
+            <Link href="/links">
+              <Button>Open updates</Button>
+            </Link>
+            <Link href="/networks">
+              <Button variant="outline">Manage sources</Button>
+            </Link>
+          </CardContent>
+        </Card>
         <OfferCatalog
           offers={offers}
           networks={networks}
@@ -110,7 +89,7 @@ export default function OffersPage() {
           selectedIds={selectedOfferIds}
           onToggleSelect={toggleOfferSelection}
         />
-      </VStack>
+      </div>
     </RequireAuth>
   );
 }

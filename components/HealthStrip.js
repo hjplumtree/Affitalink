@@ -1,17 +1,8 @@
-import {
-  Badge,
-  Box,
-  Button,
-  Divider,
-  Flex,
-  HStack,
-  Icon,
-  Select,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
-import { FaArrowUp, FaCheckCircle, FaClock, FaExclamationTriangle, FaSync } from "react-icons/fa";
+import { AlertCircle, ArrowUp, CheckCircle2, Clock3, RefreshCw } from "lucide-react";
 import { HEALTH_STATUS } from "../lib/client/reviewState";
+import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
+import { Card, CardContent } from "./ui/card";
 
 function getHealthTone(summary) {
   if (!summary) return HEALTH_STATUS.idle;
@@ -20,6 +11,13 @@ function getHealthTone(summary) {
   if (summary.isStale) return HEALTH_STATUS.stale;
   if (summary.lastSuccessfulSyncAt) return HEALTH_STATUS.success;
   return HEALTH_STATUS.idle;
+}
+
+function getStatusIcon(tone) {
+  if (tone.tone === "green") return CheckCircle2;
+  if (tone.tone === "yellow") return Clock3;
+  if (tone.tone === "red" || tone.tone === "orange") return AlertCircle;
+  return ArrowUp;
 }
 
 export default function HealthStrip({
@@ -31,98 +29,54 @@ export default function HealthStrip({
 }) {
   const summary = connectors.find((entry) => entry.network === activeNetwork) || null;
   const tone = getHealthTone(summary);
-  const statusIcon =
-    tone.tone === "green"
-      ? FaCheckCircle
-      : tone.tone === "yellow"
-        ? FaClock
-        : tone.tone === "red" || tone.tone === "orange"
-          ? FaExclamationTriangle
-          : FaArrowUp;
+  const StatusIcon = getStatusIcon(tone);
 
   return (
-    <Flex
-      align={{ base: "stretch", lg: "center" }}
-      justify="space-between"
-      gap={4}
-      px={{ base: 4, lg: 5 }}
-      py={4}
-      borderRadius="26px"
-      border="1px solid rgba(15, 17, 23, 0.08)"
-      bg="rgba(255,255,255,0.96)"
-      boxShadow="0 16px 34px rgba(15, 17, 23, 0.07)"
-      direction={{ base: "column", lg: "row" }}
-    >
-      <Stack direction={{ base: "column", md: "row" }} spacing={4} flex="1" align="flex-start">
-        <HStack spacing={3} minW={{ lg: "220px" }}>
-          <Flex
-            width="36px"
-            height="36px"
-            borderRadius="full"
-            align="center"
-            justify="center"
-            bg="rgba(15, 17, 23, 0.08)"
-            color="ink.900"
+    <Card className="border-white/60 bg-white/95 shadow-sm">
+      <CardContent className="flex flex-col gap-4 p-4 lg:flex-row lg:items-center lg:justify-between lg:p-5">
+        <div className="flex flex-1 flex-col gap-4 md:flex-row md:items-start">
+          <div className="flex min-w-[220px] items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-foreground">
+              <StatusIcon className="h-4 w-4" />
+            </div>
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
+                Source status
+              </p>
+              <p className="font-semibold text-foreground">{tone.label}</p>
+            </div>
+          </div>
+          <div className="hidden h-11 w-px bg-border md:block" />
+          <div className="flex-1">
+            <p className="text-sm leading-6 text-foreground">{tone.message}</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {summary?.lastSyncAt
+                ? `Last update check: ${new Date(summary.lastSyncAt).toLocaleString()}.`
+                : "No manual sync has been run yet."}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-3 lg:justify-end">
+          <Badge variant="outline">{activeNetwork.toUpperCase()}</Badge>
+          <select
+            value={activeNetwork}
+            onChange={(event) => onNetworkChange(event.target.value)}
+            aria-label="Select source network"
+            className="h-11 rounded-full border border-border bg-white px-4 text-sm font-medium text-foreground shadow-sm outline-none focus:ring-2 focus:ring-ring"
           >
-            <Icon as={statusIcon} boxSize={4} />
-          </Flex>
-          <Box>
-            <Text fontSize="xs" letterSpacing="0.18em" textTransform="uppercase" color="brand.500">
-              Source status
-            </Text>
-            <Text fontWeight="700" color="ink.900">
-              {tone.label}
-            </Text>
-          </Box>
-        </HStack>
-        <Divider orientation="vertical" borderColor="rgba(15,17,23,0.08)" display={{ base: "none", md: "block" }} h="42px" />
-        <Box flex="1">
-          <Text fontSize="sm" color="ink.700">
-            {tone.message}
-          </Text>
-          <Text mt={1} fontSize="sm" color="ink.500">
-            {summary?.lastSyncAt
-              ? `Last update check: ${new Date(summary.lastSyncAt).toLocaleString()}.`
-              : "No manual sync has been run yet."}
-          </Text>
-        </Box>
-      </Stack>
-      <HStack spacing={3} alignItems="center" flexWrap="wrap" justify="flex-end">
-        <Badge
-          px={3}
-          py={1.5}
-          borderRadius="full"
-          bg="rgba(15, 17, 23, 0.08)"
-          color="ink.800"
-          fontWeight="700"
-        >
-          {activeNetwork.toUpperCase()}
-        </Badge>
-        <Select
-          size="sm"
-          width="160px"
-          borderRadius="full"
-          value={activeNetwork}
-          onChange={(event) => onNetworkChange(event.target.value)}
-          aria-label="Select source network"
-        >
-          {connectors.map((connector) => (
-            <option key={connector.network} value={connector.network}>
-              {connector.network.toUpperCase()}
-            </option>
-          ))}
-        </Select>
-        <Button
-          size="sm"
-          onClick={onSync}
-          isLoading={syncing}
-          loadingText="Syncing"
-          leftIcon={<FaSync />}
-          variant="accent"
-        >
-          Check for updates
-        </Button>
-      </HStack>
-    </Flex>
+            {connectors.map((connector) => (
+              <option key={connector.network} value={connector.network}>
+                {connector.network.toUpperCase()}
+              </option>
+            ))}
+          </select>
+          <Button onClick={onSync} disabled={syncing}>
+            <RefreshCw className={`mr-2 h-4 w-4 ${syncing ? "animate-spin" : ""}`} />
+            {syncing ? "Syncing" : "Check for updates"}
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 }

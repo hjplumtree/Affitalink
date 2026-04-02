@@ -2,13 +2,13 @@ import { useRouter } from "next/router";
 import { useCallback, useState, useEffect } from "react";
 import NetworkSiteSetting from "../../components/NetworkSiteSetting";
 import AdvertiserLists from "../../components/AdvertiserLists";
-import { Text, VStack, useToast, SimpleGrid, Box } from "@chakra-ui/react";
 import Loading from "../../components/Loading";
 import RequireAuth from "../../components/RequireAuth";
 import { useAuth } from "../../components/AuthProvider";
 import { authFetch } from "../../lib/client/authFetch";
-import SectionBox from "../../components/SectionBox";
-import Header from "../../components/Header";
+import { Badge } from "../../components/ui/badge";
+import { Card, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
+import { useToastMessage } from "../../components/ToastProvider";
 
 const CJ_INITIAL_AUTH = {
   token: "",
@@ -42,7 +42,7 @@ export default function Site() {
   const router = useRouter();
   const { site: network_site_name } = router.query;
   const [loading, setLoading] = useState(false);
-  const toast = useToast();
+  const toast = useToastMessage();
   const { getAccessToken } = useAuth();
 
   const [advertisers, setAdvertisers] = useState(ADVERTISERS_INITIAL_STATE);
@@ -160,43 +160,41 @@ export default function Site() {
   return (
     <RequireAuth>
       {auth ? (
-        <VStack align="stretch" spacing={5}>
-          <SectionBox bg="rgba(255,255,255,0.98)">
-            <Header
-              eyebrow="Source settings"
-              title={`Set up ${network_site_name?.toUpperCase()}`}
-              subtitle="Save credentials, test the connection, and choose which merchants should appear in your incoming offer updates."
-            />
-            <Text mt={5} fontSize="sm" color="ink.600" maxW="48ch">
-              Set up the source here, then go back to the queue when the connection is working.
-            </Text>
-            <SimpleGrid columns={{ base: 1, md: 3 }} spacing={3} mt={7}>
-              <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
-                <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500">
-                  Test
-                </Text>
-                <Text mt={2} fontSize="sm" color="ink.700">
-                  Test the saved credentials before trusting this source.
-                </Text>
-              </Box>
-              <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
-                <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500">
-                  Select
-                </Text>
-                <Text mt={2} fontSize="sm" color="ink.700">
-                  Turn on only the merchants you want to monitor.
-                </Text>
-              </Box>
-              <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">
-                <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="lime.700">
-                  Return
-                </Text>
-                <Text mt={2} fontSize="sm" color="ink.700">
-                  Go back to the review workspace once this source is working.
-                </Text>
-              </Box>
-            </SimpleGrid>
-          </SectionBox>
+        <div className="space-y-5">
+          <Card className="border-white/60 bg-white/95">
+            <CardHeader className="space-y-5">
+              <Badge className="w-fit">Source settings</Badge>
+              <div className="space-y-3">
+                <CardTitle className="text-4xl">{`Set up ${network_site_name?.toUpperCase()}`}</CardTitle>
+                <CardDescription className="max-w-3xl text-base leading-7">
+                  Save credentials, test the connection, and choose which merchants should appear in your incoming offer updates.
+                </CardDescription>
+              </div>
+              <p className="max-w-2xl text-sm text-muted-foreground">
+                Set up the source here, then go back to the queue when the connection is working.
+              </p>
+              <div className="grid gap-3 md:grid-cols-3">
+                <div className="rounded-[24px] bg-muted p-5">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">Test</p>
+                  <p className="mt-2 text-sm leading-6 text-foreground/85">
+                    Test the saved credentials before trusting this source.
+                  </p>
+                </div>
+                <div className="rounded-[24px] bg-muted p-5">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">Select</p>
+                  <p className="mt-2 text-sm leading-6 text-foreground/85">
+                    Turn on only the merchants you want to monitor.
+                  </p>
+                </div>
+                <div className="rounded-[24px] bg-muted p-5">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">Return</p>
+                  <p className="mt-2 text-sm leading-6 text-foreground/85">
+                    Go back to the review workspace once this source is working.
+                  </p>
+                </div>
+              </div>
+            </CardHeader>
+          </Card>
 
           <NetworkSiteSetting
             networkName={network_site_name.toUpperCase()}
@@ -213,7 +211,7 @@ export default function Site() {
             advertisers={advertisers}
             onToggleAdvertiser={handleToggleAdvertiser}
           />
-        </VStack>
+        </div>
       ) : null}
       <Loading loading={loading} />
     </RequireAuth>
