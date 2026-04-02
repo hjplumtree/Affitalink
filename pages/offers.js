@@ -12,6 +12,7 @@ export default function OffersPage() {
   const { getAccessToken } = useAuth();
   const [offers, setOffers] = useState([]);
   const [activeNetwork, setActiveNetwork] = useState("all");
+  const [selectedOfferIds, setSelectedOfferIds] = useState([]);
 
   const loadOffers = useCallback(async () => {
     const response = await authFetch(getAccessToken, "/api/offers");
@@ -31,6 +32,15 @@ export default function OffersPage() {
     () => new Set(offers.map((offer) => offer.merchantId)).size,
     [offers]
   );
+  const selectedCount = selectedOfferIds.length;
+
+  const toggleOfferSelection = useCallback((offerId) => {
+    setSelectedOfferIds((current) =>
+      current.includes(offerId)
+        ? current.filter((id) => id !== offerId)
+        : current.concat(offerId)
+    );
+  }, []);
 
   return (
     <RequireAuth>
@@ -66,13 +76,13 @@ export default function OffersPage() {
             </Box>
             <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.04)">
               <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="lime.700">
-                Next step
+                Selected now
               </Text>
-              <Text mt={2} fontSize="lg" fontWeight="700" color="ink.900">
-                Use Updates for change review
+              <Text mt={2} fontSize="2xl" fontWeight="700" color="ink.900">
+                {selectedCount}
               </Text>
               <Text mt={1} fontSize="sm" color="ink.600">
-                Review incoming changes on the updates page, then use this list as your clean source of truth.
+                offers picked to move into the coupon site
               </Text>
             </Box>
           </SimpleGrid>
@@ -97,6 +107,8 @@ export default function OffersPage() {
           networks={networks}
           activeNetwork={activeNetwork}
           onNetworkChange={setActiveNetwork}
+          selectedIds={selectedOfferIds}
+          onToggleSelect={toggleOfferSelection}
         />
       </VStack>
     </RequireAuth>

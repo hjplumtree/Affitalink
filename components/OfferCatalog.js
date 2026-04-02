@@ -58,8 +58,16 @@ function buildOfferCopyText(offer) {
   ].join("\n");
 }
 
-export default function OfferCatalog({ offers, networks, activeNetwork, onNetworkChange }) {
+export default function OfferCatalog({
+  offers,
+  networks,
+  activeNetwork,
+  onNetworkChange,
+  selectedIds,
+  onToggleSelect,
+}) {
   const [search, setSearch] = useState("");
+  const [expandedModes, setExpandedModes] = useState({});
   const toast = useToast();
 
   const copyValue = async (value, label) => {
@@ -91,6 +99,27 @@ export default function OfferCatalog({ offers, networks, activeNetwork, onNetwor
     });
   }, [activeNetwork, search, offers]);
 
+  const selectedOffers = useMemo(
+    () => filteredOffers.filter((offer) => selectedIds.includes(offer.id)),
+    [filteredOffers, selectedIds]
+  );
+
+  const toggleExpandedMode = (offerId, mode) => {
+    setExpandedModes((current) => ({
+      ...current,
+      [offerId]: current[offerId] === mode ? null : mode,
+    }));
+  };
+
+  const copySelected = async (mode) => {
+    if (selectedOffers.length === 0) return;
+    const text =
+      mode === "json"
+        ? JSON.stringify(selectedOffers.map(buildOfferPayload), null, 2)
+        : selectedOffers.map(buildOfferCopyText).join("\n\n---\n\n");
+    await copyValue(text, mode === "json" ? "Selected offer JSON" : "Selected offer block");
+  };
+
   if (offers.length === 0) {
     return (
       <Box
@@ -113,7 +142,7 @@ export default function OfferCatalog({ offers, networks, activeNetwork, onNetwor
   }
 
   return (
-    <VStack align="stretch" spacing={5}>
+    <VStack align="stretch" spacing={4}>
       <Flex
         align={{ base: "stretch", lg: "center" }}
         justify="space-between"
@@ -143,196 +172,213 @@ export default function OfferCatalog({ offers, networks, activeNetwork, onNetwor
             width={{ base: "100%", md: "320px" }}
           />
         </Stack>
-        <Badge px={3} py={1.5} borderRadius="full" bg="rgba(15,17,23,0.06)" color="ink.700">
-          {filteredOffers.length} offers
-        </Badge>
+        <HStack spacing={2} flexWrap="wrap">
+          <Badge px={3} py={1.5} borderRadius="full" bg="rgba(15,17,23,0.06)" color="ink.700">
+            {filteredOffers.length} offers
+          </Badge>
+          <Badge px={3} py={1.5} borderRadius="full" bg="rgba(139,77,255,0.10)" color="brand.700">
+            {selectedOffers.length} selected
+          </Badge>
+        </HStack>
       </Flex>
 
-      <SimpleGrid columns={{ base: 1, xl: 2 }} spacing={4}>
-        {filteredOffers.map((offer) => (
-          <Box
-            key={offer.id}
-            border="1px solid rgba(15, 17, 23, 0.08)"
-            borderRadius="28px"
-            bg="rgba(255,255,255,0.94)"
-            p={{ base: 5, lg: 6 }}
-            boxShadow="0 18px 44px rgba(15,17,23,0.05)"
-          >
-            <VStack align="stretch" spacing={4}>
-              <HStack justify="space-between" align="start">
-                <Box>
-                  <HStack spacing={2} mb={2}>
-                    <Badge colorScheme="purple">{offer.network?.toUpperCase()}</Badge>
-                    {offer.couponCode ? (
-                      <Badge bg="rgba(139,77,255,0.10)" color="brand.700">
-                        {offer.couponCode}
+      <Box
+        border="1px solid rgba(15, 17, 23, 0.08)"
+        borderRadius="24px"
+        bg="rgba(255,255,255,0.94)"
+        p={4}
+      >
+        <Flex
+          justify="space-between"
+          align={{ base: "stretch", md: "center" }}
+          gap={3}
+          direction={{ base: "column", md: "row" }}
+        >
+          <Box>
+            <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500">
+              Publishing shortlist
+            </Text>
+            <Text mt={1} fontSize="sm" color="ink.600">
+              Select the offers you want to move into the coupon site. `Updates` is for review, `Offers` is for picking what survives.
+            </Text>
+          </Box>
+          <HStack spacing={2} flexWrap="wrap">
+            <Button size="sm" variant="outline" onClick={() => copySelected("block")} isDisabled={selectedOffers.length === 0}>
+              Copy selected block
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => copySelected("json")} isDisabled={selectedOffers.length === 0}>
+              Copy selected JSON
+            </Button>
+          </HStack>
+        </Flex>
+      </Box>
+
+      <VStack align="stretch" spacing={3}>
+        {filteredOffers.map((offer) => {
+          const expandedMode = expandedModes[offer.id] || null;
+          const isSelected = selectedIds.includes(offer.id);
+          const payloadJson = JSON.stringify(buildOfferPayload(offer), null, 2);
+
+          return (
+            <Box
+              key={offer.id}
+              border="1px solid rgba(15, 17, 23, 0.08)"
+              borderRadius="24px"
+              bg={isSelected ? "rgba(139,77,255,0.06)" : "rgba(255,255,255,0.94)"}
+              p={{ base: 4, lg: 5 }}
+              boxShadow="0 12px 30px rgba(15,17,23,0.04)"
+            >
+              <VStack align="stretch" spacing={3}>
+                <Flex
+                  justify="space-between"
+                  align={{ base: "stretch", lg: "start" }}
+                  gap={3}
+                  direction={{ base: "column", lg: "row" }}
+                >
+                  <Box minW={0} flex="1">
+                    <HStack spacing={2} mb={2} flexWrap="wrap">
+                      <Badge colorScheme="purple">{offer.network?.toUpperCase()}</Badge>
+                      {offer.couponCode ? (
+                        <Badge bg="rgba(139,77,255,0.10)" color="brand.700">
+                          {offer.couponCode}
+                        </Badge>
+                      ) : (
+                        <Badge bg="rgba(15,17,23,0.06)" color="ink.700">
+                          No code
+                        </Badge>
+                      )}
+                      <Badge bg="rgba(15,17,23,0.06)" color="ink.700">
+                        {formatDate(offer.updatedAt || offer.lastSeenAt)}
                       </Badge>
-                    ) : null}
-                  </HStack>
-                  <Text fontSize="lg" fontWeight="700" color="ink.900">
-                    {offer.merchantName}
-                  </Text>
-                  <Text mt={1} color="ink.800" fontWeight="600">
-                    {offer.title}
-                  </Text>
-                </Box>
-                <Text fontSize="xs" color="ink.500" textAlign="right">
-                  Updated
-                  <br />
-                  {formatDate(offer.updatedAt || offer.lastSeenAt)}
-                </Text>
-              </HStack>
-
-              {offer.description ? (
-                <Text fontSize="sm" color="ink.600" noOfLines={3}>
-                  {offer.description}
-                </Text>
-              ) : null}
-
-              <SimpleGrid columns={{ base: 1, md: 2 }} spacing={3}>
-                <Box p={3} borderRadius="18px" bg="rgba(15,17,23,0.04)">
-                  <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="brand.500">
-                    Coupon code
-                  </Text>
-                  <HStack mt={2} justify="space-between" align="start">
-                    <Text fontSize="sm" color="ink.800" fontWeight="600" noOfLines={2}>
-                      {offer.couponCode || "No code needed"}
-                    </Text>
-                    <Button
-                      size="xs"
-                      variant="outline"
-                      onClick={() => copyValue(offer.couponCode || "No code needed", "Coupon code")}
-                    >
-                      Copy
-                    </Button>
-                  </HStack>
-                </Box>
-                <Box p={3} borderRadius="18px" bg="rgba(15,17,23,0.04)">
-                  <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="brand.500">
-                    Merchant
-                  </Text>
-                  <HStack mt={2} justify="space-between" align="start">
-                    <Text fontSize="sm" color="ink.800" fontWeight="600" noOfLines={2}>
+                    </HStack>
+                    <Text fontSize="lg" fontWeight="700" color="ink.900" noOfLines={1}>
                       {offer.merchantName}
                     </Text>
-                    <Button
-                      size="xs"
-                      variant="outline"
-                      onClick={() => copyValue(offer.merchantName, "Merchant")}
-                    >
-                      Copy
-                    </Button>
-                  </HStack>
-                </Box>
-              </SimpleGrid>
-
-              <SimpleGrid columns={{ base: 1, md: 2 }} spacing={3}>
-                <Box p={3} borderRadius="18px" bg="rgba(15,17,23,0.04)">
-                  <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="brand.500">
-                    Starts
-                  </Text>
-                  <Text mt={1} fontSize="sm" color="ink.800">
-                    {formatDate(offer.startsAt)}
-                  </Text>
-                </Box>
-                <Box p={3} borderRadius="18px" bg="rgba(15,17,23,0.04)">
-                  <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="brand.500">
-                    Ends
-                  </Text>
-                  <Text mt={1} fontSize="sm" color="ink.800">
-                    {formatDate(offer.endsAt)}
-                  </Text>
-                </Box>
-              </SimpleGrid>
-
-              <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.03)">
-                <Flex justify="space-between" align={{ base: "start", md: "center" }} gap={3} direction={{ base: "column", md: "row" }}>
-                  <Box>
-                    <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500">
-                      Copy-ready data
+                    <Text mt={1} color="ink.800" fontWeight="600" noOfLines={2}>
+                      {offer.title}
                     </Text>
-                    <Text mt={1} fontSize="sm" color="ink.600">
-                      Use this offer as raw input for docs, sheets, CMS entries, or prompts.
-                    </Text>
+                    {offer.description ? (
+                      <Text mt={1} fontSize="sm" color="ink.600" noOfLines={2}>
+                        {offer.description}
+                      </Text>
+                    ) : null}
                   </Box>
-                  <HStack spacing={2} flexWrap="wrap">
+
+                  <Stack direction={{ base: "column", md: "row" }} spacing={2}>
                     <Button
                       size="sm"
-                      variant="outline"
-                      onClick={() => copyValue(buildOfferCopyText(offer), "Offer block")}
+                      variant={isSelected ? "accent" : "outline"}
+                      onClick={() => onToggleSelect(offer.id)}
                     >
+                      {isSelected ? "Selected" : "Select"}
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={() => copyValue(buildOfferCopyText(offer), "Offer block")}>
                       Copy block
                     </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() =>
-                        copyValue(JSON.stringify(buildOfferPayload(offer), null, 2), "Offer JSON")
-                      }
-                    >
+                    <Button size="sm" variant="outline" onClick={() => copyValue(payloadJson, "Offer JSON")}>
                       Copy JSON
                     </Button>
-                  </HStack>
+                  </Stack>
                 </Flex>
-                <Code
-                  display="block"
-                  mt={3}
-                  whiteSpace="pre-wrap"
-                  borderRadius="18px"
-                  p={4}
-                  bg="rgba(24, 34, 47, 0.04)"
-                  color="ink.800"
-                >
-                  {JSON.stringify(buildOfferPayload(offer), null, 2)}
-                </Code>
-              </Box>
 
-              <Stack direction={{ base: "column", md: "row" }} spacing={3}>
-                {offer.destinationUrl ? (
-                  <Button
-                    variant="outline"
-                    width={{ base: "100%", md: "fit-content" }}
-                    onClick={() => copyValue(offer.destinationUrl, "Destination URL")}
-                  >
-                    Copy destination
+                <SimpleGrid columns={{ base: 1, md: 4 }} spacing={3}>
+                  <Box p={3} borderRadius="16px" bg="rgba(15,17,23,0.04)">
+                    <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="brand.500">
+                      Coupon
+                    </Text>
+                    <HStack mt={2} justify="space-between" align="start">
+                      <Text fontSize="sm" color="ink.800" fontWeight="600" noOfLines={2}>
+                        {offer.couponCode || "No code needed"}
+                      </Text>
+                      <Button size="xs" variant="ghost" onClick={() => copyValue(offer.couponCode || "No code needed", "Coupon code")}>
+                        Copy
+                      </Button>
+                    </HStack>
+                  </Box>
+                  <Box p={3} borderRadius="16px" bg="rgba(15,17,23,0.04)">
+                    <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="brand.500">
+                      Starts
+                    </Text>
+                    <Text mt={2} fontSize="sm" color="ink.800">
+                      {formatDate(offer.startsAt)}
+                    </Text>
+                  </Box>
+                  <Box p={3} borderRadius="16px" bg="rgba(15,17,23,0.04)">
+                    <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="brand.500">
+                      Ends
+                    </Text>
+                    <Text mt={2} fontSize="sm" color="ink.800">
+                      {formatDate(offer.endsAt)}
+                    </Text>
+                  </Box>
+                  <Box p={3} borderRadius="16px" bg="rgba(15,17,23,0.04)">
+                    <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="brand.500">
+                      Links
+                    </Text>
+                    <Stack mt={2} direction="row" spacing={2} flexWrap="wrap">
+                      {offer.destinationUrl ? (
+                        <Button size="xs" variant="ghost" onClick={() => copyValue(offer.destinationUrl, "Destination URL")}>
+                          Copy destination
+                        </Button>
+                      ) : null}
+                      {offer.sourceUrl ? (
+                        <Button size="xs" variant="ghost" onClick={() => copyValue(offer.sourceUrl, "Source URL")}>
+                          Copy source
+                        </Button>
+                      ) : null}
+                    </Stack>
+                  </Box>
+                </SimpleGrid>
+
+                <HStack spacing={2} flexWrap="wrap">
+                  <Button size="xs" variant={expandedMode === "block" ? "accent" : "outline"} onClick={() => toggleExpandedMode(offer.id, "block")}>
+                    {expandedMode === "block" ? "Hide block" : "Show block"}
                   </Button>
-                ) : null}
-                {offer.destinationUrl ? (
-                  <Button
-                    as={Link}
-                    href={offer.destinationUrl}
-                    isExternal
-                    variant="accent"
-                    width={{ base: "100%", md: "fit-content" }}
-                  >
-                    Open destination
+                  <Button size="xs" variant={expandedMode === "json" ? "accent" : "outline"} onClick={() => toggleExpandedMode(offer.id, "json")}>
+                    {expandedMode === "json" ? "Hide JSON" : "Show JSON"}
                   </Button>
-                ) : null}
-                {offer.sourceUrl ? (
-                  <Button
-                    variant="outline"
-                    width={{ base: "100%", md: "fit-content" }}
-                    onClick={() => copyValue(offer.sourceUrl, "Source URL")}
+                  {offer.destinationUrl ? (
+                    <Button as={Link} href={offer.destinationUrl} isExternal size="xs" variant="outline">
+                      Open destination
+                    </Button>
+                  ) : null}
+                  {offer.sourceUrl ? (
+                    <Button as={Link} href={offer.sourceUrl} isExternal size="xs" variant="outline">
+                      Open source
+                    </Button>
+                  ) : null}
+                </HStack>
+
+                {expandedMode === "block" ? (
+                  <Code
+                    display="block"
+                    whiteSpace="pre-wrap"
+                    borderRadius="18px"
+                    p={4}
+                    bg="rgba(24, 34, 47, 0.04)"
+                    color="ink.800"
                   >
-                    Copy source
-                  </Button>
+                    {buildOfferCopyText(offer)}
+                  </Code>
                 ) : null}
-                {offer.sourceUrl ? (
-                  <Button
-                    as={Link}
-                    href={offer.sourceUrl}
-                    isExternal
-                    variant="outline"
-                    width={{ base: "100%", md: "fit-content" }}
+
+                {expandedMode === "json" ? (
+                  <Code
+                    display="block"
+                    whiteSpace="pre-wrap"
+                    borderRadius="18px"
+                    p={4}
+                    bg="rgba(24, 34, 47, 0.04)"
+                    color="ink.800"
                   >
-                    Open source
-                  </Button>
+                    {payloadJson}
+                  </Code>
                 ) : null}
-              </Stack>
-            </VStack>
-          </Box>
-        ))}
-      </SimpleGrid>
+              </VStack>
+            </Box>
+          );
+        })}
+      </VStack>
     </VStack>
   );
 }

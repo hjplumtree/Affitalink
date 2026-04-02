@@ -130,6 +130,14 @@ export default function Home() {
                 Sync new offers, compare changed fields, then approve or dismiss each update.
               </Text>
             </Box>
+            <Box>
+              <Text fontSize="lg" fontWeight="700" color="ink.900">
+                4. Pick offers for the coupon site
+              </Text>
+              <Text mt={1} fontSize="sm" color="ink.600">
+                Use the offers list as your source of truth, then select and copy only the offers you want to publish.
+              </Text>
+            </Box>
           </VStack>
         </SectionBox>
         <SectionBox>
@@ -141,7 +149,7 @@ export default function Home() {
               This is not the public offers page. It is the internal dashboard that collects discount data from affiliate networks and helps you review incoming changes.
             </Text>
             <Text fontSize="sm" color="ink.700">
-              That matters because stale offer data quickly turns into outdated copy, broken destination links, and inconsistent formatting.
+              `Updates` is the triage step. `Offers` is the reusable data set you copy from when something is ready for the coupon site.
             </Text>
           </VStack>
         </SectionBox>
