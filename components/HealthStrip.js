@@ -68,7 +68,7 @@ export default function HealthStrip({
           </Flex>
           <Box>
             <Text fontSize="xs" letterSpacing="0.18em" textTransform="uppercase" color="brand.500">
-              Sync health
+              Source status
             </Text>
             <Text fontWeight="700" color="ink.900">
               {tone.label}
@@ -82,7 +82,7 @@ export default function HealthStrip({
           </Text>
           <Text mt={1} fontSize="sm" color="ink.500">
             {summary?.lastSyncAt
-              ? `Last sync: ${new Date(summary.lastSyncAt).toLocaleString()}.`
+              ? `Last update check: ${new Date(summary.lastSyncAt).toLocaleString()}.`
               : "No manual sync has been run yet."}
           </Text>
         </Box>
@@ -120,7 +120,7 @@ export default function HealthStrip({
           leftIcon={<FaSync />}
           variant="accent"
         >
-          Sync now
+          Check for updates
         </Button>
       </HStack>
     </Flex>

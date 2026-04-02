@@ -10,13 +10,13 @@ export default function Home() {
         <Grid templateColumns={{ base: "1fr", xl: "1.2fr 0.8fr" }} gap={6} alignItems="start">
           <Box>
             <Header
-              eyebrow="Overview"
-              title="Review affiliate offer changes in one place"
-              subtitle="Connect your sources, sync the latest offers, and review changes without checking each network by hand."
+              eyebrow="Affiliate offers"
+              title="Bring network discounts and sale offers into one clean view"
+              subtitle="Connect your affiliate sources, pull the latest coupons and sales, and keep them in one consistent format instead of checking each network by hand."
             />
             <HStack mt={6} spacing={3} flexWrap="wrap">
               <RouterLink to="/links" display="inline-flex" width="fit-content">
-                Open queue
+                View updates
               </RouterLink>
               <RouterLink
                 to="/networks"
@@ -25,7 +25,7 @@ export default function Home() {
                 bg="transparent"
                 border="1px solid rgba(15, 17, 23, 0.12)"
               >
-                Set up sources
+                Connect sources
               </RouterLink>
             </HStack>
           </Box>
@@ -37,20 +37,20 @@ export default function Home() {
             boxShadow="0 28px 70px rgba(15,17,23,0.18)"
           >
             <Text fontSize="11px" letterSpacing="0.22em" textTransform="uppercase" color="whiteAlpha.600">
-              Workflow
+              How it works
             </Text>
             <VStack align="stretch" spacing={4} mt={4}>
               <Box>
                 <Text fontSize="sm" color="whiteAlpha.600">01</Text>
-                <Text fontSize="lg" fontWeight="700">Connect only trusted sources</Text>
+                <Text fontSize="lg" fontWeight="700">Connect the networks you already use</Text>
               </Box>
               <Box>
                 <Text fontSize="sm" color="whiteAlpha.600">02</Text>
-                <Text fontSize="lg" fontWeight="700">Select merchants worth watching</Text>
+                <Text fontSize="lg" fontWeight="700">Choose which merchants should be tracked</Text>
               </Box>
               <Box>
                 <Text fontSize="sm" color="whiteAlpha.600">03</Text>
-                <Text fontSize="lg" fontWeight="700">Sync offers, inspect changes, clear the queue</Text>
+                <Text fontSize="lg" fontWeight="700">Sync new offers and check what changed</Text>
               </Box>
             </VStack>
           </Box>
@@ -58,35 +58,35 @@ export default function Home() {
         <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4} mt={8}>
           <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.04)">
             <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500">
-              Speed
+              Sources
             </Text>
             <Text mt={2} fontSize="lg" fontWeight="700" color="ink.900">
-              Pull now, not later
+              Keep every network in one place
             </Text>
             <Text mt={1} fontSize="sm" color="ink.600">
-              Manual sync makes freshness explicit. You choose when to pull the latest data.
+              Save network credentials once, then manage merchant coverage from a single dashboard.
             </Text>
           </Box>
           <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.04)">
             <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500">
-              Signal
+              Format
             </Text>
             <Text mt={2} fontSize="lg" fontWeight="700" color="ink.900">
-              Rank the changes that matter
+              Standardize messy affiliate data
             </Text>
             <Text mt={1} fontSize="sm" color="ink.600">
-              The queue should highlight meaningful changes instead of every small fluctuation.
+              Pull coupons, titles, and destination links into one format so the output is easier to use.
             </Text>
           </Box>
           <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.04)">
             <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="lime.700">
-              Control
+              Updates
             </Text>
             <Text mt={2} fontSize="lg" fontWeight="700" color="ink.900">
-              Approve with proof
+              Check what changed before it goes live
             </Text>
             <Text mt={1} fontSize="sm" color="ink.600">
-              Before, after, source URL, confidence. Enough proof to decide without tab chaos.
+              Compare before and after values so you can spot real offer changes without digging through each network.
             </Text>
           </Box>
         </SimpleGrid>
@@ -94,62 +94,62 @@ export default function Home() {
       <SimpleGrid columns={{ base: 1, xl: 2 }} spacing={5}>
         <SectionBox>
           <Text fontSize="xs" fontWeight="700" letterSpacing="0.18em" textTransform="uppercase" color="brand.500">
-            Workflow
+            Product flow
           </Text>
           <VStack align="stretch" mt={5} spacing={4}>
             <Box>
               <Text fontSize="lg" fontWeight="700" color="ink.900">
-                1. Set up your sources
+                1. Connect sources
               </Text>
               <Text mt={1} fontSize="sm" color="ink.600">
-                Keep credentials and connection checks separate from the review queue.
+                Add CJ, Rakuten, or test sources so the app can pull affiliate offers from them.
               </Text>
             </Box>
             <Box>
               <Text fontSize="lg" fontWeight="700" color="ink.900">
-                2. Trim the watchlist hard
+                2. Choose merchants
               </Text>
               <Text mt={1} fontSize="sm" color="ink.600">
-                Watch only the merchants you actually manage. Everything else adds noise.
+                Track only the merchants you care about so the dashboard stays focused.
               </Text>
             </Box>
             <Box>
               <Text fontSize="lg" fontWeight="700" color="ink.900">
-                3. Clear the queue with confidence
+                3. Review incoming updates
               </Text>
               <Text mt={1} fontSize="sm" color="ink.600">
-                Pull fresh data, inspect the brief, approve or dismiss, then move to the next item.
+                Sync new offers, compare changed fields, then approve or dismiss each update.
               </Text>
             </Box>
           </VStack>
         </SectionBox>
         <SectionBox>
           <Text fontSize="xs" fontWeight="700" letterSpacing="0.18em" textTransform="uppercase" color="brand.500">
-            Why this helps
+            What this dashboard is for
           </Text>
           <VStack align="stretch" mt={5} spacing={4}>
             <Text fontSize="sm" color="ink.700">
-              Most affiliate tools send you across exports, dashboards, and merchant pages. This keeps the work in one queue with a clear next step.
+              This is not the public offers page. It is the internal dashboard that collects discount data from affiliate networks and helps you review incoming changes.
             </Text>
             <Text fontSize="sm" color="ink.700">
-              That matters because stale offer data quietly turns into outdated copy, wrong links, and wasted time.
+              That matters because stale offer data quickly turns into outdated copy, broken destination links, and inconsistent formatting.
             </Text>
           </VStack>
         </SectionBox>
       </SimpleGrid>
       <SectionBox bg="rgba(255,255,255,0.98)">
         <Text fontSize="xs" fontWeight="700" letterSpacing="0.18em" textTransform="uppercase" color="brand.500">
-          Network access
+          Before you connect
         </Text>
         <Text fontSize="lg" fontWeight="700" mt={3} color="ink.900">
-          Ready once your partner accounts are ready
+          You need active affiliate network access
         </Text>
         <Text fontSize="sm" color="ink.600" mt={2}>
-          You must already be an affiliate to a network site to connect.
+          This dashboard only works if you already have partner access to a network.
         </Text>
         <Text fontSize="sm">
           If you are already a partner with CJ or Rakuten, connect right away and start
-          using the review queue instead of checking each source by hand.
+          using this dashboard instead of checking each source by hand.
         </Text>
         <Text fontSize="sm" mt={2}>
           More about partner programs:{" "}
@@ -168,7 +168,7 @@ export default function Home() {
           width="fit-content"
           border="1px solid rgba(139, 77, 255, 0.16)"
         >
-          Open source settings
+          Connect a source
         </RouterLink>
       </SectionBox>
     </VStack>

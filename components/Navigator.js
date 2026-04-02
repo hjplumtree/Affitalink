@@ -51,7 +51,7 @@ export default function Navigator({ ...styles }) {
               AffitaLink
             </Text>
             <Text fontSize="xs" color="rgba(255,255,255,0.76)">
-              Offer review workspace
+              Affiliate offers dashboard
             </Text>
           </Box>
         </HStack>
@@ -85,7 +85,7 @@ export default function Navigator({ ...styles }) {
           mb={4}
           px={3}
         >
-          Connect sources, sync offers, review changes.
+          Collect offers from affiliate networks and keep them in one format.
         </Text>
         <Box
           display={{ base: burgerMenuOpen ? "block" : "none", lg: "block" }}
@@ -100,7 +100,7 @@ export default function Navigator({ ...styles }) {
             Workspace
           </Text>
           <Text mt={1} fontSize="sm" color="white" fontWeight="700">
-            Keep offer changes clean and current.
+            Sync sources, check updates, publish cleaner offer data.
           </Text>
         </Box>
         <Divider borderColor="whiteAlpha.200" mb={4} />
@@ -166,7 +166,7 @@ export default function Navigator({ ...styles }) {
           letterSpacing="0.18em"
           fontWeight="700"
         >
-          REVIEW
+          OFFERS
         </Text>
         <RouterLink
           to="/links"
@@ -186,7 +186,7 @@ export default function Navigator({ ...styles }) {
           <Text
             display={{ base: burgerMenuOpen ? "inline-block" : "none", lg: "inline-block" }}
             >
-            Review queue
+            Updates
           </Text>
         </RouterLink>
 

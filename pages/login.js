@@ -49,7 +49,7 @@ export default function LoginPage() {
         <Header
           eyebrow="Authentication"
           title="Sign in to your workspace"
-          subtitle="Use your account to open the review queue and manage source settings for this workspace."
+          subtitle="Use your account to open offer updates and manage source settings for this workspace."
         />
         <SimpleGrid columns={{ base: 1, md: 3 }} spacing={3} mt={7}>
           <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">

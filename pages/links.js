@@ -163,9 +163,9 @@ export default function LinksPage() {
       <VStack align="stretch" spacing={5}>
         <SectionBox bg="rgba(255,255,255,0.98)">
           <Header
-            eyebrow="Review workspace"
-            title="Review offer changes"
-            subtitle="Sync the latest offers, open a change, and approve or dismiss it with the details you need in one place."
+            eyebrow="Offer updates"
+            title="Check incoming changes from your affiliate sources"
+            subtitle="This page shows coupons and sale updates that changed since the last sync so you can decide what should be kept."
           />
           <HStack spacing={3} mt={6} flexWrap="wrap">
             <RouterLink
@@ -175,7 +175,7 @@ export default function LinksPage() {
               bg="transparent"
               border="1px solid rgba(15, 17, 23, 0.12)"
             >
-              Reload queue
+              Refresh updates
             </RouterLink>
             <RouterLink
               to="/networks"
@@ -190,13 +190,13 @@ export default function LinksPage() {
           <SimpleGrid columns={{ base: 1, md: 3 }} spacing={3} mt={7}>
             <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.04)">
               <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500">
-                Waiting now
+                Updates
               </Text>
               <Text mt={2} fontSize="2xl" fontWeight="700" color="ink.900">
                 {items.length}
               </Text>
               <Text mt={1} fontSize="sm" color="ink.600">
-                changes waiting for review
+                incoming offer changes waiting for review
               </Text>
             </Box>
             <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.04)">
@@ -241,7 +241,7 @@ export default function LinksPage() {
             </Text>
             <Text color="ink.600" mt={2} maxW="44ch">
               Save source credentials and choose merchants before you can build a
-              review queue.
+              stream of offer updates.
             </Text>
             <RouterLink
               to="/networks"

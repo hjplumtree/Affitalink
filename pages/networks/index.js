@@ -10,7 +10,7 @@ export default function index() {
         <Header
           eyebrow="Sources"
           title="Connect the sources you want to monitor"
-          subtitle="Save credentials, test the connection, and choose which merchants should feed the review queue."
+          subtitle="Save credentials, test the connection, and choose which merchants should feed your incoming offer updates."
         />
         <SimpleGrid columns={{ base: 1, md: 3 }} spacing={3} mt={7}>
           <Box p={4} borderRadius="20px" bg="rgba(15,17,23,0.04)">

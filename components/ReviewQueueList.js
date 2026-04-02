@@ -17,13 +17,13 @@ export default function ReviewQueueList({ items, selectedId, onSelect }) {
           textTransform="uppercase"
           color="brand.500"
         >
-          No pending changes
+          No new updates
         </Text>
         <Text mt={3} fontSize="2xl" fontWeight="700" letterSpacing="-0.03em" color="ink.900">
-          All caught up
+          No offer changes to review
         </Text>
         <Text color="ink.600" mt={2} maxW="42ch">
-          No review items are waiting right now. Run a sync to check for new changes.
+          Nothing new came in from the selected source. Run another update check when you want the latest changes.
         </Text>
       </Box>
     );
@@ -49,13 +49,13 @@ export default function ReviewQueueList({ items, selectedId, onSelect }) {
       >
         <Box>
           <Text fontSize="xs" fontWeight="700" letterSpacing="0.18em" textTransform="uppercase" color="brand.500">
-            Review queue
+            Offer updates
           </Text>
           <Text mt={1} fontSize="lg" fontWeight="700" color="ink.900">
-            Open items
+            Changes to review
           </Text>
           <Text mt={1} fontSize="sm" color="ink.600">
-            Pick an item, review the change, then approve or dismiss it.
+            Pick an update, compare the fields that changed, then keep or dismiss it.
           </Text>
         </Box>
         <Badge
@@ -66,7 +66,7 @@ export default function ReviewQueueList({ items, selectedId, onSelect }) {
           bg="rgba(15, 17, 23, 0.06)"
           color="ink.700"
         >
-          {items.length} open
+          {items.length} pending
         </Badge>
       </Flex>
       <VStack align="stretch" spacing={0}>

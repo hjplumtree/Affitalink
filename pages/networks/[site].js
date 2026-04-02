@@ -165,7 +165,7 @@ export default function Site() {
             <Header
               eyebrow="Source settings"
               title={`Set up ${network_site_name?.toUpperCase()}`}
-              subtitle="Save credentials, test the connection, and choose which merchants should appear in the review queue."
+              subtitle="Save credentials, test the connection, and choose which merchants should appear in your incoming offer updates."
             />
             <Text mt={5} fontSize="sm" color="ink.600" maxW="48ch">
               Set up the source here, then go back to the queue when the connection is working.

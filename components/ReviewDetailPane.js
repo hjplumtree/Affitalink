@@ -65,13 +65,13 @@ export default function ReviewDetailPane({ item, onAction, acting, showBack, onB
         minH="520px"
       >
         <Text fontSize="xs" fontWeight="700" letterSpacing="0.18em" textTransform="uppercase" color="brand.500">
-          Detail pane
+          Update details
         </Text>
         <Text mt={3} fontSize="2xl" fontWeight="700" color="ink.900">
-          Select an item to review
+          Select an update
         </Text>
         <Text color="ink.600" mt={2} maxW="46ch">
-          Open a change from the queue to compare the old value and the new value.
+          Open an update from the list to compare the old values with the latest values from the source.
         </Text>
       </Box>
     );
@@ -120,10 +120,10 @@ export default function ReviewDetailPane({ item, onAction, acting, showBack, onB
 
         <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.03)">
           <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500" mb={2}>
-            Review summary
+            Update summary
           </Text>
           <Text fontSize="lg" fontWeight="600" mb={2} color="ink.900">
-            Why this changed
+            Why this update was flagged
           </Text>
           <Text color="ink.700">{item.reason}</Text>
           <HStack spacing={2} mt={2}>
@@ -137,7 +137,7 @@ export default function ReviewDetailPane({ item, onAction, acting, showBack, onB
         <Divider borderColor="rgba(15, 17, 23, 0.08)" />
         <VStack align="stretch" spacing={3}>
           <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500">
-            What changed
+            Changed fields
           </Text>
           <DiffRow
             label="Coupon code"
@@ -192,7 +192,7 @@ export default function ReviewDetailPane({ item, onAction, acting, showBack, onB
             isLoading={acting === "approve"}
             variant="accent"
           >
-            Approve change
+            Keep update
           </Button>
           <Button
             variant="outline"
@@ -200,7 +200,7 @@ export default function ReviewDetailPane({ item, onAction, acting, showBack, onB
             onClick={() => onAction("dismiss")}
             isLoading={acting === "dismiss"}
           >
-            Dismiss change
+            Dismiss update
           </Button>
         </HStack>
       </VStack>
