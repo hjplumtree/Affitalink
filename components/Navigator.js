@@ -6,6 +6,7 @@ import {
   FaNetworkWired,
   FaLink,
   FaHome,
+  FaTags,
   FaChevronLeft,
   FaChevronRight,
   FaSignInAlt,
@@ -169,8 +170,29 @@ export default function Navigator({ ...styles }) {
           OFFERS
         </Text>
         <RouterLink
-          to="/links"
+          to="/offers"
           mt={{ base: burgerMenuOpen ? 3 : 0, lg: 0 }}
+          color="whiteAlpha.900"
+          _hover={{ bg: "rgba(255,255,255,0.08)" }}
+        >
+          <Icon
+            width="18px"
+            height="18px"
+            as={FaTags}
+            justifyContent={{
+              base: burgerMenuOpen ? "stretch" : "center",
+              lg: "stretch",
+            }}
+          />
+          <Text
+            display={{ base: burgerMenuOpen ? "inline-block" : "none", lg: "inline-block" }}
+          >
+            Offers
+          </Text>
+        </RouterLink>
+        <RouterLink
+          to="/links"
+          mt={3}
           color="whiteAlpha.900"
           _hover={{ bg: "rgba(255,255,255,0.08)" }}
         >

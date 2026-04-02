@@ -15,8 +15,17 @@ export default function Home() {
               subtitle="Connect your affiliate sources, pull the latest coupons and sales, and keep them in one consistent format instead of checking each network by hand."
             />
             <HStack mt={6} spacing={3} flexWrap="wrap">
-              <RouterLink to="/links" display="inline-flex" width="fit-content">
-                View updates
+              <RouterLink to="/offers" display="inline-flex" width="fit-content">
+                View offers
+              </RouterLink>
+              <RouterLink
+                to="/links"
+                display="inline-flex"
+                width="fit-content"
+                bg="transparent"
+                border="1px solid rgba(15, 17, 23, 0.12)"
+              >
+                Check updates
               </RouterLink>
               <RouterLink
                 to="/networks"
@@ -162,13 +171,13 @@ export default function Home() {
           </Link>
         </Text>
         <RouterLink
-          to="/networks"
+          to="/offers"
           mt={5}
           display="inline-flex"
           width="fit-content"
           border="1px solid rgba(139, 77, 255, 0.16)"
         >
-          Connect a source
+          View offer list
         </RouterLink>
       </SectionBox>
     </VStack>

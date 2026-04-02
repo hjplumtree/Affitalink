@@ -16,6 +16,7 @@ function freshModules() {
     "../pages/api/connectors/index.js",
     "../pages/api/connectors/[network].js",
     "../pages/api/connectors/[network]/test.js",
+    "../pages/api/offers/index.js",
     "../pages/api/sync/[network].js",
     "../pages/api/review-items/index.js",
     "../pages/api/review-items/[id].js",
@@ -101,6 +102,7 @@ test("API workflow covers connector setup, sync, review action, and health summa
   const connectorsIndexHandler = loadApiHandler("../pages/api/connectors/index.js");
   const connectorHandler = loadApiHandler("../pages/api/connectors/[network].js");
   const connectorTestHandler = loadApiHandler("../pages/api/connectors/[network]/test.js");
+  const offersHandler = loadApiHandler("../pages/api/offers/index.js");
   const syncHandler = loadApiHandler("../pages/api/sync/[network].js");
   const reviewItemsHandler = loadApiHandler("../pages/api/review-items/index.js");
   const reviewItemHandler = loadApiHandler("../pages/api/review-items/[id].js");
@@ -148,6 +150,16 @@ test("API workflow covers connector setup, sync, review action, and health summa
   assert.equal(syncResponse.statusCode, 200);
   assert.equal(syncResponse.payload.ok, true);
   assert.equal(syncResponse.payload.syncRun.status, "success");
+
+  const offersResponse = await runHandler(offersHandler, {
+    method: "GET",
+    query: {},
+  });
+
+  assert.equal(offersResponse.statusCode, 200);
+  assert.equal(offersResponse.payload.ok, true);
+  assert.ok(offersResponse.payload.offers.length > 0);
+  assert.equal(offersResponse.payload.offers[0].network, "testnet");
 
   const reviewItemsResponse = await runHandler(reviewItemsHandler, {
     method: "GET",
