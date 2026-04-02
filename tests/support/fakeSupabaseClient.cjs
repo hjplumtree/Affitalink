@@ -146,6 +146,28 @@ function createInsertResult(rows) {
   };
 }
 
+function validateRowsBeforeWrite(state, table, rows) {
+  if (table !== "review_items") return;
+
+  for (const row of rows) {
+    if (!row.sync_run_id) {
+      throw new Error(
+        'insert or update on table "review_items" violates foreign key constraint "review_items_sync_run_id_fkey"'
+      );
+    }
+
+    const syncRunExists = (state.sync_runs || []).some(
+      (syncRun) => syncRun.id === row.sync_run_id
+    );
+
+    if (!syncRunExists) {
+      throw new Error(
+        'insert or update on table "review_items" violates foreign key constraint "review_items_sync_run_id_fkey"'
+      );
+    }
+  }
+}
+
 function createFakeSupabaseClient(initialState = {}) {
   const state = {
     workspaces: clone(initialState.workspaces || []),
@@ -169,11 +191,13 @@ function createFakeSupabaseClient(initialState = {}) {
         },
         insert(rows) {
           const nextRows = Array.isArray(rows) ? clone(rows) : [clone(rows)];
+          validateRowsBeforeWrite(state, table, nextRows);
           state[table] = (state[table] || []).concat(nextRows);
           return createInsertResult(nextRows);
         },
         upsert(rows, { onConflict = "id" } = {}) {
           const nextRows = Array.isArray(rows) ? clone(rows) : [clone(rows)];
+          validateRowsBeforeWrite(state, table, nextRows);
           const currentRows = state[table] || [];
 
           for (const row of nextRows) {
