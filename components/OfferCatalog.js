@@ -2,6 +2,7 @@ import {
   Badge,
   Box,
   Button,
+  Code,
   Flex,
   HStack,
   Input,
@@ -11,6 +12,7 @@ import {
   Stack,
   Text,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
 import { useMemo, useState } from "react";
 
@@ -27,8 +29,49 @@ function formatDate(value) {
   }
 }
 
+function buildOfferPayload(offer) {
+  return {
+    network: offer.network,
+    merchantName: offer.merchantName,
+    title: offer.title,
+    description: offer.description,
+    couponCode: offer.couponCode,
+    destinationUrl: offer.destinationUrl,
+    sourceUrl: offer.sourceUrl,
+    startsAt: offer.startsAt,
+    endsAt: offer.endsAt,
+    status: offer.status,
+    updatedAt: offer.updatedAt || offer.lastSeenAt,
+  };
+}
+
+function buildOfferCopyText(offer) {
+  return [
+    `Merchant: ${offer.merchantName}`,
+    `Title: ${offer.title}`,
+    `Coupon: ${offer.couponCode || "No code"}`,
+    `Destination: ${offer.destinationUrl || ""}`,
+    `Source: ${offer.sourceUrl || ""}`,
+    `Starts: ${offer.startsAt || ""}`,
+    `Ends: ${offer.endsAt || ""}`,
+    `Network: ${offer.network || ""}`,
+  ].join("\n");
+}
+
 export default function OfferCatalog({ offers, networks, activeNetwork, onNetworkChange }) {
   const [search, setSearch] = useState("");
+  const toast = useToast();
+
+  const copyValue = async (value, label) => {
+    if (!value) return;
+    await navigator.clipboard.writeText(value);
+    toast({
+      title: `${label} copied`,
+      status: "info",
+      position: "top-right",
+      duration: 900,
+    });
+  };
 
   const filteredOffers = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -149,6 +192,43 @@ export default function OfferCatalog({ offers, networks, activeNetwork, onNetwor
               <SimpleGrid columns={{ base: 1, md: 2 }} spacing={3}>
                 <Box p={3} borderRadius="18px" bg="rgba(15,17,23,0.04)">
                   <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="brand.500">
+                    Coupon code
+                  </Text>
+                  <HStack mt={2} justify="space-between" align="start">
+                    <Text fontSize="sm" color="ink.800" fontWeight="600" noOfLines={2}>
+                      {offer.couponCode || "No code needed"}
+                    </Text>
+                    <Button
+                      size="xs"
+                      variant="outline"
+                      onClick={() => copyValue(offer.couponCode || "No code needed", "Coupon code")}
+                    >
+                      Copy
+                    </Button>
+                  </HStack>
+                </Box>
+                <Box p={3} borderRadius="18px" bg="rgba(15,17,23,0.04)">
+                  <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="brand.500">
+                    Merchant
+                  </Text>
+                  <HStack mt={2} justify="space-between" align="start">
+                    <Text fontSize="sm" color="ink.800" fontWeight="600" noOfLines={2}>
+                      {offer.merchantName}
+                    </Text>
+                    <Button
+                      size="xs"
+                      variant="outline"
+                      onClick={() => copyValue(offer.merchantName, "Merchant")}
+                    >
+                      Copy
+                    </Button>
+                  </HStack>
+                </Box>
+              </SimpleGrid>
+
+              <SimpleGrid columns={{ base: 1, md: 2 }} spacing={3}>
+                <Box p={3} borderRadius="18px" bg="rgba(15,17,23,0.04)">
+                  <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="brand.500">
                     Starts
                   </Text>
                   <Text mt={1} fontSize="sm" color="ink.800">
@@ -165,7 +245,58 @@ export default function OfferCatalog({ offers, networks, activeNetwork, onNetwor
                 </Box>
               </SimpleGrid>
 
+              <Box p={4} borderRadius="22px" bg="rgba(15,17,23,0.03)">
+                <Flex justify="space-between" align={{ base: "start", md: "center" }} gap={3} direction={{ base: "column", md: "row" }}>
+                  <Box>
+                    <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="brand.500">
+                      Copy-ready data
+                    </Text>
+                    <Text mt={1} fontSize="sm" color="ink.600">
+                      Use this offer as raw input for docs, sheets, CMS entries, or prompts.
+                    </Text>
+                  </Box>
+                  <HStack spacing={2} flexWrap="wrap">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => copyValue(buildOfferCopyText(offer), "Offer block")}
+                    >
+                      Copy block
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() =>
+                        copyValue(JSON.stringify(buildOfferPayload(offer), null, 2), "Offer JSON")
+                      }
+                    >
+                      Copy JSON
+                    </Button>
+                  </HStack>
+                </Flex>
+                <Code
+                  display="block"
+                  mt={3}
+                  whiteSpace="pre-wrap"
+                  borderRadius="18px"
+                  p={4}
+                  bg="rgba(24, 34, 47, 0.04)"
+                  color="ink.800"
+                >
+                  {JSON.stringify(buildOfferPayload(offer), null, 2)}
+                </Code>
+              </Box>
+
               <Stack direction={{ base: "column", md: "row" }} spacing={3}>
+                {offer.destinationUrl ? (
+                  <Button
+                    variant="outline"
+                    width={{ base: "100%", md: "fit-content" }}
+                    onClick={() => copyValue(offer.destinationUrl, "Destination URL")}
+                  >
+                    Copy destination
+                  </Button>
+                ) : null}
                 {offer.destinationUrl ? (
                   <Button
                     as={Link}
@@ -175,6 +306,15 @@ export default function OfferCatalog({ offers, networks, activeNetwork, onNetwor
                     width={{ base: "100%", md: "fit-content" }}
                   >
                     Open destination
+                  </Button>
+                ) : null}
+                {offer.sourceUrl ? (
+                  <Button
+                    variant="outline"
+                    width={{ base: "100%", md: "fit-content" }}
+                    onClick={() => copyValue(offer.sourceUrl, "Source URL")}
+                  >
+                    Copy source
                   </Button>
                 ) : null}
                 {offer.sourceUrl ? (
