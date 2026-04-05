@@ -6,12 +6,30 @@ import { useAuth } from "./AuthProvider";
 
 export default function RequireAuth({ children }) {
   const router = useRouter();
-  const { user, loading } = useAuth();
+  const { user, loading, clientError } = useAuth();
 
   useEffect(() => {
-    if (loading || user) return;
+    if (loading || user || clientError) return;
     router.replace(`/login?next=${encodeURIComponent(router.asPath)}`);
-  }, [loading, user, router]);
+  }, [clientError, loading, user, router]);
+
+  if (clientError) {
+    return (
+      <div className="grid min-h-[60vh] place-items-center">
+        <div className="flex max-w-md flex-col items-center gap-4 text-center">
+          <div className="space-y-2">
+            <p className="text-sm font-semibold text-foreground">Supabase configuration is missing</p>
+            <p className="text-sm text-muted-foreground">
+              Studio pages need `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in the deployment environment.
+            </p>
+          </div>
+          <Link href="/login">
+            <Button variant="outline">Open sign in</Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   if (loading || !user) {
     return (

@@ -2,25 +2,52 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { getSupabaseBrowserClient } from "../lib/client/supabase";
 
 const AuthContext = createContext(null);
-const fallbackSupabase = getSupabaseBrowserClient();
+const missingClientError = new Error(
+  "Supabase browser client is unavailable. Check NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY."
+);
+
 const fallbackAuthValue = {
-  supabase: fallbackSupabase,
+  supabase: null,
   session: null,
   user: null,
-  loading: false,
+  loading: true,
   async getAccessToken() {
-    const { data } = await fallbackSupabase.auth.getSession();
-    return data.session?.access_token || null;
+    return null;
   },
   async signOut() {},
 };
 
 export function AuthProvider({ children }) {
-  const supabase = useMemo(() => getSupabaseBrowserClient(), []);
+  const [supabase, setSupabase] = useState(null);
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [clientError, setClientError] = useState(null);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    let mounted = true;
+
+    try {
+      const client = getSupabaseBrowserClient();
+      if (!mounted) return undefined;
+      setSupabase(client);
+      setClientError(null);
+    } catch (error) {
+      if (!mounted) return undefined;
+      setClientError(error instanceof Error ? error : missingClientError);
+      setLoading(false);
+      return undefined;
+    }
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!supabase) return undefined;
+
     let mounted = true;
 
     supabase.auth.getSession().then(({ data }) => {
@@ -49,15 +76,18 @@ export function AuthProvider({ children }) {
       session,
       user: session?.user || null,
       loading,
+      clientError,
       async getAccessToken() {
+        if (!supabase) return null;
         const { data } = await supabase.auth.getSession();
         return data.session?.access_token || null;
       },
       async signOut() {
+        if (!supabase) return;
         await supabase.auth.signOut();
       },
     }),
-    [loading, session, supabase]
+    [clientError, loading, session, supabase]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

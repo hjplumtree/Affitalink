@@ -11,7 +11,7 @@ import { Separator } from "../components/ui/separator";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { supabase, user, loading: authLoading } = useAuth();
+  const { supabase, user, loading: authLoading, clientError } = useAuth();
   const [mode, setMode] = useState("sign_in");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -67,6 +67,9 @@ export default function LoginPage() {
         setSiteUrl("");
         setNotes("");
       } else {
+        if (!supabase) {
+          throw clientError || new Error("Supabase client is unavailable");
+        }
         const response =
           mode === "sign_in"
             ? await supabase.auth.signInWithPassword({ email, password })
@@ -205,7 +208,7 @@ export default function LoginPage() {
                 Early access
               </Button>
             </div>
-            <div>
+          <div>
               <CardTitle>
                 {mode === "sign_in"
                   ? "Enter workspace"
@@ -223,6 +226,12 @@ export default function LoginPage() {
             </div>
           </CardHeader>
           <CardContent className="space-y-5">
+            {clientError && mode !== "waitlist" ? (
+              <div className="rounded-[22px] border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800">
+                Supabase auth is not configured for this environment yet. Add
+                `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` before using sign in.
+              </div>
+            ) : null}
             {mode === "waitlist" ? (
               <div className="space-y-5">
                 <div className="space-y-2">

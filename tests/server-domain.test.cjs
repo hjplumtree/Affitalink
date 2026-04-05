@@ -1,5 +1,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
 const { createFakeSupabaseClient } = require("./support/fakeSupabaseClient.cjs");
 
 function freshModules() {
@@ -99,4 +101,17 @@ test("review item transitions update status explicitly", async () => {
   const approved = await updateReviewItemStatus(item.id, "approve");
 
   assert.equal(approved.status, "approved");
+});
+
+test("auth provider avoids eager Supabase client creation at module load", () => {
+  const source = fs.readFileSync(
+    path.join(__dirname, "../components/AuthProvider.js"),
+    "utf8"
+  );
+
+  assert.equal(source.includes("const fallbackSupabase = getSupabaseBrowserClient();"), false);
+  assert.match(
+    source,
+    /useEffect\(\(\) => \{\s+if \(typeof window === "undefined"\) return;/
+  );
 });
