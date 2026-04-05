@@ -22,10 +22,10 @@ export default function ReviewQueueList({ items, selectedId, onSelect }) {
       <CardHeader className="border-b border-border bg-muted/40">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
-            <Badge className="w-fit">Offer updates</Badge>
-            <CardTitle className="mt-3 text-2xl">Changes to review</CardTitle>
+            <Badge className="w-fit">Review queue</Badge>
+            <CardTitle className="mt-3 text-2xl">Incoming changes</CardTitle>
             <CardDescription className="mt-2 text-base leading-7">
-              Pick an update, compare the fields that changed, then keep or dismiss it.
+              Pick a change, compare the fields that changed, then keep or dismiss it.
             </CardDescription>
           </div>
           <Badge variant="outline" className="w-fit md:self-start">

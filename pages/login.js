@@ -1,4 +1,5 @@
-import { useState } from "react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { ArrowRight, KeyRound, ShieldCheck, Users } from "lucide-react";
 import { useAuth } from "../components/AuthProvider";
@@ -10,34 +11,76 @@ import { Separator } from "../components/ui/separator";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { supabase } = useAuth();
+  const { supabase, user, loading: authLoading } = useAuth();
   const [mode, setMode] = useState("sign_in");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [siteUrl, setSiteUrl] = useState("");
+  const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
-  const next = typeof router.query.next === "string" ? router.query.next : "/links";
+  const next = typeof router.query.next === "string" ? router.query.next : "/networks";
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    if (router.query.mode === "sign_up") {
+      setMode("sign_up");
+    } else if (router.query.mode === "waitlist") {
+      setMode("waitlist");
+    } else if (router.query.mode === "sign_in") {
+      setMode("sign_in");
+    }
+  }, [router.isReady, router.query.mode]);
+
+  useEffect(() => {
+    if (authLoading || !user) return;
+    router.replace(next);
+  }, [authLoading, user, next, router]);
 
   const handleSubmit = async () => {
     setLoading(true);
     setError("");
     setMessage("");
     try {
-      const response =
-        mode === "sign_in"
-          ? await supabase.auth.signInWithPassword({ email, password })
-          : await supabase.auth.signUp({ email, password });
-
-      if (response.error) {
-        throw response.error;
-      }
-
-      if (mode === "sign_up") {
-        setMessage("Account created. If email confirmation is enabled, verify first.");
+      if (mode === "waitlist") {
+        const response = await fetch("/api/early-access", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            name,
+            siteUrl,
+            notes,
+            source: "login_waitlist",
+          }),
+        });
+        const payload = await response.json();
+        if (!response.ok) {
+          throw new Error(payload.error?.message || "Could not request access");
+        }
+        setMessage("Request received. We will reach out when access is available.");
+        setEmail("");
+        setName("");
+        setSiteUrl("");
+        setNotes("");
       } else {
-        router.replace(next);
+        const response =
+          mode === "sign_in"
+            ? await supabase.auth.signInWithPassword({ email, password })
+            : await supabase.auth.signUp({ email, password });
+
+        if (response.error) {
+          throw response.error;
+        }
+
+        if (mode === "sign_up") {
+          setMessage("Account created. If email confirmation is enabled, verify first.");
+        } else {
+          router.replace(next);
+        }
       }
     } catch (nextError) {
       setError(nextError.message || "Authentication failed");
@@ -54,8 +97,8 @@ export default function LoginPage() {
           <div className="space-y-3">
             <CardTitle className="text-4xl">Sign in to your workspace</CardTitle>
             <CardDescription className="max-w-3xl text-base leading-7">
-              Use your account to open offer updates, check source health, and manage the
-              affiliate sources attached to your workspace.
+              Use your account to open the studio, connect sources, review incoming changes, and
+              manage the offer library attached to your workspace.
             </CardDescription>
           </div>
           <div className="grid gap-3 md:grid-cols-3">
@@ -65,7 +108,7 @@ export default function LoginPage() {
               </div>
               <p className="font-semibold">Go straight to the work</p>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                Sign in and jump back into updates, offers, and source settings without local-only state.
+                Sign in and jump back into source setup, review, and library work without local-only state.
               </p>
             </div>
             <div className="rounded-[24px] bg-muted p-5">
@@ -94,25 +137,32 @@ export default function LoginPage() {
         <Card className="border-transparent bg-[#11141d] text-white shadow-lift">
           <CardHeader>
             <Badge variant="outline" className="w-fit border-white/15 text-white/70">
-              Access
+              First run
             </Badge>
-            <CardTitle className="text-white">Auth decides what the dashboard unlocks</CardTitle>
+            <CardTitle className="text-white">The first useful path is simple</CardTitle>
             <CardDescription className="text-white/70">
-              Source updates, queue actions, and offer selection are all tied to the signed-in workspace.
+              You do not need publishing automation to get value. The first loop is sources, review, and library.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-5">
             <div>
-              <p className="font-semibold">Clear workspace access</p>
+              <p className="font-semibold">1. Connect a source</p>
               <p className="mt-1 text-sm leading-6 text-white/70">
-                Sign in only reveals the workspaces your account belongs to.
+                Start in source settings and connect the networks you already use.
               </p>
             </div>
             <Separator className="bg-white/10" />
             <div>
-              <p className="font-semibold">No extra admin steps</p>
+              <p className="font-semibold">2. Review incoming changes</p>
               <p className="mt-1 text-sm leading-6 text-white/70">
-                Once your account is in a workspace, you can get back to reviewing and moving offers.
+                Pull changes into one queue so you can see what is worth keeping.
+              </p>
+            </div>
+            <Separator className="bg-white/10" />
+            <div>
+              <p className="font-semibold">3. Build the library</p>
+              <p className="mt-1 text-sm leading-6 text-white/70">
+                Keep a cleaner inventory before worrying about downstream publishing.
               </p>
             </div>
             <Separator className="bg-white/10" />
@@ -147,17 +197,84 @@ export default function LoginPage() {
               >
                 Create account
               </Button>
+              <Button
+                type="button"
+                variant={mode === "waitlist" ? "default" : "outline"}
+                onClick={() => setMode("waitlist")}
+              >
+                Early access
+              </Button>
             </div>
             <div>
-              <CardTitle>{mode === "sign_in" ? "Enter workspace" : "Create workspace access"}</CardTitle>
+              <CardTitle>
+                {mode === "sign_in"
+                  ? "Enter workspace"
+                  : mode === "sign_up"
+                    ? "Create workspace access"
+                    : "Request early access"}
+              </CardTitle>
               <CardDescription>
                 {mode === "sign_in"
                   ? "Use the account already connected to your workspace."
-                  : "Create a new account. If email confirmation is enabled, you may need to verify first."}
+                  : mode === "sign_up"
+                    ? "Create a new account. If email confirmation is enabled, you may need to verify first."
+                    : "Tell us who you are and what kind of coupon or deal site you run."}
               </CardDescription>
             </div>
           </CardHeader>
           <CardContent className="space-y-5">
+            {mode === "waitlist" ? (
+              <div className="space-y-5">
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-foreground" htmlFor="waitlist-name">
+                    Name
+                  </label>
+                  <Input
+                    id="waitlist-name"
+                    type="text"
+                    value={name}
+                    onChange={(event) => setName(event.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-foreground" htmlFor="waitlist-email">
+                    Email
+                  </label>
+                  <Input
+                    id="waitlist-email"
+                    type="email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-foreground" htmlFor="waitlist-site">
+                    Site URL
+                  </label>
+                  <Input
+                    id="waitlist-site"
+                    type="url"
+                    value={siteUrl}
+                    onChange={(event) => setSiteUrl(event.target.value)}
+                    placeholder="https://example.com"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-foreground" htmlFor="waitlist-notes">
+                    What do you want help with?
+                  </label>
+                  <textarea
+                    id="waitlist-notes"
+                    value={notes}
+                    onChange={(event) => setNotes(event.target.value)}
+                    rows={4}
+                    className="min-h-[120px] w-full rounded-[20px] border border-input bg-background px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+                    placeholder="Example: I manage coupon updates across Rakuten and CJ and want one review queue."
+                  />
+                </div>
+              </div>
+            ) : (
+              <>
             <div className="space-y-2">
               <label className="text-sm font-semibold text-foreground" htmlFor="email">
                 Email
@@ -180,6 +297,8 @@ export default function LoginPage() {
                 onChange={(event) => setPassword(event.target.value)}
               />
             </div>
+              </>
+            )}
             {error ? (
               <div className="rounded-[22px] border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
                 {error}
@@ -191,12 +310,23 @@ export default function LoginPage() {
               </div>
             ) : null}
             <Button className="w-full" onClick={handleSubmit} disabled={loading}>
-              {loading ? "Working..." : mode === "sign_in" ? "Enter workspace" : "Create account"}
+              {loading
+                ? "Working..."
+                : mode === "sign_in"
+                  ? "Enter workspace"
+                  : mode === "sign_up"
+                    ? "Create account"
+                    : "Request early access"}
             </Button>
             <p className="text-sm leading-6 text-muted-foreground">
               {mode === "sign_in"
-                ? "Need an account? Switch to create account."
-                : "Already have an account? Switch back to sign in."}
+                ? "Need access first? Use the early access tab."
+                : mode === "sign_up"
+                  ? "Already have an account? Switch back to sign in."
+                  : "Already have an account? Switch back to sign in."}
+            </p>
+            <p className="text-sm leading-6 text-muted-foreground">
+              Just looking around? <Link href="/offers" className="font-semibold text-foreground">Browse the library</Link> first.
             </p>
           </CardContent>
         </Card>

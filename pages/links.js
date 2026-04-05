@@ -165,18 +165,18 @@ export default function LinksPage() {
       <div className="space-y-5">
         <Card className="border-white/60 bg-white/95">
           <CardHeader className="space-y-5">
-            <Badge className="w-fit">Offer updates</Badge>
+            <Badge className="w-fit">Review</Badge>
             <div className="space-y-3">
-              <CardTitle className="text-4xl">Check incoming changes from your affiliate sources</CardTitle>
+              <CardTitle className="text-4xl">Review incoming changes from your affiliate sources</CardTitle>
               <CardDescription className="max-w-3xl text-base leading-7">
-                This workspace shows coupons and sale updates that changed since the last sync so you can decide what should be kept and what should be ignored.
+                This is the review queue. Check what changed since the last sync, then decide what should be kept and what should be ignored before it reaches the library.
               </CardDescription>
             </div>
             <div className="grid gap-3 md:grid-cols-3">
               <div className="rounded-[24px] bg-muted p-5">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">Updates</p>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">Review queue</p>
                 <p className="mt-2 font-display text-3xl font-bold tracking-[-0.03em]">{items.length}</p>
-                <p className="mt-1 text-sm text-muted-foreground">incoming offer changes waiting for review</p>
+                <p className="mt-1 text-sm text-muted-foreground">incoming changes waiting for review</p>
               </div>
               <div className="rounded-[24px] bg-muted p-5">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">Sources</p>
@@ -192,7 +192,7 @@ export default function LinksPage() {
           </CardHeader>
           <CardContent className="flex flex-wrap gap-2 pt-0">
             <Link href="/links">
-              <Button variant="outline">Refresh updates</Button>
+              <Button variant="outline">Refresh review queue</Button>
             </Link>
             <Link href="/networks">
               <Button variant="outline">Manage sources</Button>
@@ -213,7 +213,7 @@ export default function LinksPage() {
               <Badge className="w-fit">Setup required</Badge>
               <CardTitle>Connect a source first</CardTitle>
               <CardDescription className="max-w-2xl text-base leading-7">
-                Save source credentials and choose merchants before you can build a stream of offer updates.
+                Save source credentials and choose merchants before you can build a review queue.
               </CardDescription>
             </CardHeader>
             <CardContent>

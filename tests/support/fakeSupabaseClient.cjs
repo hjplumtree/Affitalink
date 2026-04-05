@@ -177,6 +177,14 @@ function createFakeSupabaseClient(initialState = {}) {
     review_items: clone(initialState.review_items || []),
   };
 
+  if (state.coupon_snapshots) {
+    state.coupon_snapshots = state.coupon_snapshots.map((row) => ({
+      publish_status: "draft",
+      published_at: null,
+      ...row,
+    }));
+  }
+
   return {
     from(table) {
       return {

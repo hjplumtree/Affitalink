@@ -1,5 +1,6 @@
 const { getOffers } = require("../../../lib/server/syncEngine.cjs");
 const { resolveRequestContext } = require("../../../lib/server/requestAuth.cjs");
+const { getPublicWorkspaceId } = require("../../../lib/server/dataStore.cjs");
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -7,14 +8,18 @@ export default async function handler(req, res) {
   }
 
   try {
-    const context = await resolveRequestContext(req);
-    const { network, status } = req.query;
+    const { network, status, publishStatus } = req.query;
+    const workspaceId =
+      req.query.public === "1"
+        ? getPublicWorkspaceId()
+        : (await resolveRequestContext(req)).workspaceId;
     return res.status(200).json({
       ok: true,
       offers: await getOffers({
         network,
         status: status || "active",
-        workspaceId: context.workspaceId,
+        publishStatus: req.query.public === "1" ? publishStatus || "published" : publishStatus,
+        workspaceId,
       }),
     });
   } catch (error) {

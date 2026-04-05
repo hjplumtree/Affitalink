@@ -13,10 +13,14 @@ function freshModules() {
     "../lib/server/crypto.cjs",
     "../lib/server/connectors.cjs",
     "../lib/server/syncEngine.cjs",
+    "../lib/server/earlyAccessStore.cjs",
+    "../lib/appShells.js",
     "../pages/api/connectors/index.js",
     "../pages/api/connectors/[network].js",
     "../pages/api/connectors/[network]/test.js",
+    "../pages/api/early-access.js",
     "../pages/api/offers/index.js",
+    "../pages/api/offers/[id].js",
     "../pages/api/sync/[network].js",
     "../pages/api/review-items/index.js",
     "../pages/api/review-items/[id].js",
@@ -34,6 +38,9 @@ function bootstrapStore() {
   const {
     setRequestContextResolverForTests,
   } = require("../lib/server/requestAuth.cjs");
+  const {
+    resetEarlyAccessInserterForTests,
+  } = require("../lib/server/earlyAccessStore.cjs");
   setSupabaseClientForTests(
     createFakeSupabaseClient({
       workspaces: [{ id: "workspace_default", name: "Default workspace" }],
@@ -44,6 +51,7 @@ function bootstrapStore() {
     workspaceId: "workspace_default",
     role: "owner",
   }));
+  resetEarlyAccessInserterForTests();
 }
 
 function createResponse() {
@@ -103,6 +111,7 @@ test("API workflow covers connector setup, sync, review action, and health summa
   const connectorHandler = loadApiHandler("../pages/api/connectors/[network].js");
   const connectorTestHandler = loadApiHandler("../pages/api/connectors/[network]/test.js");
   const offersHandler = loadApiHandler("../pages/api/offers/index.js");
+  const offerHandler = loadApiHandler("../pages/api/offers/[id].js");
   const syncHandler = loadApiHandler("../pages/api/sync/[network].js");
   const reviewItemsHandler = loadApiHandler("../pages/api/review-items/index.js");
   const reviewItemHandler = loadApiHandler("../pages/api/review-items/[id].js");
@@ -160,6 +169,7 @@ test("API workflow covers connector setup, sync, review action, and health summa
   assert.equal(offersResponse.payload.ok, true);
   assert.ok(offersResponse.payload.offers.length > 0);
   assert.equal(offersResponse.payload.offers[0].network, "testnet");
+  assert.equal(offersResponse.payload.offers[0].publishStatus, "draft");
 
   const reviewItemsResponse = await runHandler(reviewItemsHandler, {
     method: "GET",
@@ -179,6 +189,34 @@ test("API workflow covers connector setup, sync, review action, and health summa
   assert.equal(approveResponse.statusCode, 200);
   assert.equal(approveResponse.payload.item.status, "approved");
 
+  const selectOfferResponse = await runHandler(offerHandler, {
+    method: "POST",
+    query: { id: offersResponse.payload.offers[0].id },
+    body: { action: "select" },
+  });
+
+  assert.equal(selectOfferResponse.statusCode, 200);
+  assert.equal(selectOfferResponse.payload.offer.publishStatus, "selected");
+
+  const publishOfferResponse = await runHandler(offerHandler, {
+    method: "POST",
+    query: { id: offersResponse.payload.offers[0].id },
+    body: { action: "publish" },
+  });
+
+  assert.equal(publishOfferResponse.statusCode, 200);
+  assert.equal(publishOfferResponse.payload.offer.publishStatus, "published");
+
+  const publicOffersResponse = await runHandler(offersHandler, {
+    method: "GET",
+    query: { public: "1" },
+  });
+
+  assert.equal(publicOffersResponse.statusCode, 200);
+  assert.equal(publicOffersResponse.payload.ok, true);
+  assert.equal(publicOffersResponse.payload.offers.length, 1);
+  assert.equal(publicOffersResponse.payload.offers[0].publishStatus, "published");
+
   const healthResponse = await runHandler(healthHandler, {
     method: "GET",
     query: {},
@@ -196,4 +234,55 @@ test("API workflow covers connector setup, sync, review action, and health summa
 
   assert.equal(connectorsIndexResponse.statusCode, 200);
   assert.equal(connectorsIndexResponse.payload.connectors.length, 1);
+});
+
+test("early access API validates email and stores requests", async () => {
+  bootstrapStore();
+
+  const storedRequests = [];
+  const {
+    setEarlyAccessInserterForTests,
+  } = require("../lib/server/earlyAccessStore.cjs");
+  const earlyAccessHandler = loadApiHandler("../pages/api/early-access.js");
+
+  setEarlyAccessInserterForTests(async (record) => {
+    storedRequests.push(record);
+    return { ...record, storage: "test" };
+  });
+
+  const invalidResponse = await runHandler(earlyAccessHandler, {
+    method: "POST",
+    body: { email: "not-an-email" },
+  });
+
+  assert.equal(invalidResponse.statusCode, 400);
+  assert.equal(invalidResponse.payload.ok, false);
+
+  const validResponse = await runHandler(earlyAccessHandler, {
+    method: "POST",
+    body: {
+      email: "owner@example.com",
+      name: "Owner",
+      siteUrl: "https://example.com",
+      notes: "Need one review queue for Rakuten and CJ",
+      source: "test_suite",
+    },
+  });
+
+  assert.equal(validResponse.statusCode, 200);
+  assert.equal(validResponse.payload.ok, true);
+  assert.equal(storedRequests.length, 1);
+  assert.equal(storedRequests[0].email, "owner@example.com");
+  assert.equal(storedRequests[0].source, "test_suite");
+});
+
+test("app shell resolution keeps landing separate from the dashboard", () => {
+  freshModules();
+  const { getShellForPath } = require("../lib/appShells.js");
+
+  assert.equal(getShellForPath("/"), "public");
+  assert.equal(getShellForPath("/login"), "public");
+  assert.equal(getShellForPath("/offers"), "dashboard");
+  assert.equal(getShellForPath("/links"), "dashboard");
+  assert.equal(getShellForPath("/studio/offers"), "dashboard");
 });

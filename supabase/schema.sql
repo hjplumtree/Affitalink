@@ -76,10 +76,18 @@ create table if not exists coupon_snapshots (
   ends_at text not null default '',
   raw_json jsonb not null default '{}'::jsonb,
   status text not null default 'active',
+  publish_status text not null default 'draft',
+  published_at timestamptz,
   last_seen_at timestamptz,
   updated_at timestamptz not null,
   created_at timestamptz not null
 );
+
+alter table coupon_snapshots
+  add column if not exists publish_status text not null default 'draft';
+
+alter table coupon_snapshots
+  add column if not exists published_at timestamptz;
 
 create unique index if not exists coupon_snapshots_connector_logical_key_idx
   on coupon_snapshots (connector_id, logical_key);
@@ -102,6 +110,19 @@ create table if not exists review_items (
   created_at timestamptz not null,
   updated_at timestamptz not null
 );
+
+create table if not exists early_access_requests (
+  id text primary key,
+  email text not null,
+  name text not null default '',
+  site_url text not null default '',
+  notes text not null default '',
+  source text not null default 'website',
+  created_at timestamptz not null default now()
+);
+
+create unique index if not exists early_access_requests_email_idx
+  on early_access_requests (email);
 
 create or replace function private.handle_new_user()
 returns trigger

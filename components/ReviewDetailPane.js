@@ -28,10 +28,10 @@ export default function ReviewDetailPane({ item, onAction, acting, showBack, onB
     return (
       <Card className="min-h-[520px] border-white/60 bg-white/95">
         <CardHeader>
-          <Badge className="w-fit">Update details</Badge>
-          <CardTitle>Select an update</CardTitle>
+          <Badge className="w-fit">Review details</Badge>
+          <CardTitle>Select a change to review</CardTitle>
           <CardDescription className="max-w-2xl text-base leading-7">
-            Open an update from the list to compare the old values with the latest values from the source.
+            Open a change from the queue to compare the old values with the latest values from the source.
           </CardDescription>
         </CardHeader>
       </Card>
@@ -66,7 +66,7 @@ export default function ReviewDetailPane({ item, onAction, acting, showBack, onB
 
         <div className="rounded-[24px] bg-muted/60 p-4">
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
-            Update summary
+            Review summary
           </p>
           <p className="mt-2 text-lg font-semibold text-foreground">Why this update was flagged</p>
           <p className="mt-2 text-sm leading-6 text-foreground/85">{item.reason}</p>
@@ -127,7 +127,7 @@ export default function ReviewDetailPane({ item, onAction, acting, showBack, onB
             onClick={() => onAction("approve")}
             disabled={acting === "approve" || acting === "dismiss"}
           >
-            {acting === "approve" ? "Keeping..." : "Keep update"}
+            {acting === "approve" ? "Keeping..." : "Keep change"}
           </Button>
           <Button
             type="button"
@@ -135,7 +135,7 @@ export default function ReviewDetailPane({ item, onAction, acting, showBack, onB
             onClick={() => onAction("dismiss")}
             disabled={acting === "approve" || acting === "dismiss"}
           >
-            {acting === "dismiss" ? "Dismissing..." : "Dismiss update"}
+            {acting === "dismiss" ? "Dismissing..." : "Dismiss change"}
           </Button>
         </div>
       </CardContent>
