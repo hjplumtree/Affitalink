@@ -52,7 +52,7 @@ The real problem is operational:
 - publishing to the final site is repetitive
 - automation without review reduces quality
 
-AffitaLink exists to reduce that operational drag without giving up editorial control.
+AffitaLink exists to reduce that operational drag without giving up operator control.
 
 ## Product Model
 

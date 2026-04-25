@@ -142,7 +142,7 @@ It can include:
 - source reference
 - expiration
 - status
-- editorial notes
+- review notes
 
 ### Review item
 
@@ -353,7 +353,7 @@ That means AffitaLink should own:
 HerMart should own:
 
 - consumer presentation
-- editorial framing
+- content framing
 - trust and explanation
 - SEO and category navigation
 
