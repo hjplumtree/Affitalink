@@ -2,9 +2,9 @@
 module.exports = {
   darkMode: ["class"],
   content: [
-    "./pages/**/*.{js,jsx}",
-    "./components/**/*.{js,jsx}",
-    "./lib/**/*.{js,jsx}",
+    "./pages/**/*.{js,jsx,ts,tsx}",
+    "./components/**/*.{js,jsx,ts,tsx}",
+    "./lib/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
     extend: {
@@ -16,6 +16,7 @@ module.exports = {
         foreground: "hsl(var(--foreground))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
+          hover: "hsl(var(--primary-hover))",
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
@@ -48,8 +49,9 @@ module.exports = {
         lift: "0 18px 50px rgba(72, 17, 184, 0.12)",
       },
       fontFamily: {
-        sans: ["Plus Jakarta Sans", "Avenir Next", "Segoe UI", "sans-serif"],
-        display: ["Space Grotesk", "Avenir Next", "Segoe UI", "sans-serif"],
+        sans: ["IBM Plex Sans", "Avenir Next", "Segoe UI", "sans-serif"],
+        display: ["IBM Plex Sans", "Avenir Next", "Segoe UI", "sans-serif"],
+        mono: ["IBM Plex Mono", "SFMono-Regular", "monospace"],
       },
     },
   },

@@ -1,0 +1,22 @@
+:root {
+  --hjkit-theme-name: premium-calm;
+  --hjkit-color-role: semantic;
+  --hjkit-font-body: "Inter", system-ui, sans-serif;
+  --hjkit-font-display: "Inter", system-ui, sans-serif;
+  --hjkit-font-size-base: 15px;
+  --hjkit-line-height-base: 1.65;
+  --hjkit-radius-base: 12px;
+  --hjkit-radius-card: 14px;
+  --hjkit-radius-surface: 18px;
+  --hjkit-shadow-card: 0 4px 14px rgb(15 23 42 / 0.08);
+  --hjkit-shadow-elevated: 0 18px 48px rgb(15 23 42 / 0.12);
+  --hjkit-spacing-shell: 36px;
+  --hjkit-spacing-section: 28px;
+  --hjkit-spacing-card: 22px;
+  --hjkit-spacing-density: balanced;
+  --hjkit-surface-contrast: soft;
+  --hjkit-accent-density: measured;
+  --hjkit-motion-scale: standard;
+  --hjkit-motion-duration: 200ms;
+  --hjkit-motion-easing: cubic-bezier(0.16, 1, 0.3, 1);
+}

@@ -1,82 +1,54 @@
-import NetworkSiteList from "../../components/NetworkSiteList";
-import { Badge } from "../../components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
+import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
+import { ArrowRight, Check, Plug } from "lucide-react";
+import { useAuth } from "../../components/AuthProvider";
+import { PageHeader, PageShell, Panel } from "../../components/primitives";
+import { authFetch } from "../../lib/client/authFetch";
+import { listBrowserConnectors } from "../../lib/client/browserWorkspace";
+import { NETWORKS } from "../../lib/networks";
 
-export default function index() {
+export default function NetworksPage() {
+  const { user, loading: authLoading, getAccessToken } = useAuth();
+  const [connectors, setConnectors] = useState([]);
+  const [error, setError] = useState("");
+
+  const loadConnectors = useCallback(async () => {
+    if (authLoading) return;
+    try {
+      if (!user) return setConnectors(listBrowserConnectors());
+      const response = await authFetch(getAccessToken, "/api/connectors");
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error?.message || "Could not load networks");
+      setConnectors(payload.connectors || []);
+    } catch (nextError) { setError(nextError.message); }
+  }, [authLoading, getAccessToken, user]);
+
+  useEffect(() => { loadConnectors(); }, [loadConnectors]);
+
   return (
-    <div className="space-y-5">
-      <Card className="border-white/60 bg-white/95">
-        <CardHeader className="space-y-5">
-          <Badge className="w-fit">Sources</Badge>
-          <div className="space-y-3">
-            <CardTitle className="text-4xl">Connect the sources you want to monitor</CardTitle>
-            <CardDescription className="max-w-3xl text-base leading-7">
-              Save credentials, test the connection, and choose which merchants should feed your incoming offer updates.
-            </CardDescription>
-          </div>
-          <div className="grid gap-3 md:grid-cols-3">
-            <div className="rounded-[24px] bg-muted p-5">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">Setup</p>
-              <p className="mt-2 text-sm leading-6 text-foreground/85">
-                Credentials and source validation live here, away from the queue.
-              </p>
-            </div>
-            <div className="rounded-[24px] bg-muted p-5">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">Selection</p>
-              <p className="mt-2 text-sm leading-6 text-foreground/85">
-                Choose only the merchants worth monitoring.
-              </p>
-            </div>
-            <div className="rounded-[24px] bg-muted p-5">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">Checks</p>
-              <p className="mt-2 text-sm leading-6 text-foreground/85">
-                A source is only useful when the connection works and the sync results look right.
-              </p>
-            </div>
-          </div>
-        </CardHeader>
-      </Card>
-
-      <Card className="border-white/60 bg-white/95">
-        <CardHeader>
-          <Badge className="w-fit">Available sources</Badge>
-          <CardDescription className="mt-2 max-w-2xl text-base leading-7">
-            Start with the networks you actively use. Leave the rest disconnected.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="p-0">
-          <NetworkSiteList
-            imageUrl="/rakuten.png"
-            name="Rakuten"
-            subtitle="Add your Rakuten account"
-            endpoint="rakuten"
-          />
-          <NetworkSiteList
-            imageUrl="/cj.png"
-            name="CJ"
-            subtitle="Add your CJ account"
-            endpoint="cj"
-          />
-          <NetworkSiteList
-            imageUrl="/impact_logo.png"
-            name="Impact"
-            subtitle="Support planned"
-            endpoint={false}
-          />
-          <NetworkSiteList
-            imageUrl="/ebay_logo.png"
-            name="eBay"
-            subtitle="Support planned"
-            endpoint={false}
-          />
-          <NetworkSiteList
-            imageUrl="/logo.svg"
-            name="Test network"
-            subtitle="Use the built-in test source"
-            endpoint="testnet"
-          />
-        </CardContent>
-      </Card>
-    </div>
+    <PageShell>
+      <PageHeader eyebrow="Setup" title="Networks" description="Connect the affiliate networks you already use." />
+      {error ? <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
+      <Panel className="p-0">
+        {Object.values(NETWORKS).map((network, index) => {
+          const connector = connectors.find((item) => item.network === network.id);
+          const connected = connector?.status === "connected";
+          return (
+            <Link key={network.id} href={`/networks/${network.id}`} className={`flex items-center gap-4 p-5 hover:bg-muted/45 ${index ? "border-t border-border" : ""}`}>
+              <div className={`grid h-11 w-11 place-items-center rounded-lg ${connected ? "bg-accent text-primary" : "bg-muted text-muted-foreground"}`}>
+                {connected ? <Check className="h-5 w-5" /> : <Plug className="h-5 w-5" />}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="font-semibold text-foreground">{network.name}</p>
+                <p className="mt-1 text-sm text-muted-foreground">{connected ? `${(connector.merchants || []).length} advertisers loaded` : "Not connected"}</p>
+              </div>
+              <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${connected ? "bg-emerald-100 text-emerald-800" : "bg-muted text-muted-foreground"}`}>{connected ? "Connected" : "Connect"}</span>
+              <ArrowRight className="h-4 w-4 text-muted-foreground" />
+            </Link>
+          );
+        })}
+      </Panel>
+      <p className="text-xs text-muted-foreground">{user ? "Credentials are encrypted and stored in your workspace." : "Credentials stay in this tab and clear when you close it."}</p>
+    </PageShell>
   );
 }

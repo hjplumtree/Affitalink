@@ -11,14 +11,15 @@ export default async function handler(req, res) {
 
   try {
     const context = await resolveRequestContext(req);
-    const syncRun = await runManualSync(network, { workspaceId: context.workspaceId });
+    const { from, to } = req.body || {};
+    const syncRun = await runManualSync(network, { workspaceId: context.workspaceId, from, to });
     return res.status(200).json({ ok: true, syncRun });
   } catch (error) {
     const typed =
       error instanceof ConnectorError
         ? error
         : new ConnectorError("unknown", error.message || "Sync failed");
-    const statusCode = typed.type === "validation" ? 400 : typed.type === "auth" ? 401 : 500;
+    const statusCode = error.statusCode || (typed.type === "validation" ? 400 : typed.type === "auth" ? 401 : 500);
     return res.status(statusCode).json({
       ok: false,
       error: { type: typed.type, message: typed.message },

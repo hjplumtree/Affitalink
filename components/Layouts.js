@@ -1,13 +1,10 @@
-import Footer from "./Footer";
-
 function Layouts({ children, className, ...props }) {
   return (
     <main
-      className={`ml-[56px] flex min-h-screen w-full max-w-[1520px] flex-col gap-5 bg-transparent px-4 py-4 lg:ml-[220px] lg:px-8 lg:py-6 lg:pl-10 ${className || ""}`}
+      className={`ml-[64px] min-h-screen min-w-0 flex-1 px-4 py-5 lg:ml-[232px] lg:px-8 lg:py-7 ${className || ""}`}
       {...props}
     >
-      {children}
-      <Footer />
+      <div className="mx-auto w-full max-w-[1440px]">{children}</div>
     </main>
   );
 }

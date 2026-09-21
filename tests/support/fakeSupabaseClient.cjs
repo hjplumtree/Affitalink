@@ -146,46 +146,97 @@ function createInsertResult(rows) {
   };
 }
 
-function validateRowsBeforeWrite(state, table, rows) {
-  if (table !== "review_items") return;
-
-  for (const row of rows) {
-    if (!row.sync_run_id) {
-      throw new Error(
-        'insert or update on table "review_items" violates foreign key constraint "review_items_sync_run_id_fkey"'
-      );
-    }
-
-    const syncRunExists = (state.sync_runs || []).some(
-      (syncRun) => syncRun.id === row.sync_run_id
-    );
-
-    if (!syncRunExists) {
-      throw new Error(
-        'insert or update on table "review_items" violates foreign key constraint "review_items_sync_run_id_fkey"'
-      );
-    }
-  }
-}
-
 function createFakeSupabaseClient(initialState = {}) {
   const state = {
     workspaces: clone(initialState.workspaces || []),
     connectors: clone(initialState.connectors || []),
+    advertiser_selections: clone(initialState.advertiser_selections || []),
     sync_runs: clone(initialState.sync_runs || []),
     coupon_snapshots: clone(initialState.coupon_snapshots || []),
-    review_items: clone(initialState.review_items || []),
   };
 
-  if (state.coupon_snapshots) {
-    state.coupon_snapshots = state.coupon_snapshots.map((row) => ({
-      publish_status: "draft",
-      published_at: null,
-      ...row,
-    }));
-  }
-
   return {
+    rpc(name, args) {
+      if (name === "save_connector") {
+        const connector = clone(args.connector);
+        const advertisers = clone(args.advertisers || []);
+        if (new Set(advertisers.map((advertiser) => advertiser.id)).size !== advertisers.length) {
+          return Promise.resolve({ data: null, error: { message: "duplicate advertiser id" } });
+        }
+        const index = state.connectors.findIndex((entry) => entry.id === connector.id);
+        if (index >= 0) state.connectors[index] = { ...state.connectors[index], ...connector };
+        else state.connectors.push(connector);
+        state.advertiser_selections = state.advertiser_selections
+          .filter((selection) => selection.connector_id !== connector.id)
+          .concat(advertisers.map((advertiser) => ({
+            workspace_id: connector.workspace_id,
+            connector_id: connector.id,
+            network: connector.network,
+            advertiser_id: advertiser.id,
+            advertiser_name: advertiser.name,
+            selected: advertiser.selected,
+          })));
+        return Promise.resolve({ data: [clone(connector)], error: null });
+      }
+
+      if (name === "replace_advertiser_selections") {
+        const connector = state.connectors.find((entry) =>
+          entry.id === args.target_connector_id &&
+          entry.workspace_id === args.target_workspace_id &&
+          entry.network === args.target_network
+        );
+        if (!connector) {
+          return Promise.resolve({ data: null, error: { message: "connector does not belong to this workspace" } });
+        }
+        const advertisers = clone(args.advertisers || []);
+        if (new Set(advertisers.map((advertiser) => advertiser.id)).size !== advertisers.length) {
+          return Promise.resolve({ data: null, error: { message: "duplicate advertiser id" } });
+        }
+        state.advertiser_selections = state.advertiser_selections
+          .filter((selection) => selection.connector_id !== args.target_connector_id)
+          .concat(advertisers.map((advertiser) => ({
+            workspace_id: args.target_workspace_id,
+            connector_id: args.target_connector_id,
+            network: args.target_network,
+            advertiser_id: advertiser.id,
+            advertiser_name: advertiser.name,
+            selected: advertiser.selected,
+          })));
+        return Promise.resolve({ data: null, error: null });
+      }
+
+      if (name === "save_sync_result") {
+        const syncRun = clone(args.sync_run);
+        const connectorIndex = state.connectors.findIndex((entry) =>
+          entry.id === syncRun.connector_id &&
+          entry.workspace_id === syncRun.workspace_id &&
+          entry.network === syncRun.network
+        );
+        if (connectorIndex < 0) {
+          return Promise.resolve({ data: null, error: { message: "connector does not belong to this workspace" } });
+        }
+        for (const coupon of clone(args.coupons || [])) {
+          const couponIndex = state.coupon_snapshots.findIndex((entry) =>
+            entry.connector_id === coupon.connector_id && entry.logical_key === coupon.logical_key
+          );
+          if (couponIndex >= 0) state.coupon_snapshots[couponIndex] = { ...state.coupon_snapshots[couponIndex], ...coupon };
+          else state.coupon_snapshots.push(coupon);
+        }
+        if (!state.sync_runs.some((entry) => entry.id === syncRun.id)) state.sync_runs.push(syncRun);
+        const update = clone(args.connector_update);
+        state.connectors[connectorIndex] = {
+          ...state.connectors[connectorIndex],
+          status: update.status,
+          sync_status: update.sync_status,
+          last_sync_at: update.last_sync_at,
+          last_successful_sync_at: update.last_successful_sync_at,
+          last_error_json: update.last_error_json,
+        };
+        return Promise.resolve({ data: null, error: null });
+      }
+
+      return Promise.resolve({ data: null, error: { message: `Unknown RPC: ${name}` } });
+    },
     from(table) {
       return {
         select() {
@@ -199,13 +250,11 @@ function createFakeSupabaseClient(initialState = {}) {
         },
         insert(rows) {
           const nextRows = Array.isArray(rows) ? clone(rows) : [clone(rows)];
-          validateRowsBeforeWrite(state, table, nextRows);
           state[table] = (state[table] || []).concat(nextRows);
           return createInsertResult(nextRows);
         },
         upsert(rows, { onConflict = "id" } = {}) {
           const nextRows = Array.isArray(rows) ? clone(rows) : [clone(rows)];
-          validateRowsBeforeWrite(state, table, nextRows);
           const currentRows = state[table] || [];
 
           for (const row of nextRows) {

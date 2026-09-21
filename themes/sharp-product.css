@@ -1,0 +1,22 @@
+:root {
+  --hjkit-theme-name: sharp-product;
+  --hjkit-color-role: semantic;
+  --hjkit-font-body: "Inter", system-ui, sans-serif;
+  --hjkit-font-display: "Inter", system-ui, sans-serif;
+  --hjkit-font-size-base: 14px;
+  --hjkit-line-height-base: 1.55;
+  --hjkit-radius-base: 8px;
+  --hjkit-radius-card: 10px;
+  --hjkit-radius-surface: 14px;
+  --hjkit-shadow-card: 0 2px 8px rgb(15 23 42 / 0.08);
+  --hjkit-shadow-elevated: 0 16px 40px rgb(15 23 42 / 0.1);
+  --hjkit-spacing-shell: 28px;
+  --hjkit-spacing-section: 20px;
+  --hjkit-spacing-card: 16px;
+  --hjkit-spacing-density: compact;
+  --hjkit-surface-contrast: moderate;
+  --hjkit-accent-density: focused;
+  --hjkit-motion-scale: minimal;
+  --hjkit-motion-duration: 160ms;
+  --hjkit-motion-easing: cubic-bezier(0.2, 0.8, 0.2, 1);
+}

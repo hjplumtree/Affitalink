@@ -32,5 +32,7 @@ yarn-error.log*
 .vercel
 .gstack/
 .affitalink-data/
+*.tsbuildinfo
+/supabase/.temp/
 # hjkit local discovery
 .agents/

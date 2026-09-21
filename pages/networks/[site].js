@@ -1,219 +1,112 @@
+import Link from "next/link";
 import { useRouter } from "next/router";
-import { useCallback, useState, useEffect } from "react";
-import NetworkSiteSetting from "../../components/NetworkSiteSetting";
-import AdvertiserLists from "../../components/AdvertiserLists";
-import Loading from "../../components/Loading";
-import RequireAuth from "../../components/RequireAuth";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { ArrowLeft, Eye, EyeOff, Trash2 } from "lucide-react";
 import { useAuth } from "../../components/AuthProvider";
+import Loading from "../../components/Loading";
+import { Cluster, PageHeader, PageShell, Panel, Stack } from "../../components/primitives";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
 import { authFetch } from "../../lib/client/authFetch";
-import { Badge } from "../../components/ui/badge";
-import { Card, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
-import { useToastMessage } from "../../components/ToastProvider";
+import { getBrowserConnector, getSessionCredentials, removeBrowserConnector, saveBrowserConnector, saveSessionCredentials } from "../../lib/client/browserWorkspace";
+import { createEmptyCredentials, getNetwork } from "../../lib/networks";
 
-const CJ_INITIAL_AUTH = {
-  token: "",
-  requestor_id: "",
-  website_id: "",
-};
-
-const RAKUTEN_INITIAL_AUTH = {
-  client_id: "",
-  client_secret: "",
-  sid: "",
-};
-
-const TESTNET_INITIAL_AUTH = {
-  test_token_77777: "77777",
-  test_sid_77777: "77777",
-};
-
-const ADVERTISERS_INITIAL_STATE = {
-  page: 0,
-  advertisers_list: [],
-};
-
-function getInitialAuth(network) {
-  if (network === "cj") return CJ_INITIAL_AUTH;
-  if (network === "rakuten") return RAKUTEN_INITIAL_AUTH;
-  return TESTNET_INITIAL_AUTH;
-}
-
-export default function Site() {
+export default function NetworkSettingsPage() {
   const router = useRouter();
-  const { site: network_site_name } = router.query;
+  const networkId = typeof router.query.site === "string" ? router.query.site : "";
+  const network = useMemo(() => getNetwork(networkId), [networkId]);
+  const { user, loading: authLoading, getAccessToken } = useAuth();
+  const [credentials, setCredentials] = useState({});
+  const [connector, setConnector] = useState(null);
+  const [showSecrets, setShowSecrets] = useState(false);
   const [loading, setLoading] = useState(false);
-  const toast = useToastMessage();
-  const { getAccessToken } = useAuth();
-
-  const [advertisers, setAdvertisers] = useState(ADVERTISERS_INITIAL_STATE);
-  const [auth, setAuth] = useState(null);
-  const [connectorStatus, setConnectorStatus] = useState(null);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   const loadConnector = useCallback(async () => {
-    if (!network_site_name) return;
-    setLoading(true);
+    if (!network || authLoading) return;
+    setCredentials(getSessionCredentials(networkId) || createEmptyCredentials(networkId));
+    if (!user) return setConnector(getBrowserConnector(networkId));
     try {
-      const response = await authFetch(getAccessToken, `/api/connectors/${network_site_name}`);
+      const response = await authFetch(getAccessToken, `/api/connectors/${networkId}`);
       const payload = await response.json();
-      if (!response.ok) {
-        throw new Error(payload.error?.message || "Could not load source settings");
-      }
+      if (!response.ok) throw new Error(payload.error?.message || "Could not load network");
+      setConnector(payload.connector);
+    } catch (nextError) { setError(nextError.message); }
+  }, [authLoading, getAccessToken, network, networkId, user]);
 
-      const connector = payload?.connector || {
-        auth: getInitialAuth(network_site_name),
-        merchants: [],
-        status: "not_connected",
-      };
+  useEffect(() => { loadConnector(); }, [loadConnector]);
 
-      setAuth(connector.auth || getInitialAuth(network_site_name));
-      setAdvertisers({
-        page: 0,
-        advertisers_list: connector.merchants || [],
-      });
-      setConnectorStatus({
-        status: connector.status,
-        message:
-          connector.status === "connected"
-            ? "Source is saved and ready for manual sync."
-            : "No saved source settings yet.",
-      });
-    } catch (error) {
-      setAuth(getInitialAuth(network_site_name));
-      setAdvertisers(ADVERTISERS_INITIAL_STATE);
-      setConnectorStatus({
-        status: "warning",
-        message: error.message || "Could not load source settings.",
-      });
-    } finally {
-      setLoading(false);
-    }
-  }, [network_site_name, getAccessToken]);
-
-  // Initialization
-  useEffect(() => {
-    if (!router.isReady) return;
-    loadConnector();
-  }, [router.isReady, loadConnector]);
-
-  const fetchAdvertiserList = async () => {
-    setLoading(true);
+  async function connectNetwork() {
+    if (network.fields.some((field) => !credentials[field.key]?.trim())) return setError("Fill in every field");
+    setLoading(true); setError(""); setMessage("");
     try {
-      const response = await authFetch(getAccessToken, `/api/connectors/${network_site_name}/test`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ auth }),
-      });
+      const response = user
+        ? await authFetch(getAccessToken, `/api/connectors/${networkId}/test`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ auth: credentials }) })
+        : await fetch(`/api/guest/connectors/${networkId}/test`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ auth: credentials }) });
       const payload = await response.json();
-      if (!response.ok) {
-        throw new Error(payload.error?.message || "Could not validate source settings");
-      }
-      setAdvertisers({
-        page: 0,
-        advertisers_list: payload.connector.merchants || [],
-      });
-      setConnectorStatus({
-        status: "connected",
-        message: "Credentials look valid. Merchants are ready to review.",
-      });
-      toast({
-        title: "Source saved",
-        status: "success",
-        duration: 2000,
-      });
-    } catch (error) {
-      setConnectorStatus({
-        status: "warning",
-        message: error.message,
-      });
-      toast({ title: error.message, status: "error", duration: 2500 });
-    } finally {
-      setLoading(false);
-    }
-  };
+      if (!response.ok) throw new Error(payload.error?.message || "Connection failed");
+      const nextConnector = user ? payload.connector : { network: networkId, status: "connected", merchants: payload.merchants || [], lastTestedAt: new Date().toISOString() };
+      if (!user) saveBrowserConnector(networkId, nextConnector);
+      saveSessionCredentials(networkId, credentials);
+      setConnector(nextConnector);
+      setMessage(`${network.name} is connected`);
+    } catch (nextError) { setError(nextError.message || "Connection failed"); }
+    finally { setLoading(false); }
+  }
 
-  const handleToggleAdvertiser = async (merchantId) => {
-    const nextAdvertisers = advertisers.advertisers_list.map((merchant) =>
-      merchant.id === merchantId
-        ? { ...merchant, selected: !merchant.selected }
-        : merchant
-    );
-    setAdvertisers({ ...advertisers, advertisers_list: nextAdvertisers });
-    await authFetch(getAccessToken, `/api/connectors/${network_site_name}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ merchants: nextAdvertisers }),
-    });
-  };
+  async function disconnectNetwork() {
+    if (!window.confirm(`Disconnect ${network.name}?`)) return;
+    setLoading(true); setError("");
+    try {
+      if (user) {
+        const response = await authFetch(getAccessToken, `/api/connectors/${networkId}`, { method: "DELETE" });
+        const payload = await response.json();
+        if (!response.ok) throw new Error(payload.error?.message || "Could not disconnect network");
+      } else removeBrowserConnector(networkId);
+      setConnector(null);
+      setCredentials(createEmptyCredentials(networkId));
+      setMessage(`${network.name} is disconnected`);
+    } catch (nextError) { setError(nextError.message); }
+    finally { setLoading(false); }
+  }
 
-  const deleteDB = async () => {
-    await authFetch(getAccessToken, `/api/connectors/${network_site_name}`, {
-      method: "DELETE",
-    });
-    setAdvertisers(ADVERTISERS_INITIAL_STATE);
-    setAuth(getInitialAuth(network_site_name));
-    setConnectorStatus({
-      status: "not_connected",
-      message: "Source removed.",
-    });
-  };
+  if (!network && router.isReady) return <PageShell><Panel>Unknown network.</Panel></PageShell>;
+  if (!network) return null;
+  const connected = connector?.status === "connected";
 
   return (
-    <RequireAuth>
-      {auth ? (
-        <div className="space-y-5">
-          <Card className="border-white/60 bg-white/95">
-            <CardHeader className="space-y-5">
-              <Badge className="w-fit">Source settings</Badge>
-              <div className="space-y-3">
-                <CardTitle className="text-4xl">{`Set up ${network_site_name?.toUpperCase()}`}</CardTitle>
-                <CardDescription className="max-w-3xl text-base leading-7">
-                  Save credentials, test the connection, and choose which merchants should appear in your incoming offer updates.
-                </CardDescription>
-              </div>
-              <p className="max-w-2xl text-sm text-muted-foreground">
-                Set up the source here, then go back to the queue when the connection is working.
-              </p>
-              <div className="grid gap-3 md:grid-cols-3">
-                <div className="rounded-[24px] bg-muted p-5">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">Test</p>
-                  <p className="mt-2 text-sm leading-6 text-foreground/85">
-                    Test the saved credentials before trusting this source.
-                  </p>
+    <PageShell>
+      <Link href="/networks" className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"><ArrowLeft className="h-4 w-4" />Networks</Link>
+      <PageHeader eyebrow="Network settings" title={network.name} description={connected ? "Update the credentials or test the connection again." : "Enter the API credentials from your network account."} />
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <Panel>
+          <Stack>
+            {network.fields.map((field) => (
+              <label key={field.key} className="space-y-2 text-sm font-medium">
+                <span>{field.label}</span>
+                <div className="relative">
+                  <Input type={field.secret && !showSecrets ? "password" : "text"} value={credentials[field.key] || ""} placeholder={connected && user ? "Enter a new value to reconnect" : field.label} onChange={(event) => setCredentials((current) => ({ ...current, [field.key]: event.target.value }))} className={field.secret ? "pr-11" : ""} />
+                  {field.secret ? <button type="button" onClick={() => setShowSecrets((current) => !current)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" aria-label={showSecrets ? "Hide secret" : "Show secret"}>{showSecrets ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}</button> : null}
                 </div>
-                <div className="rounded-[24px] bg-muted p-5">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">Select</p>
-                  <p className="mt-2 text-sm leading-6 text-foreground/85">
-                    Turn on only the merchants you want to monitor.
-                  </p>
-                </div>
-                <div className="rounded-[24px] bg-muted p-5">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">Return</p>
-                  <p className="mt-2 text-sm leading-6 text-foreground/85">
-                    Go back to the review workspace once this source is working.
-                  </p>
-                </div>
-              </div>
-            </CardHeader>
-          </Card>
-
-          <NetworkSiteSetting
-            networkName={network_site_name.toUpperCase()}
-            auth={auth}
-            setAuth={setAuth}
-            fetchAdvertiserList={fetchAdvertiserList}
-            deleteDB={deleteDB}
-            connectorStatus={connectorStatus}
-            helperText="Save credentials, test the connection, and choose which merchants should be monitored."
-            actionLabel="Save and test connection"
-          />
-
-          <AdvertiserLists
-            advertisers={advertisers}
-            onToggleAdvertiser={handleToggleAdvertiser}
-          />
-        </div>
-      ) : null}
+              </label>
+            ))}
+            {error ? <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
+            {message ? <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{message}</div> : null}
+            <Cluster>
+              <Button onClick={connectNetwork}>{connected ? "Test and update" : "Connect network"}</Button>
+              {connected ? <Button variant="outline" onClick={disconnectNetwork}><Trash2 className="mr-2 h-4 w-4" />Disconnect</Button> : null}
+            </Cluster>
+          </Stack>
+        </Panel>
+        <Panel className="h-fit bg-muted/50">
+          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">Where it saves</p>
+          <p className="mt-3 font-semibold">{user ? "Your workspace" : "This browser tab"}</p>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">{user ? "Credentials are encrypted on the server. They never return to the browser." : "Credentials clear when this tab closes. Advertiser choices stay in this browser."}</p>
+          {connected ? <Link href="/advertisers" className="mt-5 inline-flex text-sm font-semibold text-primary">Choose advertisers →</Link> : null}
+        </Panel>
+      </div>
       <Loading loading={loading} />
-    </RequireAuth>
+    </PageShell>
   );
 }

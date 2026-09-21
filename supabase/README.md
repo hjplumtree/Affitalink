@@ -1,52 +1,23 @@
-## Supabase Setup
+# Supabase setup
 
-This repo now assumes Supabase is the only runtime backend.
+## Fresh project
 
-### What `schema.sql` does
+1. Create an empty Supabase project.
+2. From this repository run `npx supabase login`.
+3. Run `npx supabase link --project-ref YOUR_PROJECT_REF`.
+4. Run `npx supabase db push`.
+5. Copy the project URL, publishable key, and secret key into `.env.local`.
+6. Restart Affitalink.
 
-- creates core app tables
-- adds `profiles` and `workspace_memberships`
-- enables RLS on every exposed table
-- adds membership-based policies
-- adds a signup trigger that creates a `profiles` row
-- adds `create_workspace_for_current_user(text)` for first-workspace bootstrap
+The tracked [initial migration](./migrations/20260921000000_initial_schema.sql)
+creates five tables, server-only data access, indexes, and the signup
+trigger. Every existing or new user receives one private workspace.
 
-### Important reality check
+Do not paste this migration into SQL Editor. That bypasses Supabase's migration
+history and can make a later `db push` try to apply the same schema again.
 
-The current Next.js server code still uses the Supabase server secret key for backend writes.
-That means RLS is not yet the primary enforcement layer for server-side operations.
-Service-role style access bypasses RLS by design.
+## Access model
 
-So today the security model is:
-
-- browser/client access should eventually rely on authenticated user tokens + RLS
-- server-side API routes currently rely on trusted backend code + secret key
-
-That is acceptable as an intermediate state, but it is not the final auth model.
-
-### Apply the schema
-
-Run `supabase/schema.sql` in the Supabase SQL Editor.
-
-### Bootstrap a first workspace
-
-After signing in with a real Supabase user session, run:
-
-```sql
-select public.create_workspace_for_current_user('Default workspace');
-```
-
-That creates:
-
-- one `workspaces` row
-- one `workspace_memberships` row with `owner`
-
-### Next auth step
-
-The next app-side step is to stop assuming `workspace_default` and instead resolve:
-
-- current authenticated user
-- current workspace membership
-- current workspace id per request
-
-Until that is wired, the schema is ready, but the UI is not yet using it end-to-end.
+Every API request validates the signed-in user and resolves their personal workspace.
+All connector, advertiser, fetch, and coupon data stays behind the server API. Browser
+clients never receive direct database access to operational tables.

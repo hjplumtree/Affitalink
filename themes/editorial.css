@@ -1,0 +1,22 @@
+:root {
+  --hjkit-theme-name: editorial;
+  --hjkit-color-role: semantic;
+  --hjkit-font-body: "Source Serif 4", Georgia, serif;
+  --hjkit-font-display: "Source Serif 4", Georgia, serif;
+  --hjkit-font-size-base: 17px;
+  --hjkit-line-height-base: 1.75;
+  --hjkit-radius-base: 6px;
+  --hjkit-radius-card: 8px;
+  --hjkit-radius-surface: 12px;
+  --hjkit-shadow-card: none;
+  --hjkit-shadow-elevated: 0 20px 48px rgb(15 23 42 / 0.08);
+  --hjkit-spacing-shell: 40px;
+  --hjkit-spacing-section: 28px;
+  --hjkit-spacing-card: 24px;
+  --hjkit-spacing-density: spacious;
+  --hjkit-surface-contrast: soft;
+  --hjkit-accent-density: selective;
+  --hjkit-motion-scale: minimal;
+  --hjkit-motion-duration: 200ms;
+  --hjkit-motion-easing: cubic-bezier(0.16, 1, 0.3, 1);
+}
