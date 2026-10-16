@@ -35,6 +35,7 @@ function applySelect(state, table, options) {
   if (typeof options.limit === "number") {
     rows = rows.slice(0, options.limit);
   }
+  if (options.range) rows = rows.slice(options.range[0], options.range[1] + 1);
 
   return { data: rows, error: null };
 }
@@ -56,6 +57,10 @@ function createSelectBuilder(state, table) {
     },
     limit(count) {
       options.limit = count;
+      return this;
+    },
+    range(from, to) {
+      options.range = [from, to];
       return this;
     },
     maybeSingle() {
@@ -157,6 +162,17 @@ function createFakeSupabaseClient(initialState = {}) {
 
   return {
     rpc(name, args) {
+      if (name === "set_offer_checked") {
+        const row = state.coupon_snapshots.find((entry) => entry.id === args.target_offer_id && entry.workspace_id === args.target_workspace_id);
+        if (!row) return Promise.resolve({ data: [], error: null });
+        const fields = ["network", "merchant_id", "merchant_name", "title", "description", "terms", "coupon_code", "destination_url", "starts_at", "ends_at"];
+        if (fields.some((field) => (row[field] ?? null) !== (args.expected_offer[field] ?? null))) {
+          return Promise.resolve({ data: null, error: { code: "40001", message: "link changed" } });
+        }
+        row.checked = args.is_checked;
+        row.checked_at = args.is_checked ? new Date().toISOString() : null;
+        return Promise.resolve({ data: [clone(row)], error: null });
+      }
       if (name === "save_connector") {
         const connector = clone(args.connector);
         const advertisers = clone(args.advertisers || []);
@@ -219,8 +235,18 @@ function createFakeSupabaseClient(initialState = {}) {
           const couponIndex = state.coupon_snapshots.findIndex((entry) =>
             entry.connector_id === coupon.connector_id && entry.logical_key === coupon.logical_key
           );
-          if (couponIndex >= 0) state.coupon_snapshots[couponIndex] = { ...state.coupon_snapshots[couponIndex], ...coupon };
-          else state.coupon_snapshots.push(coupon);
+          const previous = state.coupon_snapshots[couponIndex];
+          // SQL behavior is independently tested against PostgreSQL in storage-postgres.sql.
+          const unchanged = previous && ["network", "merchant_id", "merchant_name", "title", "description", "terms", "coupon_code", "destination_url", "starts_at", "ends_at"]
+            .every((field) => previous[field] === coupon[field]);
+          const saved = {
+            ...previous, ...coupon,
+            checked: unchanged ? previous.checked : false,
+            checked_at: unchanged ? previous.checked_at : null,
+            created_at: previous?.created_at || coupon.updated_at,
+          };
+          if (couponIndex >= 0) state.coupon_snapshots[couponIndex] = saved;
+          else state.coupon_snapshots.push(saved);
         }
         if (!state.sync_runs.some((entry) => entry.id === syncRun.id)) state.sync_runs.push(syncRun);
         const update = clone(args.connector_update);

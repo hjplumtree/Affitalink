@@ -8,7 +8,11 @@ Affitalink is a small dashboard for collecting sale and discount links from affi
 2. Choose advertisers below the connection form on that network's page.
 3. Open Links and choose a date range.
 4. Select Get links.
-5. Search, browse 50 links per page, or export all matching results.
+5. Mark a link Checked after reviewing it; its check and time save immediately.
+6. Search, browse 50 links per page, or export all matching results.
+
+Get links reports saved counts and incomplete or failed collection. An unchanged
+link keeps its check when collected again; changed benefit details clear it.
 
 An account is optional. Guest credentials live only in the current tab. Guest advertiser choices live in `localStorage`. Guest coupons live in IndexedDB. Signed-in users save encrypted credentials, selections, and coupons to their Supabase workspace.
 
@@ -71,6 +75,12 @@ secret key, or `AFFITALINK_SECRET` into chat or commit it to Git.
 Do not paste tracked migrations into the SQL Editor; `db push` must record them in
 Supabase's migration history.
 
+Account collection requires `20261016000000_preserve_offer_records.sql`, and saving
+checks also requires `20261016010000_save_offer_checks.sql`, in addition to earlier
+migrations. Checks use the database clock and reject stale benefit details. Guest
+storage upgrades the existing IndexedDB to version 2 automatically, retaining links
+and adding collection outcomes in the same database. Guest checks use local time.
+
 ### eBay Deals
 
 eBay needs a Developer Program account, production application keys, an eBay Partner
@@ -100,6 +110,24 @@ pnpm build
 pnpm audit --prod
 pnpm audit
 ```
+
+Storage integration checks:
+
+- `tests/storage-postgres.sql` applies the migrations and tests actual SQL in a
+  **new, disposable** database named `affitalink_storage_test`. Run it with
+  `psql -d affitalink_storage_test -f tests/storage-postgres.sql` on a test PostgreSQL
+  instance. It creates test roles and an `auth.users` stub; never use the app database.
+- For real IndexedDB checks, temporarily create `pages/__storage-check.js` containing
+  `export { default } from "../tests/support/StorageCheckPage";`. With the dev server
+  running, open `http://affitalink-storage.localhost:7777/__storage-check`, run the
+  checks, reload, then select **Check after reload** and **Clean test data**. The test
+  refuses to overwrite an existing database. Remove the temporary page afterwards.
+- For collection and checkbox UI scenarios, use a temporary `pages/__links-check.js`
+  exporting `../tests/support/LinksWorkflowCheckPage`. At the same isolated host,
+  open `/__links-check`, select **Prepare test**, and exercise the actual Links page
+  with the response modes. **Inspect saved data** reads the real IndexedDB. Clean
+  the test data and remove the temporary entry when finished; no external network
+  credentials or requests are used.
 
 ## Vercel deployment
 

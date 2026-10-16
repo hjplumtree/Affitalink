@@ -37,7 +37,7 @@ problems with color or decoration.
 - Dashboard: one scannable summary, one clear next action, compact metrics.
 - Networks: connection status and setup path first.
 - Network settings: one column, connection form first; connected networks show advertiser search and selection directly below the form. No separate Advertisers tab.
-- Links: date/network input and saved results as distinct surfaces; show 50 rows per page. Search and CSV apply to all matching results.
+- Links: date/network input and saved results as distinct surfaces; show 50 rows per page. Search and CSV apply to all matching results. Put the Checked checkbox and its saved time together in the first column; show check errors in that row and collection results below Get links.
 - Login: low cognitive load and an obvious guest path.
 
 Use one focal point and one primary action per screen. Supporting actions must

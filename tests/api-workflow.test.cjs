@@ -5,6 +5,7 @@ const fs = require("node:fs");
 const vm = require("node:vm");
 const { createRequire } = require("node:module");
 const { createFakeSupabaseClient } = require("./support/fakeSupabaseClient.cjs");
+const { benefitContent } = require("../lib/offerRecord.cjs");
 
 const MODULES = [
   "../lib/server/dataStore.cjs", "../lib/server/supabaseStore.cjs", "../lib/server/crypto.cjs",
@@ -22,8 +23,10 @@ function bootstrapStore() {
   freshModules();
   const { setSupabaseClientForTests } = require("../lib/server/dataStore.cjs");
   const { setRequestContextResolverForTests } = require("../lib/server/requestAuth.cjs");
-  setSupabaseClientForTests(createFakeSupabaseClient({ workspaces: [{ id: "workspace_test", name: "Test" }] }));
+  const store = createFakeSupabaseClient({ workspaces: [{ id: "workspace_test", name: "Test" }] });
+  setSupabaseClientForTests(store);
   setRequestContextResolverForTests(() => ({ user: { id: "user_test" }, workspaceId: "workspace_test" }));
+  return store;
 }
 
 function loadApiHandler(modulePath) {
@@ -61,6 +64,10 @@ test("workspace flow connects, selects, fetches, and never returns credentials",
   const offers = await runHandler(loadApiHandler("../pages/api/offers/index.js"), { method: "GET", query: {} });
   assert.equal(offers.statusCode, 200);
   assert.ok(offers.payload.offers.length > 0);
+  assert.equal(offers.payload.offers[0].checked, false);
+  assert.equal(offers.payload.offers[0].checkedAt, null);
+  assert.ok(offers.payload.offers[0].sourceOfferId);
+  assert.ok(offers.payload.offers[0].raw);
 
   const connectors = await runHandler(loadApiHandler("../pages/api/connectors/index.js"), { method: "GET", query: {} });
   assert.equal(connectors.payload.connectors[0].hasCredentials, true);
@@ -77,6 +84,10 @@ test("guest fetch returns coupons without writing a workspace", async () => {
   assert.equal(response.statusCode, 200);
   assert.equal(response.payload.coupons.length, 1);
   assert.match(response.payload.coupons[0].id, /^testnet:/);
+  assert.equal(response.payload.syncRun.status, "success");
+  assert.equal(response.payload.syncRun.fetchedCount, 1);
+  assert.deepEqual(response.payload.syncRun.partialFailures, []);
+  assert.ok(response.payload.syncRun.excluded.length >= 0);
 });
 
 test("inherited object names are rejected as unsupported networks", async () => {
@@ -132,4 +143,54 @@ test("dashboard is the product entry point and login is the only public shell", 
   assert.equal(getShellForPath("/"), "dashboard");
   assert.equal(getShellForPath("/login"), "public");
   assert.equal(getShellForPath("/coupons"), "dashboard");
+});
+
+async function seedCheckableOffer() {
+  const store = bootstrapStore();
+  const { connectAndFetchMerchants } = require("../lib/server/connectors.cjs");
+  const { runManualSync, getOffers } = require("../lib/server/syncEngine.cjs");
+  await connectAndFetchMerchants("testnet", { test_token_77777: "77777", test_sid_77777: "77777" }, { workspaceId: "workspace_test" });
+  await runManualSync("testnet", { workspaceId: "workspace_test" });
+  return { store, offer: (await getOffers({ workspaceId: "workspace_test" }))[0], handler: loadApiHandler("../pages/api/offers/index.js") };
+}
+
+test("checking and unchecking through the API only change check fields and use server time", async () => {
+  const { offer, handler } = await seedCheckableOffer();
+  const input = { id: offer.id, checked: true, expected: benefitContent(offer), checkedAt: "2000-01-01", title: "must not replace title", workspaceId: "other" };
+  const before = Date.now();
+  const checked = await runHandler(handler, { method: "PATCH", query: {}, body: input });
+  assert.equal(checked.statusCode, 200);
+  assert.equal(checked.payload.offer.checked, true);
+  assert.ok(Date.parse(checked.payload.offer.checkedAt) >= before);
+  assert.deepEqual({ ...checked.payload.offer, checked: false, checkedAt: null }, offer);
+  const listed = await runHandler(handler, { method: "GET", query: {} });
+  assert.deepEqual(listed.payload.offers.find((row) => row.id === offer.id), checked.payload.offer);
+  const unchecked = await runHandler(handler, { method: "PATCH", query: {}, body: { ...input, checked: false } });
+  assert.equal(unchecked.statusCode, 200);
+  assert.deepEqual(unchecked.payload.offer, offer);
+});
+
+test("check requests reject malformed values, foreign IDs and unauthenticated access", async () => {
+  const { offer, handler } = await seedCheckableOffer();
+  const input = { id: offer.id, checked: true, expected: benefitContent(offer) };
+  for (const body of [{}, { ...input, checked: "true" }, { ...input, expected: {} }, { ...input, expected: { ...input.expected, endsAt: "invalid" } }]) {
+    assert.equal((await runHandler(handler, { method: "PATCH", query: {}, body })).statusCode, 400);
+  }
+  const { setRequestContextResolverForTests } = require("../lib/server/requestAuth.cjs");
+  setRequestContextResolverForTests(() => ({ workspaceId: "someone_else" }));
+  assert.equal((await runHandler(handler, { method: "PATCH", query: {}, body: input })).statusCode, 404);
+  setRequestContextResolverForTests(() => { throw Object.assign(new Error("Authentication required"), { statusCode: 401 }); });
+  assert.equal((await runHandler(handler, { method: "PATCH", query: {}, body: input })).statusCode, 401);
+});
+
+test("a stale check is rejected after recollection and a failed write never reports success", async () => {
+  const { offer, handler, store } = await seedCheckableOffer();
+  const input = { id: offer.id, checked: true, expected: benefitContent(offer) };
+  await store.from("coupon_snapshots").update({ terms: "Changed terms" }).eq("id", offer.id);
+  const response = await runHandler(handler, { method: "PATCH", query: {}, body: input });
+  assert.equal(response.statusCode, 409);
+  assert.equal(store.dump().coupon_snapshots.find((row) => row.id === offer.id).checked, false);
+  const rpc = store.rpc;
+  store.rpc = (name, args) => name === "set_offer_checked" ? Promise.resolve({ error: { message: "DB unavailable" } }) : rpc(name, args);
+  assert.equal((await runHandler(handler, { method: "PATCH", query: {}, body: input })).statusCode, 500);
 });

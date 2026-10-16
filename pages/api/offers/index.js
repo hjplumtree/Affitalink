@@ -1,14 +1,18 @@
 const { getOffers } = require("../../../lib/server/syncEngine.cjs");
+const { setOfferChecked } = require("../../../lib/server/dataStore.cjs");
 const { resolveRequestContext } = require("../../../lib/server/requestAuth.cjs");
 
 export default async function handler(req, res) {
-  if (req.method !== "GET") {
+  if (req.method !== "GET" && req.method !== "PATCH") {
     return res.status(405).json({ ok: false, error: { message: "Method not allowed" } });
   }
 
   try {
     const { network, status } = req.query;
     const workspaceId = (await resolveRequestContext(req)).workspaceId;
+    if (req.method === "PATCH") {
+      return res.status(200).json({ ok: true, offer: await setOfferChecked(workspaceId, req.body || {}) });
+    }
     return res.status(200).json({
       ok: true,
       offers: await getOffers({
