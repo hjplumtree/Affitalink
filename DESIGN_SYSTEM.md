@@ -7,7 +7,7 @@
 - Content: data-dense
 - Backend: mixed browser and Supabase workspaces
 - Tone: compact, utilitarian, calm
-- Product flow: `Networks -> Advertisers -> Coupons`
+- Product flow: `Networks (connection and advertiser selection) -> Links`
 - Theme source: `styles/globals.css` and `tailwind.config.cjs`
 
 Treat this profile as fixed unless the product owner changes it.
@@ -36,8 +36,8 @@ problems with color or decoration.
 
 - Dashboard: one scannable summary, one clear next action, compact metrics.
 - Networks: connection status and setup path first.
-- Advertisers: selection and search first.
-- Coupons: date/network input and saved results as distinct surfaces.
+- Network settings: one column, connection form first; connected networks show advertiser search and selection directly below the form. No separate Advertisers tab.
+- Links: date/network input and saved results as distinct surfaces; show 50 rows per page. Search and CSV apply to all matching results.
 - Login: low cognitive load and an obvious guest path.
 
 Use one focal point and one primary action per screen. Supporting actions must
@@ -66,6 +66,9 @@ structure appears on multiple screens.
 - Use semantic theme tokens; do not introduce a second token or theme system.
 - Prefer left alignment, asymmetric emphasis, and clear hierarchy.
 - Avoid equal-weight card grids unless repetition is the information.
+- Do not use eyebrows above titles or add storage explanations to product screens.
+- Use direct, familiar labels. Call collected benefits Links throughout the UI.
+- Remove unnecessary text. Necessary text uses the title's foreground color, not gray or reduced-opacity text. Use size, weight, and spacing for hierarchy.
 
 ## Required states
 

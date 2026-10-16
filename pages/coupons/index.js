@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Download, ExternalLink, Search } from "lucide-react";
 import { useAuth } from "../../components/AuthProvider";
@@ -8,6 +9,8 @@ import { Input } from "../../components/ui/input";
 import { authFetch } from "../../lib/client/authFetch";
 import { getSessionCredentials, listBrowserConnectors, listBrowserCoupons, saveBrowserCoupons } from "../../lib/client/browserWorkspace";
 import { NETWORKS } from "../../lib/networks";
+
+const PAGE_SIZE = 50;
 
 function dateInput(daysFromToday = 0) {
   const date = new Date();
@@ -21,7 +24,7 @@ function formatDate(value) {
   return Number.isNaN(date.getTime()) ? value : new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(date);
 }
 
-export default function CouponsPage() {
+export default function LinksPage() {
   const { user, loading: authLoading, getAccessToken } = useAuth();
   const [connectors, setConnectors] = useState([]);
   const [coupons, setCoupons] = useState([]);
@@ -30,11 +33,14 @@ export default function CouponsPage() {
   const [from, setFrom] = useState(dateInput());
   const [to, setTo] = useState(dateInput(30));
   const [loading, setLoading] = useState(false);
+  const [loadingData, setLoadingData] = useState(true);
+  const [page, setPage] = useState(1);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
   const loadData = useCallback(async () => {
     if (authLoading) return;
+    setLoadingData(true);
     try {
       if (!user) {
         setConnectors(listBrowserConnectors());
@@ -45,10 +51,11 @@ export default function CouponsPage() {
       const connectorsPayload = await connectorsResponse.json();
       const couponsPayload = await couponsResponse.json();
       if (!connectorsResponse.ok) throw new Error(connectorsPayload.error?.message || "Could not load networks");
-      if (!couponsResponse.ok) throw new Error(couponsPayload.error?.message || "Could not load coupons");
+      if (!couponsResponse.ok) throw new Error(couponsPayload.error?.message || "Could not load links");
       setConnectors(connectorsPayload.connectors || []);
       setCoupons(couponsPayload.offers || []);
     } catch (nextError) { setError(nextError.message); }
+    finally { setLoadingData(false); }
   }, [authLoading, getAccessToken, user]);
 
   useEffect(() => { loadData(); }, [loadData]);
@@ -70,7 +77,7 @@ export default function CouponsPage() {
         const fetchedCoupons = [];
         for (const connector of activeConnectors) {
           const credentials = getSessionCredentials(connector.network);
-          if (!credentials) throw new Error(`Reconnect ${NETWORKS[connector.network]?.name || connector.network}. Its credentials left this tab.`);
+          if (!credentials) throw new Error(`Reconnect ${NETWORKS[connector.network]?.name || connector.network} in Networks to get links.`);
           const merchantIds = (connector.merchants || []).filter((merchant) => merchant.selected).map((merchant) => merchant.id);
           const response = await fetch(`/api/guest/fetch/${connector.network}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ auth: credentials, merchantIds, from, to }) });
           const payload = await response.json();
@@ -80,12 +87,27 @@ export default function CouponsPage() {
         await saveBrowserCoupons(fetchedCoupons);
         setCoupons(await listBrowserCoupons());
       }
-      setMessage(`Coupons fetched and saved ${user ? "to your workspace" : "in this browser"}.`);
-    } catch (nextError) { setError(nextError.message || "Could not fetch coupons"); }
+      setPage(1);
+      setMessage("Links saved.");
+    } catch (nextError) { setError(nextError.message || "Could not get links"); }
     finally { setLoading(false); }
   }
 
   const visibleCoupons = useMemo(() => coupons.filter((coupon) => (networkFilter === "all" || coupon.network === networkFilter) && [coupon.title, coupon.description, coupon.merchantName, coupon.couponCode, coupon.terms].join(" ").toLowerCase().includes(query.toLowerCase())).sort((a, b) => new Date(b.updatedAt || b.fetchedAt || 0) - new Date(a.updatedAt || a.fetchedAt || 0)), [coupons, networkFilter, query]);
+  const pageCount = Math.max(1, Math.ceil(visibleCoupons.length / PAGE_SIZE));
+  const currentPage = Math.min(page, pageCount);
+  const pageStart = (currentPage - 1) * PAGE_SIZE;
+  const pageCoupons = visibleCoupons.slice(pageStart, pageStart + PAGE_SIZE);
+  const pagination = visibleCoupons.length > PAGE_SIZE ? (
+    <nav aria-label="Link pages" className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 text-sm">
+      <span>{pageStart + 1}–{Math.min(pageStart + PAGE_SIZE, visibleCoupons.length)} of {visibleCoupons.length} links</span>
+      <Cluster>
+        <Button variant="outline" size="sm" disabled={currentPage === 1} onClick={() => setPage(currentPage - 1)}>Previous</Button>
+        <span aria-live="polite">Page {currentPage} of {pageCount}</span>
+        <Button variant="outline" size="sm" disabled={currentPage === pageCount} onClick={() => setPage(currentPage + 1)}>Next</Button>
+      </Cluster>
+    </nav>
+  ) : null;
 
   function exportCsv() {
     const columns = ["network", "merchantName", "title", "description", "terms", "couponCode", "startsAt", "endsAt", "destinationUrl"];
@@ -93,7 +115,7 @@ export default function CouponsPage() {
     const csv = [columns.join(","), ...visibleCoupons.map((coupon) => columns.map((column) => escape(coupon[column])).join(","))].join("\n");
     const link = document.createElement("a");
     link.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
-    link.download = `affitalink-coupons-${dateInput()}.csv`;
+    link.download = `affitalink-links-${dateInput()}.csv`;
     link.click();
     URL.revokeObjectURL(link.href);
   }
@@ -101,33 +123,35 @@ export default function CouponsPage() {
   const connectedNetworks = connectors.filter((connector) => connector.status === "connected");
   return (
     <PageShell>
-      <PageHeader eyebrow="Coupon workspace" title="Coupons" description="Choose a date range. Fetch saves the results to the current workspace." />
+      <PageHeader title="Links" />
       <Panel>
         <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-[1fr_1fr_1fr_auto] lg:items-end">
-          <label className="space-y-2 text-sm font-medium"><span>Network</span><select value={networkFilter} onChange={(event) => setNetworkFilter(event.target.value)} className="h-11 w-full rounded-lg border border-input bg-white px-3 text-sm"><option value="all">All connected networks</option>{connectedNetworks.map((connector) => <option key={connector.network} value={connector.network}>{NETWORKS[connector.network]?.name || connector.network}</option>)}</select></label>
+          <label className="space-y-2 text-sm font-medium"><span>Network</span><select value={networkFilter} onChange={(event) => { setNetworkFilter(event.target.value); setPage(1); }} className="h-11 w-full rounded-lg border border-input bg-white px-3 text-sm"><option value="all">All networks</option>{connectedNetworks.map((connector) => <option key={connector.network} value={connector.network}>{NETWORKS[connector.network]?.name || connector.network}</option>)}</select></label>
           <label className="space-y-2 text-sm font-medium"><span>Active from</span><Input type="date" value={from} onChange={(event) => setFrom(event.target.value)} /></label>
           <label className="space-y-2 text-sm font-medium"><span>Active to</span><Input type="date" value={to} onChange={(event) => setTo(event.target.value)} /></label>
-          <Button onClick={fetchCoupons} disabled={loading}>Fetch coupons</Button>
+          <Button onClick={fetchCoupons} disabled={loading || loadingData || authLoading || !connectedNetworks.length}>Get links</Button>
         </div>
-        {error ? <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
-        {message ? <div className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{message}</div> : null}
+        {error ? <div role="alert" className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
+        {message ? <div role="status" className="mt-4 text-sm">{message}</div> : null}
       </Panel>
       <Panel className="p-0">
         <Cluster className="justify-between border-b border-border p-4">
-          <div className="relative w-full max-w-md"><Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" /><Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search coupons" className="pl-9" /></div>
-          <Cluster><span className="text-sm text-muted-foreground">{visibleCoupons.length} coupons</span><Button variant="outline" size="sm" onClick={exportCsv} disabled={!visibleCoupons.length}><Download className="mr-2 h-4 w-4" />CSV</Button></Cluster>
+          <div className="relative w-full max-w-md"><Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2" /><Input aria-label="Search links" value={query} onChange={(event) => { setQuery(event.target.value); setPage(1); }} placeholder="Search links" className="pl-9" /></div>
+          <Cluster>{!pagination ? <span className="text-sm">{visibleCoupons.length} links</span> : null}<Button variant="outline" size="sm" onClick={exportCsv} disabled={!visibleCoupons.length || loadingData}><Download className="mr-2 h-4 w-4" />Export CSV</Button></Cluster>
         </Cluster>
+        {pagination}
         <div className="overflow-x-auto">
           <table className="w-full min-w-[1180px] text-left text-sm">
-            <thead className="bg-muted/60 font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground"><tr>{["Network", "Advertiser", "Title", "Description", "Terms", "Code", "Start", "End", "Link"].map((heading) => <th key={heading} className="px-4 py-3 font-medium">{heading}</th>)}</tr></thead>
+            <thead className="bg-muted/60 text-xs"><tr>{["Network", "Advertiser", "Title", "Description", "Terms", "Code", "Start", "End", "Link"].map((heading) => <th key={heading} className="px-4 py-3 font-semibold">{heading}</th>)}</tr></thead>
             <tbody className="divide-y divide-border">
-              {visibleCoupons.map((coupon) => <tr key={coupon.id || coupon.logicalKey} className="align-top hover:bg-muted/30">
-                <td className="px-4 py-4 font-mono text-xs uppercase">{coupon.network}</td><td className="max-w-[180px] px-4 py-4 font-medium">{coupon.merchantName}</td><td className="max-w-[220px] px-4 py-4 font-medium">{coupon.title}</td><td className="max-w-[300px] px-4 py-4 text-muted-foreground">{coupon.description || "—"}</td><td className="max-w-[220px] px-4 py-4 text-muted-foreground">{coupon.terms || "—"}</td><td className="px-4 py-4"><span className="rounded bg-accent px-2 py-1 font-mono text-xs font-semibold text-accent-foreground">{coupon.couponCode || "No code"}</span></td><td className="whitespace-nowrap px-4 py-4 text-muted-foreground">{formatDate(coupon.startsAt)}</td><td className="whitespace-nowrap px-4 py-4 text-muted-foreground">{formatDate(coupon.endsAt)}</td><td className="px-4 py-4">{coupon.destinationUrl ? <a href={coupon.destinationUrl} target="_blank" rel="noreferrer" aria-label={`Open ${coupon.title}`} className="text-primary"><ExternalLink className="h-4 w-4" /></a> : "—"}</td>
-              </tr>)}
-              {!visibleCoupons.length ? <tr><td colSpan="9" className="px-5 py-12 text-center text-muted-foreground">No saved coupons. Choose a range and fetch.</td></tr> : null}
+              {!loadingData && !authLoading ? pageCoupons.map((coupon) => <tr key={coupon.id || coupon.logicalKey} className="align-top hover:bg-muted/30">
+                <td className="px-4 py-4 font-mono text-xs uppercase">{coupon.network}</td><td className="max-w-[180px] px-4 py-4 font-medium">{coupon.merchantName}</td><td className="max-w-[220px] px-4 py-4 font-medium">{coupon.title}</td><td className="max-w-[300px] px-4 py-4 text-foreground">{coupon.description || "—"}</td><td className="max-w-[220px] px-4 py-4 text-foreground">{coupon.terms || "—"}</td><td className="px-4 py-4"><span className="rounded bg-accent px-2 py-1 font-mono text-xs font-semibold text-accent-foreground">{coupon.couponCode || "No code"}</span></td><td className="whitespace-nowrap px-4 py-4 text-foreground">{formatDate(coupon.startsAt)}</td><td className="whitespace-nowrap px-4 py-4 text-foreground">{formatDate(coupon.endsAt)}</td><td className="px-4 py-4">{coupon.destinationUrl ? <a href={coupon.destinationUrl} target="_blank" rel="noreferrer" aria-label={`Open ${coupon.title}`} className="text-primary"><ExternalLink className="h-4 w-4" /></a> : "—"}</td>
+              </tr>) : null}
+              {loadingData || authLoading ? <tr><td colSpan="9" className="px-5 py-12 text-center" role="status">Loading links…</td></tr> : !visibleCoupons.length ? <tr><td colSpan="9" className="px-5 py-12 text-center">{query || networkFilter !== "all" ? "No links match your search." : connectedNetworks.length ? "No links yet. Select Get links to start." : <Link href="/networks" className="font-medium underline">Connect a network to get started.</Link>}</td></tr> : null}
             </tbody>
           </table>
         </div>
+        {pagination ? <div className="border-t border-border">{pagination}</div> : null}
       </Panel>
       <Loading loading={loading} />
     </PageShell>

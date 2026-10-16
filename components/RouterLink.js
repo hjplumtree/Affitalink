@@ -4,11 +4,12 @@ import { cn } from "../lib/utils";
 
 export default function RouterLink({ to, children, className, color, _hover, ...props }) {
   const router = useRouter();
-  const isActive = router.pathname === to;
+  const isActive = router.pathname === to || (to !== "/" && router.pathname.startsWith(`${to}/`)) || (to === "/links" && router.pathname === "/coupons");
 
   return (
     <Link
       href={to}
+      aria-current={isActive ? "page" : undefined}
       className={cn(
         "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-150",
         isActive

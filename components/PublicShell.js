@@ -14,7 +14,6 @@ export default function PublicShell({ children }) {
             </div>
             <div>
               <p className="text-lg font-semibold tracking-[-0.03em] text-foreground">Affitalink</p>
-              <p className="text-xs text-muted-foreground">Coupon workspace</p>
             </div>
           </Link>
 

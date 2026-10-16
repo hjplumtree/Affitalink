@@ -11,7 +11,7 @@
     --primary-hover: 258.571 90% 27.451%;
     --primary-foreground: 0 0% 100%;
     --muted: 48 16.129% 93.922%;
-    --muted-foreground: 240 4% 39%;
+    --muted-foreground: var(--foreground);
     --accent: 257.143 58.333% 95.294%;
     --accent-foreground: 258.278 86.286% 34.314%;
     --border: 266.667 17.647% 90%;

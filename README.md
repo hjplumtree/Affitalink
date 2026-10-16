@@ -1,14 +1,14 @@
 # Affitalink
 
-Affitalink is a small dashboard for fetching coupons from affiliate networks.
+Affitalink is a small dashboard for collecting sale and discount links from affiliate networks.
 
 ## Product flow
 
 1. Connect CJ Affiliate, Rakuten Advertising, impact.com, or eBay Deals.
-2. Choose advertisers.
-3. Choose a date range.
-4. Fetch coupons.
-5. Search, inspect, or export the saved results.
+2. Choose advertisers below the connection form on that network's page.
+3. Open Links and choose a date range.
+4. Select Get links.
+5. Search, browse 50 links per page, or export all matching results.
 
 An account is optional. Guest credentials live only in the current tab. Guest advertiser choices live in `localStorage`. Guest coupons live in IndexedDB. Signed-in users save encrypted credentials, selections, and coupons to their Supabase workspace.
 
