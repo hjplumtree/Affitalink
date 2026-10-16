@@ -99,6 +99,28 @@ so the Advertisers screen shows one selectable source named `eBay Deals`.
 Operational tables are server-only. Browser clients authenticate with the publishable key;
 the server validates the user and uses the secret key for workspace data.
 
+## CSV output
+
+Export CSV uses all saved links matching the current network and search, across
+all pages. The default 11 columns include one link, `checked` and `checkedAt`.
+Collection and check saves temporarily disable export so an unsaved check cannot
+appear in the file. Rows that cannot be formatted are excluded, with a count and
+reason shown beside the results; no file is created if all rows are excluded.
+
+Edit `OFFER_CSV_COLUMNS` in `lib/offerCsv.cjs` to change the output. Each entry's
+`field` selects a saved common field, `header` names the CSV column, and its
+position sets the order. An optional `format(value)` changes only its output:
+
+```js
+{ field: "destinationUrl", header: "Link" },
+{ field: "checked", header: "Reviewed", format: (value) => value ? "Yes" : "No" },
+```
+
+Export does not change saved data or read `raw`. Defaults preserve `0`, `false`,
+quotes, commas and line breaks; null or missing values become empty cells. Lists
+use JSON inside a CSV cell to preserve item boundaries and types. Dates use UTC
+ISO 8601; ambiguous or invalid dates are excluded instead of guessed.
+
 ## Checks
 
 ```bash
@@ -127,7 +149,11 @@ Storage integration checks:
   open `/__links-check`, select **Prepare test**, and exercise the actual Links page
   with the response modes. **Inspect saved data** reads the real IndexedDB. Clean
   the test data and remove the temporary entry when finished; no external network
-  credentials or requests are used.
+  credentials or requests are used. The `csv` mode provides 102 rows; `csv-errors`
+  adds two invalid dates per network. **Last CSV** shows the bytes passed to the
+  native download without replacing that download, and **CSV downloads** counts
+  generated files. Check network/search filters, check time, exclusions and empty
+  results as well as the downloaded file.
 
 ## Vercel deployment
 

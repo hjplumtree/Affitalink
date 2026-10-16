@@ -9,9 +9,15 @@ import { Input } from "../../components/ui/input";
 import { authFetch } from "../../lib/client/authFetch";
 import { getSessionCredentials, listBrowserConnectors, listBrowserCoupons, saveBrowserCoupons, setBrowserCouponChecked } from "../../lib/client/browserWorkspace";
 import { benefitContent } from "../../lib/offerRecord.cjs";
+import { buildOfferCsv } from "../../lib/offerCsv.cjs";
 import { NETWORKS } from "../../lib/networks";
 
 const PAGE_SIZE = 50;
+const CSV_FIELD_LABELS = {
+  network: "Network", merchantName: "Advertiser", title: "Title", description: "Description",
+  terms: "Terms", couponCode: "Code", startsAt: "Start date", endsAt: "End date",
+  destinationUrl: "Link", checked: "Checked", checkedAt: "Check time",
+};
 
 function dateInput(daysFromToday = 0) {
   const date = new Date();
@@ -53,6 +59,7 @@ export default function LinksPage() {
   const [error, setError] = useState("");
   const [savingChecks, setSavingChecks] = useState(new Set());
   const [checkErrors, setCheckErrors] = useState({});
+  const [exportResult, setExportResult] = useState(null);
   const collecting = useRef(false);
   const pendingChecks = useRef(new Set());
 
@@ -83,7 +90,7 @@ export default function LinksPage() {
     const activeConnectors = connectors.filter((connector) => connector.status === "connected" && (networkFilter === "all" || connector.network === networkFilter));
     if (!activeConnectors.length) return setError("Connect a network first");
     collecting.current = true;
-    setLoading(true); setError(""); setMessage(""); setCheckErrors({});
+    setLoading(true); setError(""); setMessage(""); setCheckErrors({}); setExportResult(null);
     let savedCount = 0;
     let completedCount = 0;
     const problems = [];
@@ -129,6 +136,7 @@ export default function LinksPage() {
 
   async function changeCheck(coupon, checked) {
     if (collecting.current || pendingChecks.current.size) return;
+    setExportResult(null);
     pendingChecks.current.add(coupon.id);
     setSavingChecks(new Set(pendingChecks.current));
     setCheckErrors((previous) => ({ ...previous, [coupon.id]: "" }));
@@ -178,14 +186,29 @@ export default function LinksPage() {
   ) : null;
 
   function exportCsv() {
-    const columns = ["network", "merchantName", "title", "description", "terms", "couponCode", "startsAt", "endsAt", "destinationUrl"];
-    const escape = (value) => `"${String(value || "").replaceAll('"', '""')}"`;
-    const csv = [columns.join(","), ...visibleCoupons.map((coupon) => columns.map((column) => escape(coupon[column])).join(","))].join("\n");
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
-    link.download = `affitalink-links-${dateInput()}.csv`;
-    link.click();
-    URL.revokeObjectURL(link.href);
+    if (collecting.current || pendingChecks.current.size || loadingData || authLoading || !visibleCoupons.length) return;
+    try {
+      const { csv, exportedCount, failures } = buildOfferCsv(visibleCoupons);
+      if (exportedCount) {
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+        link.href = url;
+        link.download = `affitalink-links-${dateInput()}.csv`;
+        document.body.appendChild(link);
+        try { link.click(); } finally {
+          link.remove();
+          // Allow the browser to start reading the download before releasing it.
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }
+      }
+      const reasons = [...new Set(failures.map(({ field, reason }) => `${CSV_FIELD_LABELS[field] || field}: ${reason}`))].join("; ");
+      setExportResult({
+        error: failures.length > 0,
+        text: `${exportedCount} ${exportedCount === 1 ? "link" : "links"} exported.${failures.length ? ` ${failures.length} excluded. ${reasons}.` : ""}`,
+      });
+    } catch {
+      setExportResult({ error: true, text: "Could not create CSV. Try again." });
+    }
   }
 
   const connectedNetworks = connectors.filter((connector) => connector.status === "connected");
@@ -194,7 +217,7 @@ export default function LinksPage() {
       <PageHeader title="Links" />
       <Panel>
         <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-[1fr_1fr_1fr_auto] lg:items-end">
-          <label className="space-y-2 text-sm font-medium"><span>Network</span><select value={networkFilter} onChange={(event) => { setNetworkFilter(event.target.value); setPage(1); }} className="h-11 w-full rounded-lg border border-input bg-white px-3 text-sm"><option value="all">All networks</option>{connectedNetworks.map((connector) => <option key={connector.network} value={connector.network}>{NETWORKS[connector.network]?.name || connector.network}</option>)}</select></label>
+          <label className="space-y-2 text-sm font-medium"><span>Network</span><select value={networkFilter} onChange={(event) => { setNetworkFilter(event.target.value); setPage(1); setExportResult(null); }} className="h-11 w-full rounded-lg border border-input bg-white px-3 text-sm"><option value="all">All networks</option>{connectedNetworks.map((connector) => <option key={connector.network} value={connector.network}>{NETWORKS[connector.network]?.name || connector.network}</option>)}</select></label>
           <label className="space-y-2 text-sm font-medium"><span>Active from</span><Input type="date" value={from} onChange={(event) => setFrom(event.target.value)} /></label>
           <label className="space-y-2 text-sm font-medium"><span>Active to</span><Input type="date" value={to} onChange={(event) => setTo(event.target.value)} /></label>
           <Button onClick={fetchCoupons} disabled={loading || loadingData || authLoading || savingChecks.size > 0 || !connectedNetworks.length}>{loading ? "Getting links…" : "Get links"}</Button>
@@ -204,9 +227,10 @@ export default function LinksPage() {
       </Panel>
       <Panel className="p-0">
         <Cluster className="justify-between border-b border-border p-4">
-          <div className="relative w-full max-w-md"><Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2" /><Input aria-label="Search links" value={query} onChange={(event) => { setQuery(event.target.value); setPage(1); }} placeholder="Search links" className="pl-9" /></div>
-          <Cluster>{!pagination ? <span className="text-sm">{visibleCoupons.length} links</span> : null}<Button variant="outline" size="sm" onClick={exportCsv} disabled={!visibleCoupons.length || loadingData}><Download className="mr-2 h-4 w-4" />Export CSV</Button></Cluster>
+          <div className="relative w-full max-w-md"><Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2" /><Input aria-label="Search links" value={query} onChange={(event) => { setQuery(event.target.value); setPage(1); setExportResult(null); }} placeholder="Search links" className="pl-9" /></div>
+          <Cluster>{!pagination ? <span className="text-sm">{visibleCoupons.length} links</span> : null}<Button variant="outline" size="sm" onClick={exportCsv} disabled={!visibleCoupons.length || loadingData || authLoading || loading || savingChecks.size > 0}><Download className="mr-2 h-4 w-4" />Export CSV</Button></Cluster>
         </Cluster>
+        {exportResult ? <p role={exportResult.error ? "alert" : "status"} className="border-b border-border px-4 py-3 text-sm text-foreground">{exportResult.text}</p> : null}
         {pagination}
         <div className="overflow-x-auto">
           <table className="w-full min-w-[1300px] text-left text-sm">

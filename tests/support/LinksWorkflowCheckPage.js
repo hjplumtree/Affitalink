@@ -21,6 +21,8 @@ export default function LinksWorkflowCheckPage() {
   const [ready, setReady] = useState(false);
   const [status, setStatus] = useState("Test data only");
   const [saved, setSaved] = useState("");
+  const [csv, setCsv] = useState("");
+  const [downloads, setDownloads] = useState(0);
 
   async function prepare() {
     guard();
@@ -45,11 +47,16 @@ export default function LinksWorkflowCheckPage() {
       const mode = scenario.current;
       if (mode === "delay") await new Promise((resolve) => { pendingReply.current = resolve; });
       const failure = mode === "failure" || (mode === "first-failure" && network === "cj") || (mode === "partial" && network === "rakuten");
-      const coupons = failure || mode === "empty" ? [] : Array.from({ length: mode === "pages" ? 51 : 1 }, (_, index) => ({
+      const coupons = failure || mode === "empty" ? [] : Array.from({ length: ["pages", "csv", "csv-errors"].includes(mode) ? 51 : 1 }, (_, index) => ({
         ...base, network, sourceOfferId: `fixture-${index}`, id: `${network}:9:fixture-${index}`,
         logicalKey: `${network}:9:fixture-${index}`, title: `${network.toUpperCase()} offer ${index + 1}`,
         fetchedAt: new Date().toISOString(),
         terms: mode === "changed" ? "New terms" : base.terms,
+        ...(mode.startsWith("csv") ? {
+          title: mode === "csv-errors" && index < 2 ? `${network.toUpperCase()} invalid ${index}` : `${network.toUpperCase()} offer ${index + 1}`,
+          description: '한글, "offer"\r\nSecond line', terms: index === 0 ? base.terms : ["Members, only", "A\nB", 0, false],
+          startsAt: "2026-10-01T09:00:00+09:00", endsAt: mode === "csv-errors" && index < 2 ? "bad" : null,
+        } : {}),
       }));
       const partialFailures = failure ? [{ stage: "collection", type: "transport", message: "Network unavailable", raw: null }]
         : mode === "partial" ? [{ stage: "conversion", message: "Invalid date", raw: { date: "bad" } }] : [];
@@ -64,6 +71,15 @@ export default function LinksWorkflowCheckPage() {
     child.IDBObjectStore.prototype.put = function (value, ...args) {
       if (this.name === "coupons" && (scenario.current === "storage-failure" || failChecks.current)) throw new DOMException("Test storage failure", "QuotaExceededError");
       return put.call(this, value, ...args);
+    };
+    // Observe the actual download bytes without replacing the native download.
+    const createUrl = child.URL.createObjectURL;
+    child.URL.createObjectURL = function (blob) {
+      if (blob.type.startsWith("text/csv")) {
+        blob.text().then(setCsv);
+        setDownloads((count) => count + 1);
+      }
+      return createUrl.call(this, blob);
     };
     setStatus("Links ready");
   }
@@ -89,13 +105,13 @@ export default function LinksWorkflowCheckPage() {
     localStorage.removeItem("affitalink.browser.workspace.v1");
     sessionStorage.removeItem("affitalink.session.credentials.v1");
     localStorage.removeItem(MARKER);
-    setSaved(""); setStatus("Test data removed");
+    setSaved(""); setCsv(""); setDownloads(0); setStatus("Test data removed");
   }
   return <main>
-    <h1>Steps 4–5 workflow checks</h1>
+    <h1>Steps 4–6 workflow checks</h1>
     <button onClick={() => prepare().catch((error) => setStatus(error.message))}>Prepare test</button>{" | "}
     <label>Response <select defaultValue="success" onChange={(event) => { scenario.current = event.target.value; }}>
-      {["success", "empty", "partial", "first-failure", "failure", "storage-failure", "changed", "pages", "delay"].map((value) => <option key={value}>{value}</option>)}
+      {["success", "empty", "partial", "first-failure", "failure", "storage-failure", "changed", "pages", "csv", "csv-errors", "delay"].map((value) => <option key={value}>{value}</option>)}
     </select></label>{" | "}
     <label><input type="checkbox" onChange={(event) => { failChecks.current = event.target.checked; }} />Fail check save</label>{" | "}
     <button onClick={() => { scenario.current = "success"; pendingReply.current?.(); }}>Release request</button>{" | "}
@@ -105,5 +121,6 @@ export default function LinksWorkflowCheckPage() {
     <button onClick={clean}>Clean test data</button>
     <p role="status">{status}</p><pre style={{ whiteSpace: "pre-wrap" }}>{saved}</pre>
     {ready ? <iframe ref={frame} src="/links" title="Links under test" onLoad={attach} style={{ width: "100%", height: "760px", border: "1px solid" }} /> : null}
+    <p>CSV downloads: {downloads}</p><pre aria-label="Last CSV">{csv}</pre>
   </main>;
 }
