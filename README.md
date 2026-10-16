@@ -16,12 +16,27 @@ An account is optional. Guest credentials live only in the current tab. Guest ad
 
 Use the Node version in `.nvmrc` and the pnpm version in `package.json`.
 
+First-time setup with nvm:
+
 ```bash
+nvm install
+nvm use
+npm install --global pnpm@11.27.1
 pnpm install --frozen-lockfile
+```
+
+In each new terminal, run these commands from this project directory:
+
+```bash
+nvm use
 pnpm dev
 ```
 
 Open `http://localhost:7777`.
+
+If pnpm reports `packages field missing or empty`, check `node --version` and
+`pnpm --version`. This project requires Node `24.21.0` and pnpm `11.27.1`;
+an older pnpm can fail while reading `pnpm-workspace.yaml` before the dev server starts.
 
 ## Environment
 

@@ -4,6 +4,10 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { createFakeSupabaseClient } = require("./support/fakeSupabaseClient.cjs");
 
+function offerBatch(offers) {
+  return { offers, failures: [], excluded: [], fetchedCount: offers.length };
+}
+
 function bootstrapStore(workspaceId = "workspace_default") {
   ["../lib/server/dataStore.cjs", "../lib/server/supabaseStore.cjs", "../lib/server/crypto.cjs", "../lib/server/connectors.cjs", "../lib/server/syncEngine.cjs"].forEach((modulePath) => delete require.cache[require.resolve(modulePath)]);
   const store = createFakeSupabaseClient({ workspaces: [{ id: workspaceId, name: "Test" }] });
@@ -49,7 +53,7 @@ test("provider duplicates collapse to one coupon before saving", async () => {
     "testnet",
     {},
     ["9"],
-    { offerFetcher: async () => [coupon, { ...coupon, title: "Latest offer" }] }
+    { offerFetcher: async () => offerBatch([coupon, { ...coupon, title: "Latest offer" }]) }
   );
   assert.equal(result.fetchedCount, 2);
   assert.equal(result.coupons.length, 1);
@@ -64,7 +68,7 @@ test("eBay deals map into the shared coupon model", () => {
     title: "Headphones",
     itemAffiliateWebUrl: "https://ebay.example/affiliate",
     itemWebUrl: "https://ebay.example/item",
-    itemEndDate: "2026-10-01T00:00:00Z",
+    dealEndDate: "2026-10-01T00:00:00Z",
     price: { value: "79.99", currency: "USD" },
     marketingPrice: {
       discountPercentage: "20",
@@ -152,8 +156,8 @@ test("sync updates coupons without marking unseen records missing", async () => 
   const { runManualSync } = require("../lib/server/syncEngine.cjs");
   await connectAndFetchMerchants("testnet", { test_token_77777: "77777", test_sid_77777: "77777" });
   const coupon = { sourceOfferId: "one", merchantId: "13816", merchantName: "Shop", title: "Offer", description: "", couponCode: "SAVE", destinationUrl: "", sourceUrl: "", startsAt: "", endsAt: "", raw: {} };
-  await runManualSync("testnet", { fetchOffers: async () => [coupon] });
-  await runManualSync("testnet", { fetchOffers: async () => [] });
+  await runManualSync("testnet", { fetchOffers: async () => offerBatch([coupon]) });
+  await runManualSync("testnet", { fetchOffers: async () => offerBatch([]) });
   assert.equal(store.dump().coupon_snapshots[0].status, "active");
 });
 
@@ -163,13 +167,29 @@ test("repeated sync updates one stable coupon row", async () => {
   const { runManualSync } = require("../lib/server/syncEngine.cjs");
   await connectAndFetchMerchants("testnet", { test_token_77777: "77777", test_sid_77777: "77777" });
   const coupon = { sourceOfferId: "stable", merchantId: "13816", merchantName: "Shop", title: "First title", raw: {} };
-  await runManualSync("testnet", { fetchOffers: async () => [coupon] });
+  await runManualSync("testnet", { fetchOffers: async () => offerBatch([coupon]) });
   const firstId = store.dump().coupon_snapshots[0].id;
-  await runManualSync("testnet", { fetchOffers: async () => [{ ...coupon, title: "Updated title" }] });
+  await runManualSync("testnet", { fetchOffers: async () => offerBatch([{ ...coupon, title: "Updated title" }]) });
   const saved = store.dump().coupon_snapshots;
   assert.equal(saved.length, 1);
   assert.equal(saved[0].id, firstId);
   assert.equal(saved[0].title, "Updated title");
+});
+
+test("sync retains good results and records the original invalid item as a partial failure", async () => {
+  const store = bootstrapStore();
+  const { connectAndFetchMerchants } = require("../lib/server/connectors.cjs");
+  const { runManualSync } = require("../lib/server/syncEngine.cjs");
+  await connectAndFetchMerchants("testnet", { test_token_77777: "77777", test_sid_77777: "77777" });
+  const source = { originalDate: "invalid", other: [0, false] };
+  const coupon = { sourceOfferId: "stable", merchantId: "13816", merchantName: "Shop", title: "Valid", raw: { originalDate: "" } };
+  const result = await runManualSync("testnet", {
+    fetchOffers: async () => offerBatch([coupon, { ...coupon, title: "Invalid", endsAt: "invalid", raw: source }]),
+  });
+  assert.equal(result.status, "partial_failure");
+  assert.equal(result.fetchedCount, 2);
+  assert.equal(store.dump().coupon_snapshots[0].title, "Valid");
+  assert.deepEqual(result.partialFailures[0].raw, source);
 });
 
 test("sync uses the requested workspace for every stored coupon", async () => {
