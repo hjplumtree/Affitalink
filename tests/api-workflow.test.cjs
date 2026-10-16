@@ -6,6 +6,7 @@ const vm = require("node:vm");
 const { createRequire } = require("node:module");
 const { createFakeSupabaseClient } = require("./support/fakeSupabaseClient.cjs");
 const { benefitContent } = require("../lib/offerRecord.cjs");
+const { buildOfferCsv } = require("../lib/offerCsv.cjs");
 
 const MODULES = [
   "../lib/server/dataStore.cjs", "../lib/server/supabaseStore.cjs", "../lib/server/crypto.cjs",
@@ -43,7 +44,7 @@ async function runHandler(handler, req) {
   return response;
 }
 
-test("workspace flow connects, selects, fetches, and never returns credentials", async () => {
+test("workspace flow connects, selects, collects, checks, recollects and exports saved data", async () => {
   bootstrapStore();
   const testConnection = await runHandler(loadApiHandler("../pages/api/connectors/[network]/test.js"), {
     method: "POST", query: { network: "testnet" }, body: { auth: { test_token_77777: "77777", test_sid_77777: "77777" } },
@@ -56,6 +57,11 @@ test("workspace flow connects, selects, fetches, and never returns credentials",
   const saveSelection = await runHandler(loadApiHandler("../pages/api/connectors/[network].js"), { method: "PUT", query: { network: "testnet" }, body: { merchants } });
   assert.equal(saveSelection.statusCode, 200);
   assert.equal(saveSelection.payload.connector.merchants.filter((merchant) => merchant.selected).length, 1);
+  const reconnected = await runHandler(loadApiHandler("../pages/api/connectors/[network]/test.js"), {
+    method: "POST", query: { network: "testnet" }, body: { auth: { test_token_77777: "77777", test_sid_77777: "77777" } },
+  });
+  assert.equal(reconnected.statusCode, 200);
+  assert.deepEqual(reconnected.payload.connector.merchants.map(({ id, selected }) => ({ id, selected })), merchants.map(({ id, selected }) => ({ id, selected })), "reconnecting must retain each advertiser choice");
 
   const sync = await runHandler(loadApiHandler("../pages/api/sync/[network].js"), { method: "POST", query: { network: "testnet" }, body: { from: "2020-01-01", to: "2035-01-01" } });
   assert.equal(sync.statusCode, 200);
@@ -72,6 +78,28 @@ test("workspace flow connects, selects, fetches, and never returns credentials",
   const connectors = await runHandler(loadApiHandler("../pages/api/connectors/index.js"), { method: "GET", query: {} });
   assert.equal(connectors.payload.connectors[0].hasCredentials, true);
   assert.equal("auth" in connectors.payload.connectors[0], false);
+
+  const offerHandler = loadApiHandler("../pages/api/offers/index.js");
+  const original = offers.payload.offers[0];
+  const checked = await runHandler(offerHandler, { method: "PATCH", query: {}, body: { id: original.id, checked: true, expected: benefitContent(original) } });
+  assert.equal(checked.statusCode, 200);
+  const again = await runHandler(loadApiHandler("../pages/api/sync/[network].js"), { method: "POST", query: { network: "testnet" }, body: { from: "2020-01-01", to: "2035-01-01" } });
+  assert.equal(again.statusCode, 200);
+  const reloaded = await runHandler(offerHandler, { method: "GET", query: {} });
+  assert.equal(reloaded.payload.offers.length, 1, "recollection must not duplicate the selected advertiser's offer");
+  const saved = reloaded.payload.offers[0];
+  assert.equal(saved.checked, true);
+  assert.equal(saved.checkedAt, checked.payload.offer.checkedAt);
+  assert.deepEqual(saved.raw, original.raw);
+  const csv = buildOfferCsv(reloaded.payload.offers);
+  assert.equal(csv.exportedCount, 1);
+  assert.deepEqual(csv.failures, []);
+  assert.ok(csv.csv.endsWith(`,"true","${saved.checkedAt}"`));
+  const unchecked = await runHandler(offerHandler, { method: "PATCH", query: {}, body: { id: saved.id, checked: false, expected: benefitContent(saved) } });
+  assert.equal(unchecked.statusCode, 200);
+  const final = await runHandler(offerHandler, { method: "GET", query: {} });
+  assert.ok(buildOfferCsv(final.payload.offers).csv.endsWith(',"false",""'));
+  assert.equal((await runHandler(loadApiHandler("../pages/api/connectors/index.js"), { method: "GET", query: {} })).payload.connectors[0].merchants.filter((merchant) => merchant.selected).length, 1);
 });
 
 test("guest fetch returns coupons without writing a workspace", async () => {

@@ -120,6 +120,8 @@ Export does not change saved data or read `raw`. Defaults preserve `0`, `false`,
 quotes, commas and line breaks; null or missing values become empty cells. Lists
 use JSON inside a CSV cell to preserve item boundaries and types. Dates use UTC
 ISO 8601; ambiguous or invalid dates are excluded instead of guessed.
+The date inputs and download filename use the browser's local calendar date;
+benefit timestamps and check times in the CSV remain UTC.
 
 ## Checks
 
@@ -153,7 +155,9 @@ Storage integration checks:
   adds two invalid dates per network. **Last CSV** shows the bytes passed to the
   native download without replacing that download, and **CSV downloads** counts
   generated files. Check network/search filters, check time, exclusions and empty
-  results as well as the downloaded file.
+  results as well as the downloaded file. **Open CJ settings** also tests reconnecting
+  with reordered advertisers; **Inspect saved data** shows saved selections and the
+  advertiser IDs/date range sent by the next collection, without credentials.
 
 ## Vercel deployment
 

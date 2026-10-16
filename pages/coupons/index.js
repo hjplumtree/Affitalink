@@ -10,6 +10,7 @@ import { authFetch } from "../../lib/client/authFetch";
 import { getSessionCredentials, listBrowserConnectors, listBrowserCoupons, saveBrowserCoupons, setBrowserCouponChecked } from "../../lib/client/browserWorkspace";
 import { benefitContent } from "../../lib/offerRecord.cjs";
 import { buildOfferCsv } from "../../lib/offerCsv.cjs";
+import { localDateInput as dateInput } from "../../lib/localDate.cjs";
 import { NETWORKS } from "../../lib/networks";
 
 const PAGE_SIZE = 50;
@@ -18,12 +19,6 @@ const CSV_FIELD_LABELS = {
   terms: "Terms", couponCode: "Code", startsAt: "Start date", endsAt: "End date",
   destinationUrl: "Link", checked: "Checked", checkedAt: "Check time",
 };
-
-function dateInput(daysFromToday = 0) {
-  const date = new Date();
-  date.setDate(date.getDate() + daysFromToday);
-  return date.toISOString().slice(0, 10);
-}
 
 function formatDate(value) {
   if (!value) return "—";

@@ -18,7 +18,9 @@ export default function LinksWorkflowCheckPage() {
   const failChecks = useRef(false);
   const pendingReply = useRef(null);
   const calls = useRef(0);
+  const lastRequest = useRef(null);
   const [ready, setReady] = useState(false);
+  const [framePath, setFramePath] = useState("/links");
   const [status, setStatus] = useState("Test data only");
   const [saved, setSaved] = useState("");
   const [csv, setCsv] = useState("");
@@ -26,11 +28,13 @@ export default function LinksWorkflowCheckPage() {
 
   async function prepare() {
     guard();
-    if ((await indexedDB.databases()).some((db) => db.name === "affitalink") || localStorage.getItem("affitalink.browser.workspace.v1")) throw new Error("Existing data: refusing to overwrite");
+    if (localStorage.getItem("affitalink.browser.workspace.v1")) throw new Error("Existing settings: refusing to overwrite");
+    const [rows, runs] = await Promise.all([workspace.listBrowserCoupons(), workspace.listBrowserSyncRuns()]);
+    if (rows.length || runs.length) throw new Error("Existing data: refusing to overwrite");
     localStorage.setItem(MARKER, "owned");
     for (const network of ["cj", "rakuten"]) {
-      workspace.saveBrowserConnector(network, { status: "connected", merchants: [{ id: "9", name: "Sample Shop", selected: true }] });
-      workspace.saveSessionCredentials(network, { fixture: "fake" });
+      workspace.saveBrowserConnector(network, { status: "connected", merchants: [{ id: "9", name: "Sample Shop", selected: true }, { id: "10", name: "Unselected Shop", selected: false }] });
+      workspace.saveSessionCredentials(network, network === "cj" ? { token: "fixture-token", requestor_id: "fixture-company", website_id: "fixture-website" } : { fixture: "fake" });
     }
     setReady(true);
     setStatus("Prepared");
@@ -40,10 +44,15 @@ export default function LinksWorkflowCheckPage() {
     const child = frame.current.contentWindow;
     const nativeFetch = child.fetch.bind(child);
     child.fetch = async (url, options) => {
+      if (String(url) === "/api/guest/connectors/cj/test") return new Response(JSON.stringify({
+        merchants: [{ id: "10", name: "Unselected Shop", selected: true }, { id: "9", name: "Sample Shop", selected: true }],
+      }), { headers: { "Content-Type": "application/json" } });
       if (!String(url).includes("/api/guest/fetch/")) return nativeFetch(url, options);
       calls.current += 1;
       setStatus(`Requests: ${calls.current}`);
       const network = String(url).split("/").pop();
+      const { merchantIds, from, to } = JSON.parse(options.body);
+      lastRequest.current = { network, merchantIds, from, to };
       const mode = scenario.current;
       if (mode === "delay") await new Promise((resolve) => { pendingReply.current = resolve; });
       const failure = mode === "failure" || (mode === "first-failure" && network === "cj") || (mode === "partial" && network === "rakuten");
@@ -87,7 +96,7 @@ export default function LinksWorkflowCheckPage() {
   async function inspect() {
     const rows = await workspace.listBrowserCoupons();
     const runs = await workspace.listBrowserSyncRuns();
-    setSaved(JSON.stringify({ count: rows.length, checks: rows.filter((row) => row.checked).map(({ id, checkedAt }) => ({ id, checkedAt })), runs: runs.length, requests: calls.current }));
+    setSaved(JSON.stringify({ count: rows.length, checks: rows.filter((row) => row.checked).map(({ id, checkedAt }) => ({ id, checkedAt })), runs: runs.length, requests: calls.current, lastRequest: lastRequest.current, cjSelections: workspace.getBrowserConnector("cj")?.merchants.map(({ id, selected }) => ({ id, selected })) }));
   }
   async function changeBehindPage() {
     const rows = await workspace.listBrowserCoupons();
@@ -108,7 +117,7 @@ export default function LinksWorkflowCheckPage() {
     setSaved(""); setCsv(""); setDownloads(0); setStatus("Test data removed");
   }
   return <main>
-    <h1>Steps 4–6 workflow checks</h1>
+    <h1>Workflow checks</h1>
     <button onClick={() => prepare().catch((error) => setStatus(error.message))}>Prepare test</button>{" | "}
     <label>Response <select defaultValue="success" onChange={(event) => { scenario.current = event.target.value; }}>
       {["success", "empty", "partial", "first-failure", "failure", "storage-failure", "changed", "pages", "csv", "csv-errors", "delay"].map((value) => <option key={value}>{value}</option>)}
@@ -117,10 +126,12 @@ export default function LinksWorkflowCheckPage() {
     <button onClick={() => { scenario.current = "success"; pendingReply.current?.(); }}>Release request</button>{" | "}
     <button onClick={inspect}>Inspect saved data</button>{" | "}
     <button onClick={changeBehindPage}>Change stored terms</button>{" | "}
+    <button onClick={() => setFramePath("/networks/cj")}>Open CJ settings</button>{" | "}
+    <button onClick={() => setFramePath("/links")}>Open Links</button>{" | "}
     <button onClick={() => frame.current?.contentWindow.location.reload()}>Reload links</button>{" | "}
     <button onClick={clean}>Clean test data</button>
     <p role="status">{status}</p><pre style={{ whiteSpace: "pre-wrap" }}>{saved}</pre>
-    {ready ? <iframe ref={frame} src="/links" title="Links under test" onLoad={attach} style={{ width: "100%", height: "760px", border: "1px solid" }} /> : null}
+    {ready ? <iframe ref={frame} src={framePath} title="Links under test" onLoad={attach} style={{ width: "100%", height: "760px", border: "1px solid" }} /> : null}
     <p>CSV downloads: {downloads}</p><pre aria-label="Last CSV">{csv}</pre>
   </main>;
 }

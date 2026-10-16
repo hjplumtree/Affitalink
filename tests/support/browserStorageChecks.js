@@ -1,4 +1,5 @@
 import { benefitContent } from "../../lib/offerRecord.cjs";
+import { buildOfferCsv } from "../../lib/offerCsv.cjs";
 
 // Browser-only integration checks. The temporary test page supplies the real
 // browserWorkspace module; never run this on an origin containing user data.
@@ -130,6 +131,11 @@ export async function runBrowserStorageChecks(workspace) {
   await workspace.saveBrowserCoupons([{ ...saved, raw: { metadata: "only" } }]);
   assert((await workspace.listBrowserCoupons())[0].checkedAt === saved.checkedAt, "Recollection must keep the manually saved time");
   passed.push("PASS: stale checks are rejected; fresh checks and recollection retain the right time");
+  const exported = buildOfferCsv(await workspace.listBrowserCoupons());
+  assert(exported.exportedCount === 1 && exported.failures.length === 0, "Saved browser data must export");
+  assert(exported.csv.endsWith(`,"true","${saved.checkedAt}"`), "CSV must use the persisted check and timestamp");
+  assert(JSON.stringify((await workspace.listBrowserCoupons())[0].raw) === JSON.stringify({ metadata: "only" }), "Export must not change stored raw");
+  passed.push("PASS: saved browser data exports with its retained check/time, without changing raw");
   sessionStorage.setItem(EXPECTED, JSON.stringify({ coupons: await workspace.listBrowserCoupons(), runs: await workspace.listBrowserSyncRuns() }));
   return passed.join("\n");
 }
