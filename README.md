@@ -86,14 +86,31 @@ pnpm audit --prod
 pnpm audit
 ```
 
-## Deployment gate
+## Vercel deployment
 
-Next `16.3.6` is the validated local upgrade baseline, but it must not be
-deployed before the announced `16.3.7` security release is installed and the
-checks above pass again. The hosting platform must satisfy the engines in
-`package.json`; use the `.nvmrc` version unless another Node 24 release is
-separately verified. Keep a separately verified patched release for rollback;
-do not roll back to the vulnerable Next `14.2.35` baseline.
+Use the Next.js framework preset, Node.js `24.x`, and the default install/build
+commands in Vercel. `package.json` pins pnpm `11.27.1`; `pmOnFail: download` in
+`pnpm-workspace.yaml` lets an older Vercel-provided pnpm download and run that
+exact version. Keep the version pin and commit `pnpm-lock.yaml` with dependency
+changes. Setting `pmOnFail` to `error` prevents this handoff and fails installation
+when Vercel's bundled pnpm differs.
+
+The hosting runtime must satisfy the engines in `package.json`. Local checks use
+Node `24.21.0` from `.nvmrc`. A Vercel project still configured for Node `16.x`
+should be updated to `24.x`; `package.json` takes precedence over that setting.
+
+Next and its ESLint config are pinned to `16.3.8`. The lockfile also includes
+patched `sharp` and `source-map-js`. Tailwind 3's `postcss-selector-parser` is
+overridden to `7.1.6`; the generated project CSS was verified byte-for-byte
+unchanged. Run the checks above before deployment and keep a separately verified
+patched release for rollback.
+
+As of 2026-10-16, `pnpm audit --prod` reports no known vulnerabilities. The full
+audit still reports [GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm)
+in the `braces` dependency of the development tools (Tailwind/ESLint). No patched
+version is available in the advisory. This dependency processes build-time file
+patterns; it is not used by the coupon APIs. Recheck the advisory when updating
+the build tools.
 
 ESLint 9 is a temporary compatibility bridge. Move to ESLint 10 when the Next
 lint stack supports it and the checks above remain clean.

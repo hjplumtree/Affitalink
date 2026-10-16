@@ -79,6 +79,26 @@ test("guest fetch returns coupons without writing a workspace", async () => {
   assert.match(response.payload.coupons[0].id, /^testnet:/);
 });
 
+test("inherited object names are rejected as unsupported networks", async () => {
+  bootstrapStore();
+  const guestTest = loadApiHandler("../pages/api/guest/connectors/[network]/test.js");
+  const guestFetch = loadApiHandler("../pages/api/guest/fetch/[network].js");
+  const connector = loadApiHandler("../pages/api/connectors/[network].js");
+  for (const network of ["toString", "constructor", "__proto__"]) {
+    for (const [handler, method, body] of [
+      [guestTest, "POST", { auth: {} }],
+      [guestFetch, "POST", { auth: {}, merchantIds: ["9"] }],
+      [connector, "GET", undefined],
+      [connector, "PUT", { merchants: [] }],
+    ]) {
+      const response = await runHandler(handler, { method, query: { network }, body });
+      assert.equal(response.statusCode, 400, `${method} ${network}`);
+      assert.equal(response.payload.error.type, "validation");
+      assert.match(response.payload.error.message, /Unsupported connector/);
+    }
+  }
+});
+
 test("invalid fetch dates fail before coupons are saved", async () => {
   bootstrapStore();
   await runHandler(loadApiHandler("../pages/api/connectors/[network]/test.js"), {

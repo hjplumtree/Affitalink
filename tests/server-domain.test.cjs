@@ -32,6 +32,15 @@ test("date filtering keeps coupons active during the selected range", () => {
   assert.equal(isCouponInRange({ startsAt: "", endsAt: "" }, "2026-09-20", "2026-09-25"), true);
 });
 
+test("date filtering includes the entire end date and handles Unix epoch dates", () => {
+  const { isCouponInRange } = require("../lib/server/syncEngine.cjs");
+  assert.equal(isCouponInRange({ startsAt: "2026-09-25T23:59:59.999Z" }, null, "2026-09-25"), true);
+  assert.equal(isCouponInRange({ startsAt: "2026-09-26T00:00:00Z" }, null, "2026-09-25"), false);
+  assert.equal(isCouponInRange({ endsAt: "1969-12-31T23:59:59Z" }, "1970-01-01", null), false);
+  assert.equal(isCouponInRange({ endsAt: "1970-01-01T00:00:00Z" }, "1970-01-02", null), false);
+  assert.equal(isCouponInRange({ startsAt: "1970-01-01T00:00:00Z" }, null, "1969-12-31"), false);
+});
+
 test("provider duplicates collapse to one coupon before saving", async () => {
   bootstrapStore();
   const { fetchNormalizedCoupons } = require("../lib/server/syncEngine.cjs");
