@@ -78,7 +78,7 @@ export default function NetworkSettingsPage() {
   return (
     <PageShell>
       <Link href="/networks" className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"><ArrowLeft className="h-4 w-4" />Networks</Link>
-      <PageHeader eyebrow="Network settings" title={network.name} description={connected ? "Update the credentials or test the connection again." : "Enter the API credentials from your network account."} />
+      <PageHeader eyebrow="Network settings" title={network.name} description={connected ? "Update the credentials or test the connection again." : network.description || "Enter the API credentials from your network account."} />
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
         <Panel>
           <Stack>

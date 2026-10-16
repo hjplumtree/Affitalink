@@ -4,7 +4,7 @@ Affitalink is a small dashboard for fetching coupons from affiliate networks.
 
 ## Product flow
 
-1. Connect CJ Affiliate, Rakuten Advertising, or impact.com.
+1. Connect CJ Affiliate, Rakuten Advertising, impact.com, or eBay Deals.
 2. Choose advertisers.
 3. Choose a date range.
 4. Fetch coupons.
@@ -14,9 +14,11 @@ An account is optional. Guest credentials live only in the current tab. Guest ad
 
 ## Run locally
 
+Use the Node version in `.nvmrc` and the pnpm version in `package.json`.
+
 ```bash
-npm install
-npm run dev
+pnpm install --frozen-lockfile
+pnpm dev
 ```
 
 Open `http://localhost:7777`.
@@ -41,7 +43,7 @@ Guest mode does not need Supabase. Network requests still need valid network cre
 ## Database
 
 Use the Supabase account that owns the new Affitalink project. Apply the tracked
-migration through the CLI so Supabase records it:
+migrations through the CLI so Supabase records them:
 
 ```bash
 npx supabase login
@@ -51,6 +53,15 @@ npx supabase db push
 
 The project ref is in the Supabase dashboard URL. Do not paste a database password,
 secret key, or `AFFITALINK_SECRET` into chat or commit it to Git.
+Do not paste tracked migrations into the SQL Editor; `db push` must record them in
+Supabase's migration history.
+
+### eBay Deals
+
+eBay needs a Developer Program account, production application keys, an eBay Partner
+Network account, and approved Buy API production access. In Affitalink, enter the
+Client ID, Client Secret, marketplace ID, and delivery country. eBay is one marketplace,
+so the Advertisers screen shows one selectable source named `eBay Deals`.
 
 | Table | Purpose |
 | --- | --- |
@@ -66,8 +77,23 @@ the server validates the user and uses the secret key for workspace data.
 ## Checks
 
 ```bash
-npm run lint
-npx tsc --noEmit
-npm test
-npm run build
+pnpm install --frozen-lockfile
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+pnpm audit --prod
+pnpm audit
 ```
+
+## Deployment gate
+
+Next `16.3.6` is the validated local upgrade baseline, but it must not be
+deployed before the announced `16.3.7` security release is installed and the
+checks above pass again. The hosting platform must satisfy the engines in
+`package.json`; use the `.nvmrc` version unless another Node 24 release is
+separately verified. Keep a separately verified patched release for rollback;
+do not roll back to the vulnerable Next `14.2.35` baseline.
+
+ESLint 9 is a temporary compatibility bridge. Move to ESLint 10 when the Next
+lint stack supports it and the checks above remain clean.

@@ -2,7 +2,6 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { useAuth } from "../../components/AuthProvider";
-import Loading from "../../components/Loading";
 import { PageHeader, PageShell, Panel } from "../../components/primitives";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
@@ -14,7 +13,6 @@ export default function AdvertisersPage() {
   const { user, loading: authLoading, getAccessToken } = useAuth();
   const [connectors, setConnectors] = useState([]);
   const [query, setQuery] = useState("");
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const loadConnectors = useCallback(async () => {
@@ -71,7 +69,6 @@ export default function AdvertisersPage() {
       ) : (
         <Panel><p className="font-semibold">Connect a network first</p><p className="mt-2 text-sm text-muted-foreground">Advertisers load when a network connection works.</p><Link href="/networks"><Button className="mt-5">Open networks</Button></Link></Panel>
       )}
-      <Loading loading={loading} />
     </PageShell>
   );
 }

@@ -5,7 +5,6 @@ import PublicShell from "../components/PublicShell";
 import { getShellForPath } from "../lib/appShells";
 import Head from "next/head";
 import { AuthProvider } from "../components/AuthProvider";
-import { ToastProvider } from "../components/ToastProvider";
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }) {
@@ -14,23 +13,21 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <AuthProvider>
-      <ToastProvider>
-        <Head>
-          <link rel="icon" href="/logo.svg" />
-        </Head>
-        {shell === "public" ? (
-          <PublicShell>
+      <Head>
+        <link rel="icon" href="/logo.svg" />
+      </Head>
+      {shell === "public" ? (
+        <PublicShell>
+          <Component {...pageProps} />
+        </PublicShell>
+      ) : (
+        <div className="flex">
+          <Navigator />
+          <Layouts>
             <Component {...pageProps} />
-          </PublicShell>
-        ) : (
-          <div className="flex">
-            <Navigator />
-            <Layouts>
-              <Component {...pageProps} />
-            </Layouts>
-          </div>
-        )}
-      </ToastProvider>
+          </Layouts>
+        </div>
+      )}
     </AuthProvider>
   );
 }

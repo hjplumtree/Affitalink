@@ -47,6 +47,82 @@ test("provider duplicates collapse to one coupon before saving", async () => {
   assert.equal(result.coupons[0].title, "Latest offer");
 });
 
+test("eBay deals map into the shared coupon model", () => {
+  bootstrapStore();
+  const { normalizeEbayDeal } = require("../lib/server/networkAdapters/ebay.cjs");
+  const coupon = normalizeEbayDeal({
+    itemId: "v1|123|0",
+    title: "Headphones",
+    itemAffiliateWebUrl: "https://ebay.example/affiliate",
+    itemWebUrl: "https://ebay.example/item",
+    itemEndDate: "2026-10-01T00:00:00Z",
+    price: { value: "79.99", currency: "USD" },
+    marketingPrice: {
+      discountPercentage: "20",
+      originalPrice: { value: "99.99", currency: "USD" },
+    },
+  });
+  assert.equal(coupon.sourceOfferId, "v1|123|0");
+  assert.equal(coupon.merchantId, "ebay-deals");
+  assert.equal(coupon.destinationUrl, "https://ebay.example/affiliate");
+  assert.equal(coupon.endsAt, "2026-10-01T00:00:00Z");
+  assert.match(coupon.description, /20% off/);
+});
+
+test("eBay credentials include practical marketplace defaults", () => {
+  const { createEmptyCredentials } = require("../lib/networks");
+  assert.deepEqual(createEmptyCredentials("ebay"), {
+    client_id: "",
+    client_secret: "",
+    marketplace_id: "EBAY_US",
+    delivery_country: "US",
+  });
+});
+
+test("eBay connection checks Deal API access", async () => {
+  const originalFetch = global.fetch;
+  const calls = [];
+  global.fetch = async (url, options = {}) => {
+    calls.push({ url: String(url), options });
+    if (String(url).includes("/oauth2/token")) {
+      return { ok: true, status: 200, json: async () => ({ access_token: "access-token" }) };
+    }
+    return { ok: true, status: 200, json: async () => ({ dealItems: [] }) };
+  };
+
+  try {
+    bootstrapStore();
+    const { fetchAdvertisers } = require("../lib/server/connectors.cjs");
+    const advertisers = await fetchAdvertisers("ebay", {
+      client_id: "client-id",
+      client_secret: "client-secret",
+      marketplace_id: "EBAY_US",
+      delivery_country: "US",
+    });
+    assert.deepEqual(advertisers, [{ id: "ebay-deals", name: "eBay Deals" }]);
+    assert.equal(calls.length, 2);
+    assert.match(calls[0].url, /oauth2\/token/);
+    assert.match(calls[1].url, /commissionable=true/);
+    assert.equal(calls[1].options.headers["X-EBAY-C-MARKETPLACE-ID"], "EBAY_US");
+  } finally {
+    global.fetch = originalFetch;
+  }
+});
+
+test("eBay settings reject malformed marketplace values before a request", async () => {
+  bootstrapStore();
+  const { fetchAdvertisers } = require("../lib/server/connectors.cjs");
+  await assert.rejects(
+    () => fetchAdvertisers("ebay", {
+      client_id: "client-id",
+      client_secret: "client-secret",
+      marketplace_id: "US",
+      delivery_country: "United States",
+    }),
+    /Marketplace ID must look like EBAY_US/
+  );
+});
+
 test("login redirects stay inside Affitalink", () => {
   const { getSafeInternalPath } = require("../lib/safeRedirect.cjs");
   assert.equal(getSafeInternalPath("/coupons?network=cj"), "/coupons?network=cj");
